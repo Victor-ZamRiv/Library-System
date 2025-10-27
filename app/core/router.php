@@ -2,7 +2,12 @@
 namespace App\Core;
 
 class Router {
-    private array $routes = [];
+    private array $routes = [
+        'GET' => [],
+        'POST' => [],
+        'PUT' => [],
+        'DELETE' => []
+    ];
 
     public function get(string $path, string $handler): void {
         $this->routes['GET'][$path] = $handler;
@@ -12,14 +17,27 @@ class Router {
         $this->routes['POST'][$path] = $handler;
     }
 
+    public function put(string $path, string $handler): void {
+        $this->routes['PUT'][$path] = $handler;
+    }
+
+    public function delete(string $path, string $handler): void {
+        $this->routes['DELETE'][$path] = $handler;
+    }
+
     public function dispatch(string $uri, string $method, array $dependencies = []): void {
         $uri = rtrim(parse_url($uri, PHP_URL_PATH), '/');
-        $method = strtoupper($method);
+
+        // Simulación de PUT/DELETE desde formularios HTML
+        if ($method === 'POST' && isset($_POST['_method'])) {
+            $method = strtoupper($_POST['_method']);
+        }
 
         $handler = $this->routes[$method][$uri] ?? null;
+
         if (!$handler) {
             http_response_code(404);
-            echo "Ruta no encontrada";
+            echo "Ruta no encontrada: $method $uri";
             return;
         }
 
@@ -46,6 +64,7 @@ class Router {
     private function instantiate(string $class, array $dependencies): object {
         $ref = new \ReflectionClass($class);
         $ctor = $ref->getConstructor();
+
         if (!$ctor) return new $class();
 
         $args = [];
@@ -58,6 +77,7 @@ class Router {
                 $args[] = null;
             }
         }
+
         return $ref->newInstanceArgs($args);
     }
 }
