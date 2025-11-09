@@ -63,103 +63,104 @@ include "../component/heat.php";
 					<i class="fa-solid fa-users"></i>
 				</div>
 				<div class="full-box tile-number text-titles">
-					<p class="full-box">70</p>
+					<p class="full-box">10</p>
 					<small>Registrados</small>
 				</div>
 			</article>
-			
+
+
 		</div>
 		<div class="container-fluid">
-    
 
-    <div class="panel panel-info">
-        <div class="panel-heading">
-            <h3 class="panel-title"><i class="zmdi zmdi-chart-bar"></i> &nbsp; Biblioteca <small>Libros Más Solicitados</small></h3>
-        </div>
-        <div class="panel-body">
-            
-            <section id="book-ranking" class="cd-container">
 
-                <div class="book-ranking-block">
-                    <div class="book-ranking-position text-info">
-                        <i class="zmdi zmdi-star zmdi-hc-2x"></i>
-                        <span>#1</span>
-                    </div>
-                    <div class="book-ranking-content">
-                        <h4 class="text-dark font-weight-bold mb-1">Cien años de soledad</h4>
-                        <p class="text-muted small mb-0">
-                            <i class="zmdi zmdi-account-box zmdi-hc-fw"></i> Autor: <em>Gabriel García Márquez</em>
-                        </p>
-                        <p class="text-muted small mb-1">
-                            <i class="zmdi zmdi-bookmark-outline zmdi-hc-fw"></i> Total de Préstamos: <strong>125</strong>
-                        </p>
-                        <span class="badge badge-info">
-                            <i class="zmdi zmdi-labels zmdi-hc-fw"></i> Ficción
-                        </span>
-                    </div>
-                </div>
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<h3 class="panel-title"><i class="zmdi zmdi-chart-bar"></i> &nbsp; Biblioteca <small>Libros Más Solicitados</small></h3>
+				</div>
+				<div class="panel-body">
 
-                <div class="book-ranking-block">
-                    <div class="book-ranking-position text-info">
-                        <i class="zmdi zmdi-chevron-up zmdi-hc-2x"></i>
-                        <span>#2</span>
-                    </div>
-                    <div class="book-ranking-content">
-                        <h4 class="text-dark font-weight-bold mb-1">El código Da Vinci</h4>
-                        <p class="text-muted small mb-0">
-                            <i class="zmdi zmdi-account-box zmdi-hc-fw"></i> Autor: <em>Dan Brown</em>
-                        </p>
-                        <p class="text-muted small mb-1">
-                            <i class="zmdi zmdi-bookmark-outline zmdi-hc-fw"></i> Total de Préstamos: <strong>98</strong>
-                        </p>
-                        <span class="badge badge-info">
-                            <i class="zmdi zmdi-labels zmdi-hc-fw"></i> Thriller
-                        </span>
-                    </div>
-                </div>
+					<section id="book-ranking" class="cd-container">
 
-                <div class="book-ranking-block">
-                    <div class="book-ranking-position text-info">
-                        <i class="zmdi zmdi-pin-drop zmdi-hc-2x"></i>
-                        <span>#3</span>
-                    </div>
-                    <div class="book-ranking-content">
-                        <h4 class="text-dark font-weight-bold mb-1">Sapiens: De animales a dioses</h4>
-                        <p class="text-muted small mb-0">
-                            <i class="zmdi zmdi-account-box zmdi-hc-fw"></i> Autor: <em>Yuval Noah Harari</em>
-                        </p>
-                        <p class="text-muted small mb-1">
-                            <i class="zmdi zmdi-bookmark-outline zmdi-hc-fw"></i> Total de Préstamos: <strong>85</strong>
-                        </p>
-                        <span class="badge badge-info">
-                            <i class="zmdi zmdi-labels zmdi-hc-fw"></i> No Ficción
-                        </span>
-                    </div>
-                </div>
+						<div class="book-ranking-block">
+							<div class="book-ranking-position text-info">
+								<i class="zmdi zmdi-star zmdi-hc-2x"></i>
+								<span>#1</span>
+							</div>
+							<div class="book-ranking-content">
+								<h4 class="text-dark font-weight-bold mb-1">Cien años de soledad</h4>
+								<p class="text-muted small mb-0">
+									<i class="zmdi zmdi-account-box zmdi-hc-fw"></i> Autor: <em>Gabriel García Márquez</em>
+								</p>
+								<p class="text-muted small mb-1">
+									<i class="zmdi zmdi-bookmark-outline zmdi-hc-fw"></i> Total de Préstamos: <strong>125</strong>
+								</p>
+								<span class="badge badge-info">
+									<i class="zmdi zmdi-labels zmdi-hc-fw"></i> Ficción
+								</span>
+							</div>
+						</div>
 
-                <div class="book-ranking-block">
-                    <div class="book-ranking-position text-info">
-                        <i class="zmdi zmdi-bookmark zmdi-hc-2x"></i>
-                        <span>#4</span>
-                    </div>
-                    <div class="book-ranking-content">
-                        <h4 class="text-dark font-weight-bold mb-1">1984</h4>
-                        <p class="text-muted small mb-0">
-                            <i class="zmdi zmdi-account-box zmdi-hc-fw"></i> Autor: <em>George Orwell</em>
-                        </p>
-                        <p class="text-muted small mb-1">
-                            <i class="zmdi zmdi-bookmark-outline zmdi-hc-fw"></i> Total de Préstamos: <strong>70</strong>
-                        </p>
-                        <span class="badge badge-info">
-                            <i class="zmdi zmdi-labels zmdi-hc-fw"></i> Distopía
-                        </span>
-                    </div>
-                </div>
+						<div class="book-ranking-block">
+							<div class="book-ranking-position text-info">
+								<i class="zmdi zmdi-chevron-up zmdi-hc-2x"></i>
+								<span>#2</span>
+							</div>
+							<div class="book-ranking-content">
+								<h4 class="text-dark font-weight-bold mb-1">El código Da Vinci</h4>
+								<p class="text-muted small mb-0">
+									<i class="zmdi zmdi-account-box zmdi-hc-fw"></i> Autor: <em>Dan Brown</em>
+								</p>
+								<p class="text-muted small mb-1">
+									<i class="zmdi zmdi-bookmark-outline zmdi-hc-fw"></i> Total de Préstamos: <strong>98</strong>
+								</p>
+								<span class="badge badge-info">
+									<i class="zmdi zmdi-labels zmdi-hc-fw"></i> Thriller
+								</span>
+							</div>
+						</div>
 
-            </section>
-        </div>
-    </div>
-</div>
+						<div class="book-ranking-block">
+							<div class="book-ranking-position text-info">
+								<i class="zmdi zmdi-pin-drop zmdi-hc-2x"></i>
+								<span>#3</span>
+							</div>
+							<div class="book-ranking-content">
+								<h4 class="text-dark font-weight-bold mb-1">Sapiens: De animales a dioses</h4>
+								<p class="text-muted small mb-0">
+									<i class="zmdi zmdi-account-box zmdi-hc-fw"></i> Autor: <em>Yuval Noah Harari</em>
+								</p>
+								<p class="text-muted small mb-1">
+									<i class="zmdi zmdi-bookmark-outline zmdi-hc-fw"></i> Total de Préstamos: <strong>85</strong>
+								</p>
+								<span class="badge badge-info">
+									<i class="zmdi zmdi-labels zmdi-hc-fw"></i> No Ficción
+								</span>
+							</div>
+						</div>
+
+						<div class="book-ranking-block">
+							<div class="book-ranking-position text-info">
+								<i class="zmdi zmdi-bookmark zmdi-hc-2x"></i>
+								<span>#4</span>
+							</div>
+							<div class="book-ranking-content">
+								<h4 class="text-dark font-weight-bold mb-1">1984</h4>
+								<p class="text-muted small mb-0">
+									<i class="zmdi zmdi-account-box zmdi-hc-fw"></i> Autor: <em>George Orwell</em>
+								</p>
+								<p class="text-muted small mb-1">
+									<i class="zmdi zmdi-bookmark-outline zmdi-hc-fw"></i> Total de Préstamos: <strong>70</strong>
+								</p>
+								<span class="badge badge-info">
+									<i class="zmdi zmdi-labels zmdi-hc-fw"></i> Distopía
+								</span>
+							</div>
+						</div>
+
+					</section>
+				</div>
+			</div>
+		</div>
 		<!-- <div class="container-fluid">
 			<div class="page-header">
 				<h1 class="text-titles">Sistema <small>Tempo en linea</small></h1>

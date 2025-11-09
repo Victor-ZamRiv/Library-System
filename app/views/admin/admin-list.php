@@ -6,11 +6,11 @@
 <body>
 	<!-- SideBar -->
 	<?php include "../component/sidebar.php" ?>
-	
+
 	<!-- Content page-->
 	<section class="full-box dashboard-contentPage">
 		<!-- NavBar -->
-		
+
 		<?php include "../component/navbar.php" ?>
 
 		<!-- Content page -->
@@ -27,63 +27,40 @@
 						<table class="table table-hover text-center">
 							<thead>
 								<tr>
-									<th class="text-center">#</th>
-									<th class="text-center">DNI</th>
-									<th class="text-center">NOMBRES</th>
-									<th class="text-center">APELLIDOS</th>
-									<th class="text-center">TELÉFONO</th>
-									<th class="text-center">A. CUENTA</th>
-									<th class="text-center">A. DATOS</th>
-									<th class="text-center">ELIMINAR</th>
+									<th class="text-center">Usuario</th>
+									<th class="text-center">Cédula</th>
+									<th class="text-center">Nombres</th>
+									<th class="text-center">Apellidos</th>
+									<th class="text-center">Teléfono</th>
+									<th class="text-center">Ver más</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td>1</td>
-									<td>7890987651</td>
-									<td>Nombres</td>
-									<td>Apellidos</td>
-									<td>Telefono</td>
+									<td>Admin</td>
+									<td>0</td>
+									<td>Firsh Admin</td>
+									<td></td>
+									<td></td>
+									
 									<td>
-										<a href="#!" class="btn btn-success btn-raised btn-xs">
-											<i class="zmdi zmdi-refresh"></i>
+										<a href="#!" class="btn btn-success btn-raised btn-sm">
+											
+											<i class="fa-solid fa-info"></i>
 										</a>
-									</td>
-									<td>
-										<a href="#!" class="btn btn-success btn-raised btn-xs">
-											<i class="zmdi zmdi-refresh"></i>
-										</a>
-									</td>
-									<td>
-										<form>
-											<button type="submit" class="btn btn-danger btn-raised btn-xs">
-												<i class="zmdi zmdi-delete"></i>
-											</button>
-										</form>
 									</td>
 								</tr>
 								<tr>
-									<td>2</td>
-									<td>7890987651</td>
-									<td>Nombres</td>
-									<td>Apellidos</td>
-									<td>Telefono</td>
+									<td>Administrador1</td>
+									<td>27459925</td>
+									<td>Victor Simón</td>
+									<td>Zambrano Rivero</td>
+									<td>0424-8630743</td>
+									
 									<td>
-										<a href="#!" class="btn btn-success btn-raised btn-xs">
-											<i class="zmdi zmdi-refresh"></i>
+										<a href="#!" class="btn btn-success btn-raised btn-sm">
+											<i class="fa-solid fa-info"></i>
 										</a>
-									</td>
-									<td>
-										<a href="#!" class="btn btn-success btn-raised btn-xs">
-											<i class="zmdi zmdi-refresh"></i>
-										</a>
-									</td>
-									<td>
-										<form>
-											<button type="submit" class="btn btn-danger btn-raised btn-xs">
-												<i class="zmdi zmdi-delete"></i>
-											</button>
-										</form>
 									</td>
 								</tr>
 							</tbody>
@@ -108,8 +85,8 @@
 	</section>
 
 	<!--====== Scripts -->
-	
-		<?php include "../component/scripts.php" ?>
+
+	<?php include "../component/scripts.php" ?>
 
 </body>
 

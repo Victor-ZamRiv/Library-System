@@ -92,7 +92,7 @@ include "../component/heat.php";
 
                         <div class="book-actions" style="margin-top: 15px;">
                             <a href="../book/book-info.php" class="btn btn-primary btn-sm" title="Más información"><i class="fa-solid fa-circle-info"></i> Más Info</a>
-                            <a href="book-config.html" class="btn btn-primary btn-sm" title="Gestionar libro"><i class="fa-solid fa-wrench"></i> Gestión</a>
+                            <a href="../book/book-edit.php" class="btn btn-primary btn-sm" title="Gestionar libro"><i class="fa-solid fa-wrench"></i> Gestión</a>
                         </div>
                     </div>
                 </div>
@@ -109,7 +109,7 @@ include "../component/heat.php";
 
                         <div class="book-actions" style="margin-top: 15px;">
                             <a href="../book/book-info.php" class="btn btn-primary btn-sm" title="Más información"><i class="fa-solid fa-circle-info"></i> Más Info</a>
-                            <a href="book-config.html" class="btn btn-primary btn-sm" title="Gestionar libro"><i class="fa-solid fa-wrench"></i> Gestión</a>
+                            <a href="../book/book-edit.php" class="btn btn-primary btn-sm" title="Gestionar libro"><i class="fa-solid fa-wrench"></i> Gestión</a>
                         </div>
                     </div>
                 </div>

@@ -4,12 +4,12 @@
 	<title>LogIn</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-	<link rel="stylesheet" href="login.css">
+	<link rel="stylesheet" href="../../../public/css/login.css">
 </head>
 
     <div class="header-slogan">
         <p>Sistema de Gestión Bibliográfica</p>
-        <img src="img/libro.png" alt="Logo de la biblioteca">
+        <img src="../../../public/img/img-login/libro.png" alt="Logo de la biblioteca">
     </div>
 
     <div class="login-container">

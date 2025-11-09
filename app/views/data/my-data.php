@@ -17,12 +17,12 @@ include "../component/heat.php";
 	<section class="full-box dashboard-contentPage">
 		<!-- NavBar -->
 		<?php
-	include "../component/navbar.php";
-	?>
+		include "../component/navbar.php";
+		?>
 		<!-- Content page -->
 		<div class="container-fluid">
 			<div class="page-header">
-			  <h1 class="text-titles"><i class="zmdi zmdi-account-circle zmdi-hc-fw"></i> MIS DATOS</small></h1>
+				<h1 class="text-titles"><i class="zmdi zmdi-account-circle zmdi-hc-fw"></i> Información de Usuario</small></h1>
 			</div>
 		</div>
 
@@ -30,66 +30,52 @@ include "../component/heat.php";
 		<div class="container-fluid">
 			<div class="panel panel-success">
 				<div class="panel-heading">
-					<h3 class="panel-title"><i class="zmdi zmdi-refresh"></i> &nbsp; MIS DATOS</h3>
+					<h3 class="panel-title"> MIS DATOS</h3>
 				</div>
-				<div class="panel-body">
-					<form>
-				    	<fieldset>
-				    		<legend><i class="zmdi zmdi-account-box"></i> &nbsp; Información personal</legend>
-				    		<div class="container-fluid">
-				    			<div class="row">
-				    				<div class="col-xs-12">
-								    	<div class="form-group label-floating">
-										  	<label class="control-label">CEDULA</label>
-										  	<input pattern="[0-9-]{1,30}" class="form-control" type="text" name="dni-up" required="" maxlength="30">
-										</div>
-				    				</div>
-				    				<div class="col-xs-12 col-sm-6">
-								    	<div class="form-group label-floating">
-										  	<label class="control-label">Nombres</label>
-										  	<input pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{1,30}" class="form-control" type="text" name="nombre-up" required="" maxlength="30">
-										</div>
-				    				</div>
-				    				<div class="col-xs-12 col-sm-6">
-										<div class="form-group label-floating">
-										  	<label class="control-label">Apellidos</label>
-										  	<input pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{1,30}" class="form-control" type="text" name="apellido-up" required="" maxlength="30">
-										</div>
-				    				</div>
-				    				<div class="col-xs-12 col-sm-6">
-										<div class="form-group label-floating">
-										  	<label class="control-label">Fecha de nacimiento</label>
-										  	<input pattern="[0-9+]{1,15}" class="form-control" type="text" name="telefono-up" maxlength="15">
-										</div>
-				    				</div>
-				    				<div class="col-xs-12 col-sm-6">
-										<div class="form-group label-floating">
-										  	<label class="control-label">Teléfono</label>
-										  	<input pattern="[0-9+]{1,15}" class="form-control" type="text" name="telefono-up" maxlength="15">
-										</div>
-				    				</div>
-				    				<div class="col-xs-12">
-										<div class="form-group label-floating">
-										  	<label class="control-label">Dirección</label>
-										  	<textarea name="direccion-up" class="form-control" rows="2" maxlength="100"></textarea>
-										</div>
-				    				</div>
-				    			</div>
-				    		</div>
-				    	</fieldset>
-					    <p class="text-center" style="margin-top: 20px;">
-					    	<button type="submit" class="btn btn-success btn-raised btn-sm"><i class="zmdi zmdi-refresh"></i> Actualizar</button>
-					    </p>
-				    </form>
+				<div class="panel-body text-center">
+					<div class="card shadow-sm " style="max-width: 600px;">
+						<div class="card-body">
+
+
+							<h4 class="card-title text-center font-weight-bold my-3">Datos de Cuenta</h4>
+							<hr class="mt-0 mb-3">
+
+							<div class="d-flex justify-content-between mb-3">
+								<p class="mb-0"><strong class="mr-2">Cédula:</strong> 0</p>
+								<p class="mb-0"><strong class="mr-2">Nombres:</strong> Firsh Admin</p>
+								<p class="mb-0"><strong class="mr-2">Apellidos:</strong> </p>
+								<p class="mb-0"><strong class="mr-2">Teléfono:</strong> </p>
+								
+								<hr class="mt-0 mb-3">
+							</div>
+							<div class="d-flex justify-content-between mb-3">
+								<p class="mb-0"><strong class="mr-2">Nombre de Usuario:</strong> Admin</p>
+								<p class="mb-0"><strong class="mr-2">Contraseña:</strong> Admin*2025</p>
+								<p class="text-left">
+								<div class="label label-success">Nivel 1</div> Control total del sistema
+								</p>
+								<hr class="mt-0 mb-3">
+							</div>
+
+
+							<div class="card-footer text-center">
+								<a href="../admin/Edit-admin.php" class="btn btn-info btn-raised btn-sm">
+									Editar Datos
+								</a>
+							</div>
+						</div>
+					</div>
+
 				</div>
 			</div>
 		</div>
-		
+
 	</section>
 
 	<!--====== Scripts -->
-	<?php 
+	<?php
 	include "../component/scripts.php";
 	?>
 </body>
+
 </html>

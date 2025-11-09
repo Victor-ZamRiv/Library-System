@@ -78,7 +78,7 @@
 				
 				<li>
 					<a href="#!" class="btn-sideBar-SubMenu">
-						 Administración <i class="fa-solid fa-caret-down"></i>
+						 Usuarios <i class="fa-solid fa-caret-down"></i>
 					</a>
 					<ul class="list-unstyled full-box">
 						
@@ -87,6 +87,14 @@
 						</li>
 						<li>
 							<a href="#"> Bibliotecarios</a>
+						</li>
+						<li>
+							<a href="#"> Jefes de sala</a>
+						</li>
+						
+					</ul>
+						<li>
+							<a href="#"> Lectores</a>
 						</li>
 					</ul>
 				</li>	
