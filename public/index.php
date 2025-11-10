@@ -1,7 +1,7 @@
 <?php
-require __DIR__ . '/../bootstrap/init.php';
+require __DIR__ . '/../boots/init.php';
 
-$router = require __DIR__ . '/../routes/web.php';
+$router = require __DIR__ . '/../app/routes/web.php';
 
 $container = [
     \PDO::class => $pdo
