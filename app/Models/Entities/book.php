@@ -49,7 +49,7 @@ class Libro {
     public function getObservaciones(): ?string { return $this->observaciones; }
     public function getAnioPublicacion(): ?int { return $this->anioPublicacion; }
 
-    // Setters con validaciones simples
+    // Setters
     public function setTitulo(string $titulo): void {
         $titulo = trim($titulo);
         if ($titulo === '') throw new \InvalidArgumentException('El título no puede estar vacío');
@@ -60,7 +60,7 @@ class Libro {
         $this->isbn = $isbn !== null ? trim($isbn) : null;
     }
 
-    // Serialización/normalización para persistencia
+    // Converción a array para facilitar inserciones/actualizaciones
     public function toArray(): array {
         return [
             'ID_Libro' => $this->id,
@@ -76,7 +76,7 @@ class Libro {
         ];
     }
 
-    // Factory desde array (útil al leer DB)
+    // Creación de una entidad Libro a partir de un array
     public static function fromArray(array $row): self {
         return new self(
             isset($row['ID_Libro']) ? (int)$row['ID_Libro'] : null,

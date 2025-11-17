@@ -1,17 +1,36 @@
 <?php
 namespace App\Core;
 
-abstract class baseRepository {
-    protected \PDO $pdo;
-    protected string $table;
+use PDO;
 
-    public function __construct(\PDO $pdo, string $table) {
+abstract class BaseRepository {
+    protected PDO $pdo;
+    protected string $table;
+    protected string $primaryKey;
+
+    public function __construct(PDO $pdo, string $table, string $primaryKey = 'id') {
         $this->pdo = $pdo;
         $this->table = $table;
+        $this->primaryKey = $primaryKey;
     }
 
-    abstract public function all(): array;
-    abstract public function find(int $id): ?object;
-    abstract public function save(object $entity): int;
-    abstract public function delete(int $id): bool;
+    public function all(): array {
+        $stmt = $this->pdo->query("SELECT * FROM {$this->table} WHERE Activo = 1");
+        $rows = $stmt->fetchAll();
+        return array_map(fn($row) => $this->mapToEntity($row), $rows);
+    }
+
+    public function find(int $id): ?object {
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE {$this->primaryKey} = ? LIMIT 1");
+        $stmt->execute([$id]);
+        $row = $stmt->fetch();
+        return $row ? $this->mapToEntity($row) : null;
+    }
+
+    public function delete(int $id): bool {
+        $stmt = $this->pdo->prepare("DELETE FROM {$this->table} WHERE {$this->primaryKey} = ?");
+        return $stmt->execute([$id]);
+    }
+
+    abstract protected function mapToEntity(array $row): object;
 }
