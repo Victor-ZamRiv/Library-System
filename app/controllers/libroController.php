@@ -2,8 +2,8 @@
 namespace App\Controllers;
 
 use App\Core\BaseController;
-use App\Repositories\LibroRepository;
-use App\Entities\Libro;
+use App\Models\Repositories\LibroRepository;
+use App\Models\Entities\Libro;
 
 class LibroController extends BaseController {
     private LibroRepository $repo;

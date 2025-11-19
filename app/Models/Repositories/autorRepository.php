@@ -1,7 +1,7 @@
 <?php
-namespace App\Repositories;
+namespace App\Models\Repositories;
 use App\Core\baseRepository;
-use App\Entities\Autor;
+use App\Models\Entities\Autor;
 use PDO;
 
 class AutorRepository extends baseRepository{

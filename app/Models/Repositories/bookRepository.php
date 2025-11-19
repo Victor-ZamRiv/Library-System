@@ -1,8 +1,8 @@
 <?php
-namespace App\Repositories;
+namespace App\Models\Repositories;
 
 use App\Core\BaseRepository;
-use App\Entities\Libro;
+use App\Models\Entities\Libro;
 use PDO;
 
 class LibroRepository extends BaseRepository {

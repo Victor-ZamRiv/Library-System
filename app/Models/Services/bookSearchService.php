@@ -1,9 +1,9 @@
 <?php
-namespace App\Services;
+namespace App\Models\Services;
 
-use App\Repositories\LibroRepository;
-use App\Repositories\AutorRepository;
-use App\Entities\Libro;
+use App\Models\Repositories\LibroRepository;
+use App\Models\Repositories\AutorRepository;
+use App\Models\Entities\Libro;
 
 class LibroSearchService {
     private LibroRepository $libroRepo;
@@ -20,7 +20,7 @@ class LibroSearchService {
         foreach ($libros as $libro) {
             if ($libro instanceof Libro) {
                 $autores = $this->autorRepo->getAutoresLibro($libro->getId());
-                $libro->setAutores($autores); // método opcional en la entidad
+                $libro->setAutores($autores);
             }
         }
 
