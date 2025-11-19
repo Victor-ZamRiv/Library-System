@@ -9,6 +9,49 @@ class LibroRepository extends BaseRepository {
     public function __construct(PDO $pdo) {
         parent::__construct($pdo, 'libros', 'ID_Libro');
     }
+    
+    public function search(array $filtros): array {
+        $sql = "
+            SELECT DISTINCT l.*
+            FROM libros l
+            LEFT JOIN libros_autores la ON l.ID_Libro = la.ID_Libro
+            LEFT JOIN autores a ON la.ID_Autor = a.ID_Autor
+            WHERE l.Activo = 1
+        ";
+        $params = [];
+
+        // Búsqueda principal
+        if (!empty($filtros['campo']) && !empty($filtros['valor'])) {
+            switch ($filtros['campo']) {
+                case 'autor':
+                    $sql .= " AND a.Nombre LIKE ?";
+                    $params[] = '%' . $filtros['valor'] . '%';
+                    break;
+                case 'titulo':
+                    $sql .= " AND l.Titulo LIKE ?";
+                    $params[] = '%' . $filtros['valor'] . '%';
+                    break;
+                case 'cota':
+                    $sql .= " AND l.Cota LIKE ?";
+                    $params[] = '%' . $filtros['valor'] . '%';
+                    break;
+            }
+        }
+
+        // Filtro por sala
+        if (!empty($filtros['sala'])) {
+            $sql .= " AND l.Sala = ?";
+            $params[] = $filtros['sala'];
+        }
+
+        // Filtro por área de conocimiento
+        if (!empty($filtros['area'])) {
+            $sql .= " AND l.Area_Conocimiento = ?";
+            $params[] = $filtros['area'];
+        }
+
+        return $this->runFilteredQuery($sql, $params);
+    }
 
     public function insert(Libro $libro): int {
         if ($libro->getId() !== null) {

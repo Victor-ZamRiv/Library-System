@@ -32,5 +32,12 @@ abstract class BaseRepository {
         return $stmt->execute([$id]);
     }
 
+    protected function runFilteredQuery(string $baseSql, array $params): array {
+        $stmt = $this->pdo->prepare($baseSql);
+        $stmt->execute($params);
+        $rows = $stmt->fetchAll();
+        return array_map(fn($row) => $this->mapToEntity($row), $rows);
+    }
+
     abstract protected function mapToEntity(array $row): object;
 }

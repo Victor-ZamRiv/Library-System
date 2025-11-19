@@ -1,14 +1,17 @@
 <?php
 namespace App\Entities;
+use App\Core\baseEntity;
 
-class Libro {
+class Libro extends baseEntity{
     private ?int $id;
     private string $titulo;
+    private array $autores = [];
     private ?int $idEditorial;
     private ?string $idArea;
     private string $cota;
     private ?string $isbn;
     private ?int $paginas;
+    private ?string $volume;
     private ?string $observaciones;
     private ?int $anioPublicacion;
     private bool $activo;
@@ -23,7 +26,8 @@ class Libro {
         ?int $paginas = null,
         ?string $observaciones = null,
         ?int $anioPublicacion = null,
-        bool $activo = true
+        bool $activo = true,
+        ?string $volume = null
     ) {
         $this->id = $id;
         $this->setTitulo($titulo);
@@ -35,19 +39,23 @@ class Libro {
         $this->observaciones = $observaciones;
         $this->anioPublicacion = $anioPublicacion;
         $this->activo = $activo;
+        $this->volume = $volume;
     }
 
     // Getters
     public function getId(): ?int { return $this->id; }
+    public function getCota(): string { return $this->cota; }
     public function getTitulo(): string { return $this->titulo; }
+    public function getAutores(): array { return $this->autores; }
     public function getIsbn(): ?string { return $this->isbn; }
     public function isActivo(): bool { return $this->activo; }
     public function getIdEditorial(): ?int { return $this->idEditorial; }
     public function getIdArea(): ?string { return $this->idArea; }
-    public function getCota(): string { return $this->cota; }
     public function getPaginas(): ?int { return $this->paginas; }
+    public function getVolume(): ?string { return $this->volume; }
     public function getObservaciones(): ?string { return $this->observaciones; }
     public function getAnioPublicacion(): ?int { return $this->anioPublicacion; }
+
 
     // Setters
     public function setTitulo(string $titulo): void {
@@ -56,25 +64,21 @@ class Libro {
         $this->titulo = $titulo;
     }
 
+    public function setAutores(array $autores): void {
+        foreach ($autores as $autor) {
+            if (!($autor instanceof Autor)) {
+                throw new \InvalidArgumentException("Todos los elementos deben ser instancias de Autor");
+            }
+        }
+        $this->autores = $autores;
+    }
+
+
+
     public function setIsbn(?string $isbn): void {
         $this->isbn = $isbn !== null ? trim($isbn) : null;
     }
 
-    // Converción a array para facilitar inserciones/actualizaciones
-    public function toArray(): array {
-        return [
-            'ID_Libro' => $this->id,
-            'Titulo' => $this->titulo,
-            'ID_Editorial' => $this->idEditorial,
-            'ID_Area' => $this->idArea,
-            'Cota' => $this->cota,
-            'ISBN' => $this->isbn,
-            'Paginas' => $this->paginas,
-            'Observaciones' => $this->observaciones,
-            'Anio_Publicacion' => $this->anioPublicacion,
-            'Activo' => $this->activo ? 1 : 0,
-        ];
-    }
 
     // Creación de una entidad Libro a partir de un array
     public static function fromArray(array $row): self {
