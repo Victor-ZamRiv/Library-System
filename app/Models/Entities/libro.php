@@ -1,6 +1,8 @@
 <?php
 namespace App\Models\Entities;
 use App\Core\baseEntity;
+use App\Models\Entities\Autor;
+use App\Models\Entities\Ejemplar;
 
 class Libro extends baseEntity{
     private ?int $id;
@@ -15,6 +17,7 @@ class Libro extends baseEntity{
     private ?string $observaciones;
     private ?int $anioPublicacion;
     private bool $activo;
+    private array $ejemplares = [];
 
     public function __construct(
         ?int $id,
@@ -55,6 +58,7 @@ class Libro extends baseEntity{
     public function getVolume(): ?string { return $this->volume; }
     public function getObservaciones(): ?string { return $this->observaciones; }
     public function getAnioPublicacion(): ?int { return $this->anioPublicacion; }
+    public function getEjemplares(): array { return $this->ejemplares; }
 
 
     // Setters
@@ -71,6 +75,19 @@ class Libro extends baseEntity{
             }
         }
         $this->autores = $autores;
+    }
+
+    public function setEjemplares(array $ejemplares): void {
+        foreach ($ejemplares as $ejemplar) {
+            if (!($ejemplar instanceof Ejemplar)) {
+                throw new \InvalidArgumentException("Todos deben ser instancias de Ejemplar");
+            }
+        }
+        $this->ejemplares = $ejemplares;
+    }
+
+    public function addEjemplar(Ejemplar $ejemplar): void {
+        $this->ejemplares[] = $ejemplar;
     }
 
 
