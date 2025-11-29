@@ -3,4 +3,7 @@
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 	<link rel="stylesheet" href="../../../public/css/main.css">
 	<link rel="stylesheet" href="../../../public/fontawesome/fontawesome-free-7.0.1-web/css/all.min.css">
+	<link rel="stylesheet" href="../../../public/css/notification.css">
+	<script src="../../../public/js/notification.js" defer></script>
+	
 </head>

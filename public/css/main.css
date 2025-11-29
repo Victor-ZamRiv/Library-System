@@ -12,20 +12,6 @@
 @import url('./material-design-iconic-font.min.css');
 
 
-/*
-	=== Temas disponibles ===
-	1 - theme-smoky-black.css
-	2 - theme-pastel-brown.css
-	3 - theme-paynes-grey.css
-	4 - theme-middle-purple.css
-	5 - theme-portland-orange.css
-	
-	Para usar el tema use @import fuera de este comentario, ejemplo:
-	@import url('./theme-pastel-brown.css');
-*/
-
-
-
 /*============ Estilos generales*/
 body, html{
 	background-color: #fff;
@@ -35,7 +21,7 @@ body, html{
 	padding: 0;
 	position: relative;
 	font-size: 16px;
-	font-family: 'RobotoCondensed';
+	font-family: 'sans-serif';
 	overflow: hidden;
 }
 .full-box{
@@ -49,7 +35,7 @@ body, html{
 	background-size: cover;
 }
 .text-titles{
-	font-family: 'RobotoCondensedLight'
+	font-family: 'sans-serif'
 }
 .breadcrumb-tabs{
 	margin-bottom: 15px; 
@@ -75,16 +61,19 @@ body, html{
 .dashboard-sideBar{
 	left: 0;
 	z-index: 2;
-	background: #054675b6;
+	background: #2c3e50;
 	border-right: 1px solid rgba(255, 255, 255, .7);
+	
 	overflow: hidden;
+	box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
 }
 .dashboard-sideBar-ct{
 	position: relative;
 	height: 100%;
 	background-color: rgba(42, 45, 52, 0.7);
-	padding: 0 10px;
-	padding-bottom: 30px;
+	background-color: transparent; 
+    padding: 0 10px;
+    padding-bottom: 30px;
 }
 .dashboard-sideBar-title,
 .dashboard-sideBar-title > i{
@@ -116,6 +105,7 @@ body, html{
 	border-radius: 100%;
 	display: block;
 	margin: 0 auto;
+	border: 3px solid #3498db;
 }
 .dashboard-sideBar-UserInfo ul{
 	margin-top: 15px;
@@ -132,7 +122,7 @@ body, html{
 	transition: all .3s ease-in-out;
 }
 .dashboard-sideBar-UserInfo ul > li > a:hover{
-	color: #7cc0ff;
+	color: #3498db; /* Azul de acento vibrante */
 }
 .dashboard-sideBar-Menu{
 	padding-top: 15px;
@@ -142,17 +132,13 @@ body, html{
 .dashboard-sideBar-Menu > li > ul > li,
 .dashboard-sideBar-Menu > li > ul > li > a{
 	line-height: 50px;
-	font-family: "RobotoCondensedLight";
+	font-family: "sans-serif";
 	display: block;
 	color: #fff;
 	text-decoration: none;
 	border-radius: 4px;
 	transition: all .3s ease-in-out;
 	position: relative;
-}
-.dashboard-sideBar-Menu > li > a > i.zmdi-caret-down{
-	line-height: 50px;
-	transition: all .3s ease-in-out; 
 }
 .dashboard-sideBar-Menu > li > a{
 	padding: 0 15px;
@@ -161,7 +147,8 @@ body, html{
 	outline: none;
 }
 .dashboard-sideBar-Menu > li > a:hover{
-	background-color: rgba(255, 255, 255, .2);
+	background-color: #34495e; 
+    color: #cceaff;
 }
 .dashboard-sideBar-Menu > li > ul{
 	position: relative;

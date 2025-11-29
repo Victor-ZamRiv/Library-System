@@ -18,11 +18,7 @@
 							<i class="fa-solid fa-user"></i>
 						</a>
 					</li>
-					<li>
-						<a href="../data/my-account.php" title="Mi cuenta">
-							<i class="fa-solid fa-gear"></i>
-						</a>
-					</li>
+					
 					<li>
 						<a href="../login/login.php" title="Salir del sistema">
 							<i class="fa-solid fa-door-open"></i>
@@ -39,11 +35,11 @@
 				</li>
 				<li>
 					<a href="#!" class="btn-sideBar-SubMenu">
-						Catálogo <i class="fa-solid fa-caret-down"></i>
+					<i class="fa-solid fa-book"></i> Catálogo <i class="fa-solid fa-caret-down"></i>
 					</a>
 					<ul class="list-unstyled full-box">
 						<li>
-							<a href="../category/category.php"> Categorías</a>
+							<a href="../category/category.php"> Areas de Conocimiento</a>
 						</li>
 						<li>
 							<a href="../catalog/catalog.php"> Libros</a>
@@ -56,45 +52,51 @@
 				</li>
 				<li>
 					<a href="#!" class="btn-sideBar-SubMenu">
-						 Préstamos <i class="fa-solid fa-caret-down"></i>
+						<i class="fa-solid fa-bookmark"></i> Préstamo <i class="fa-solid fa-caret-down"></i>
 					</a>
-					<ul class="list-unstyled full-box">
-						
+					<ul class="list-unstyled full-box">	
 						<li>
-							<a href="#"> Préstamo </a>
+							<a href="../loan/loan-list.php"> Lista de Préstamos </a>
 						</li>
-						
-					
-						
+						<li>
+							<a href="../loan/loan.php"> Nuevo Préstamo </a>
+						</li>
 						<li>
 							<a href="../fine/fine.php"> Multa</a>
 						</li>
-						
-					
 					</ul>
-					
 				</li>
-				
-				
+						
 				<li>
 					<a href="#!" class="btn-sideBar-SubMenu">
-						 Usuarios <i class="fa-solid fa-caret-down"></i>
+					<i class="fa-solid fa-user"></i> Usuarios <i class="fa-solid fa-caret-down"></i>
 					</a>
 					<ul class="list-unstyled full-box">
 						
 						<li>
-							<a href="../admin/admin.php"> Administradores</a>
+							<a href="../user/user.php"> Nuevo Usuario</a>
 						</li>
 						<li>
-							<a href="#"> Bibliotecarios</a>
-						</li>
-						<li>
-							<a href="#"> Jefes de sala</a>
+							<a href="../user/user-list.php"> Lista de Usuarios</a>
 						</li>
 						
+						
 					</ul>
+
+					<li>
+					<a href="#!" class="btn-sideBar-SubMenu">
+						<i class="fa-solid fa-gears"></i> Configuración <i class="fa-solid fa-caret-down"></i>
+					</a>
+					<ul class="list-unstyled full-box">
+						
 						<li>
-							<a href="#"> Lectores</a>
+							<a href="#">Salas </a>
+						</li>			
+					</ul>
+					
+				</li>
+						<li>
+							<a href="../reader/reader.php"> Lectores</a>
 						</li>
 					</ul>
 				</li>	

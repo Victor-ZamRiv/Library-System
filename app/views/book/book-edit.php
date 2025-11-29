@@ -7,48 +7,45 @@
 
     <?php include "../component/sidebar.php"; ?>
 
-    <!-- Content page-->
-    <section class="full-box dashboard-contentPage">
+    <section class="full-box dashboard-contentPage" ;>
 
-        <!-- NavBar -->
         <?php include "../component/navbar.php"; ?>
 
-        <!-- Content page -->
         <div class="container-fluid">
             <div class="page-header">
-                <h1 class="text-titles"><i class="fa-solid fa-book"></i> CATÁLOGO <small>EDITAR LIBRO</small></h1>
+                <h1 class="text-titles"><i class="fa-solid fa-book"></i> CATÁLOGO <small>Editar Libro</small></h1>
             </div>
         </div>
-            
+
         <div class="container-fluid">
             <div class="panel panel-info">
                 <div class="panel-heading">
-                    <h3 class="panel-title"><i class="zmdi zmdi-plus"></i> &nbsp; EDITAR </h3>
+                    <h3 class="panel-title"> &nbsp; EDITAR LIBRO</h3>
                 </div>
                 <div class="panel-body">
-                    <form>
+                    <form action="?" method="GET">
                         <fieldset>
-                            <legend><i class="zmdi zmdi-library"></i> &nbsp; Información del Libro</legend>
+                            <legend> &nbsp; Información del Libro</legend>
                             <div class="container-fluid">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
-                                            <label class="control-label">Sala </label>
-                                            <select name="sala-reg" class="form-control">
+                                            <label class="control-label"><span class="text-danger">*</span> Sala</label>
+                                            <select required name="sala-reg" id="salaSelect" class="form-control">
                                                 <option value="" disabled selected>Seleccione la Sala</option>
                                                 <option value="Sala General">Sala General</option>
                                                 <option value="Sala de Referencia">Sala de Referencia</option>
-                                                <option value="Hemeroteca">Hemeroteca</option>
+                                                <option value="Sala Estatal">Sala Estatal</option>
+                                                <option value="Sala Infantil">Sala Infantil</option>
                                             </select>
                                         </div>
                                     </div>
-                                        
-                                    <div class="col-xs-12 col-sm-6" >
+
+                                    <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
                                             <label class="control-label">Area infantil</label>
-                                            <select name="area-reg" class="form-control">
+                                            <select name="area-reg" id="areaSelect" class="form-control" disabled>
                                                 <option value="" disabled selected>Seleccione el Área <i class="fa-solid fa-arrow-down"></i></option>
-
                                                 <option class="" value="Cuento infantil">Cuento infantil</option>
                                                 <option class="" value="Educativo">Educativo</option>
                                                 <option class="" value="Ficción juvenil">Ficción juvenil</option>
@@ -56,10 +53,10 @@
                                         </div>
                                     </div>
 
-                                    
+
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
-                                            <label class="control-label" for="titulo-reg">Título:</label>
+                                            <label class="control-label" for="titulo-reg"><span class="text-danger">*</span> Título:</label>
                                             <input class="form-control mdl-textfield__input" type="text" name="titulo-reg" id="titulo-reg" maxlength="50"
                                                 pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s]+"
                                                 title="Solo se permiten letras, números y espacios"
@@ -75,15 +72,28 @@
 
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
-                                            <label class="control-label">Cota:</label>
-                                            <input pattern="[a-zA-Z0-9-]{1,30}" class="form-control" type="text" name="cota-reg" maxlength="30">
+                                            <label class="control-label" for="cota"><span class="text-danger">*</span> Cota:</label>
+                                            <input
+                                                pattern="[a-zA-Z0-9-]{1,30}"
+                                                class="form-control"
+                                                type="text"
+                                                name="cota-reg"
+                                                id="cota"
+                                                maxlength="30"
+                                                required
+                                                aria-describedby="cota-error"
+                                                onblur="validarCota(this)">
+
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="cota-error" style="display: none;">
+                                                <i class="fas fa-exclamation-circle"></i> La Cota debe tener máximo 30 caracteres y un formato válido (Ej: NH 234 o 120 A563).
+                                            </div>
                                         </div>
                                     </div>
 
 
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
-                                            <label class="control-label" for="autor-reg">Autor:</label>
+                                            <label class="control-label" for="autor-reg"><span class="text-danger">*</span> Autor:</label>
                                             <input type="text"
                                                 class="form-control"
                                                 name="autor-reg"
@@ -102,10 +112,10 @@
 
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
-                                            <label class="control-label" for="ciudad-reg">Ciudad:</label>
+                                            <label class="control-label" for="ciudad-reg"><span class="text-danger">*</span> Ciudad:</label>
 
                                             <input
-                                                pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{1,50}"
+                                                pattern="[a-zA-ZáéíóúÁÉÓÚñÑ ]{1,50}"
                                                 class="form-control"
                                                 type="text"
                                                 name="ciudad-reg"
@@ -126,18 +136,21 @@
 
                                     <div class="col-xs-12 col-sm-3">
                                         <div class="form-group label-floating">
-                                            <label class="control-label" for="edicion-reg">Edición:</label>
+                                            <label class="control-label" for="edicion-reg"><span class="text-danger">*</span> Edición:</label>
 
                                             <input
-                                                pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]{1,30}"
+                                                pattern="[0-9]{1,3}"
                                                 class="form-control"
                                                 type="text"
+                                                inputmode="numeric"
                                                 name="edicion-reg"
-                                                id="edicion-reg" maxlength="30"
-                                                required title="Solo se permiten letras, números y espacios, máximo 30 caracteres" aria-describedby="edicion-error" onblur="validarEdicion(this)">
-
+                                                id="edicion-reg" maxlength="3"
+                                                required title="Solo se permiten números (del 1 al 999)"
+                                                aria-describedby="edicion-error"
+                                                onblur="validarEdicion(this)"
+                                                onkeypress="return isNumberKey(event)">
                                             <div class="invalid-feedback bg-danger text-danger rounded-pill" id="edicion-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Por favor, ingrese un valor de Edición válido (letras, números y espacios, máximo 30 caracteres).
+                                                <i class="fas fa-exclamation-circle"></i> Por favor, ingrese un valor de Edición válido (solo números, Ejemplo: 2).
                                             </div>
                                         </div>
                                     </div>
@@ -145,43 +158,36 @@
 
                                     <div class="col-xs-12 col-sm-3">
                                         <div class="form-group label-floating">
-                                            <label class="control-label" for="year-reg">Año:</label>
+                                            <label class="control-label" for="year-reg"><span class="text-danger">*</span> Año:</label>
 
                                             <input
                                                 pattern="[0-9]{4}"
                                                 class="form-control"
                                                 type="text"
-                                                name="year-reg"
+                                                inputmode="numeric" name="year-reg"
                                                 id="year-reg" maxlength="4"
-                                                required title="Solo se permiten 4 dígitos numéricos" aria-describedby="year-error" onblur="validarAnio(this)">
-
+                                                required title="Solo se permiten 4 dígitos numéricos" aria-describedby="year-error"
+                                                onblur="validarAnio(this)"
+                                                onkeypress="return isNumberKey(event)">
                                             <div class="invalid-feedback bg-danger text-danger rounded-pill" id="year-error" style="display: none;">
                                                 <i class="fas fa-exclamation-circle"></i> Por favor, ingrese un Año válido de 4 dígitos (ejemplo: 2023).
                                             </div>
                                         </div>
                                     </div>
 
-
                                     <div class="col-xs-12 col-sm-3">
                                         <div class="form-group label-floating">
-                                            <label class="control-label" for="ejemplares-reg">Ejemplares:</label>
+                                            <label class="control-label" for="ejemplares-reg"><span class="text-danger">*</span> Ejemplares Total:</label>
 
                                             <input
-                                                pattern="[0-9]{1,5}"
                                                 class="form-control"
                                                 type="text"
-                                                inputmode="numeric"
                                                 name="ejemplares-reg"
                                                 id="ejemplares-reg"
-                                                maxlength="2"
-                                                required
-                                                title="Solo se permiten números, entre 1 y 2 dígitos"
-                                                aria-describedby="ejemplares-error"
-                                                onblur="validarEjemplares(this)"
-                                                onkeypress="return isNumberKey(event)">
-
+                                                readonly
+                                                value="1">
                                             <div class="invalid-feedback bg-danger text-danger rounded-pill" id="ejemplares-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Por favor, ingrese el número de ejemplares (entre 1 y 2 dígitos).
+                                                <i class="fas fa-exclamation-circle"></i> Este campo se actualiza automáticamente.
                                             </div>
                                         </div>
                                     </div>
@@ -189,7 +195,7 @@
 
                                     <div class="col-xs-12 col-sm-3">
                                         <div class="form-group label-floating">
-                                            <label class="control-label" for="paginas-reg">Páginas:</label>
+                                            <label class="control-label" for="paginas-reg"><span class="text-danger">*</span> Páginas:</label>
 
                                             <input
                                                 pattern="[0-9]{1,5}"
@@ -207,7 +213,7 @@
 
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
-                                            <label class="control-label" for="editorial-reg">Editorial:</label>
+                                            <label class="control-label" for="editorial-reg"><span class="text-danger">*</span> Editorial:</label>
 
                                             <input
                                                 pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{1,70}"
@@ -226,30 +232,84 @@
 
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
-                                            <label class="control-label" for="isbn-reg">ISBN:</label>
-
+                                            <label class="control-label" for="isbn"><span class="text-danger">*</span> ISBN:</label>
                                             <input
-                                                pattern="[0-9]{10,13}" class="form-control"
+                                                class="form-control"
                                                 type="text"
                                                 inputmode="numeric"
                                                 name="isbn-reg"
-                                                id="isbn-reg"
-                                                maxlength="13" required
-                                                title="Solo se permiten números, entre 10 y 13 dígitos" aria-describedby="isbn-error"
-                                                onblur="validarIsbn(this)"
-                                                onkeypress="return isNumberKey(event)">
-
+                                                id="isbn"
+                                                maxlength="17"
+                                                required
+                                                aria-describedby="isbn-error"
+                                                title="Ingrese un ISBN válido (10 o 13 caracteres)."
+                                                oninput="formatearIsbn(this)"
+                                                onblur="validarIsbn(this)">
                                             <div class="invalid-feedback bg-danger text-danger rounded-pill" id="isbn-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Por favor, ingrese un ISBN válido (solo números, 10 a 13 dígitos).
+                                                <i class="fas fa-exclamation-circle"></i> Por favor, ingrese un ISBN válido (10 o 13 caracteres).
                                             </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <hr>
+
+                        <fieldset>
+                            <legend><i class="fa-solid fa-copy"></i> &nbsp;Ejemplares</legend>
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <p class="text-right">
+                                            <button type="button" class="btn btn-primary btn-raised" id="add-ejemplar-btn" onclick="agregarNuevoEjemplar()">
+                                                <i class="fa-solid fa-plus"></i> Agregar Nuevo Ejemplar
+                                            </button>
+                                        </p>
+
+                                        <div class="table-responsive">
+                                            <table class="table table-hover text-center" id="ejemplares-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center">Numero Ejemplar</th>
+                                                        <th class="text-center">Estado</th>
+                                                        <th class="text-center">Último Préstamo</th>
+                                                        <th class="text-center">Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr data-ejemplar-id="ej-1">
+                                                        <td data-label="Código Ejemplar">EJ-1</td>
+                                                        <td data-label="Estado">
+                                                            <select name="estado_ejemplar_1" class="form-control" style="width: auto; display: inline-block;">
+                                                                <option value="Disponible" selected>Disponible</option>
+                                                                <option value="Prestado">Prestado</option>
+                                                                <option value="Dañado">Dañado</option>
+                                                                <option value="En Reparación">En Reparación</option>
+                                                            </select>
+                                                        </td>
+                                                        <td data-label="Último Préstamo">2025-10-15</td>
+                                                        <td data-label="Acciones">
+                                                            <button type="button" class="btn btn-danger btn-raised btn-xs" title="Descatalogar"
+                                                                onclick="mostrarModalEliminar(1, 'EJ-1', this)">
+                                                                <i class="fa-solid fa-trash-can"></i>
+                                                            </button>
+                                                            <input type="hidden" name="ejemplar_eliminado_1" id="ejemplar_eliminado_1" value="0">
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </fieldset>
+                        <hr>
                         <br>
                         <fieldset>
-                            <legend><i class="zmdi zmdi-comment-text-alt"></i> &nbsp; Observaciones</legend>
+                            <legend> &nbsp; Observaciones</legend>
                             <div class="container-fluid">
                                 <div class="row">
                                     <div class="col-xs-12">
@@ -281,14 +341,14 @@
                                     name="portada-reg"
                                     id="portada-reg"
                                     accept="image/jpeg, image/png"
-                                    required
+
                                     title="Seleccione un archivo de imagen (JPG o PNG) para la portada."
                                     aria-describedby="portada-error"
                                     onchange="validarPortada(this)"
                                     style="display: none;">
 
                                 <label for="portada-reg" class="btn btn-info btn-raised">
-                                    <i class="zmdi zmdi-upload"></i> &nbsp; Seleccionar Portada
+                                    &nbsp; Seleccionar Portada
                                 </label>
                                 <span id="file-name" style="margin-left: 10px; color: #555;">No se ha seleccionado archivo</span>
 
@@ -300,18 +360,19 @@
 
 
                         <p class="text-center " style="margin-top: 20px">
-                            <button type="submit" class="btn btn-success btn-raised btn-lg" style="background-color: #5cb85c; border-color: #5cb85c;"><i class="zmdi zmdi-floppy"></i> Enviar</button>
+                            <button type="submit" class="btn btn-success btn-raised btn-lg" style="background-color: #5cb85c; border-color: #5cb85c;" id="btn-enviar-libro"> Enviar</button>
                         </p>
                     </form>
+
                 </div>
             </div>
         </div>
 
     </section>
-
-    <!--====== Scripts -->
+    <?php include "../modal/confirmation_delete_copy.php"; ?>
     <?php include "../component/scripts.php"; ?>
     <script src="../../../public/js/validations/book/createvalidation.js"></script>
+    <script src="../../../public/js/modal/specimens.js"></script>
 </body>
 
 </html>

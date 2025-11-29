@@ -1,8 +1,4 @@
-<div class="container-fluid">
-	<div class="page-header">
-		<h1 class="text-titles"><i class="zmdi zmdi-account zmdi-hc-fw"></i> Multas </h1>
-	</div>
-</div>
+
 
 <div class="container-fluid">
 	<ul class="breadcrumb breadcrumb-tabs">

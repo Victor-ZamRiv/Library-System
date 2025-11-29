@@ -5,23 +5,30 @@
     <title>Gestión de Multas</title>
     <?php include "../component/heat.php" ?>
 </head>
+
 <body>
     <?php include "../component/sidebar.php" ?>
 
 
     <section class="full-box dashboard-contentPage">
+       
         <?php include "../component/navbar.php" ?>
+         <div class="container-fluid">
+            <div class="page-header">
+                <h1 class="text-titles"><i class="fa-solid fa-bookmark"></i> Multas <small>Nueva Multa</small></h1>
+            </div>
+        </div>
         <?php include "../component/finebar.php" ?>
 
         <div class="container-fluid">
             <div class="panel panel-info">
                 <div class="panel-heading">
-                    <h3 class="panel-title"><i class="zmdi zmdi-money-off"></i> &nbsp; GESTIÓN DE MULTAS</h3>
+                    <h3 class="panel-title"> &nbsp; CREAR MULTA</h3>
                 </div>
                 <div class="panel-body">
                     <form>
                         <fieldset>
-                            <legend><i class="zmdi zmdi-search"></i> &nbsp; Buscar Préstamo / Usuario</legend>
+                            <legend> &nbsp; Buscar Préstamo / Usuario</legend>
                             <div class="container-fluid">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-8">
@@ -39,7 +46,7 @@
                             </div>
                         </fieldset>
                         <br>
-                        
+
                         <fieldset>
                             <legend><i class="zmdi zmdi-alert-octagon"></i> &nbsp; Detalles de la Multa</legend>
                             <div class="container-fluid">
@@ -88,7 +95,7 @@
                                 </div>
                             </div>
                         </fieldset>
-                        
+
                         <p class="text-center" style="margin-top: 20px;">
                             <button type="submit" class="btn btn-info btn-raised btn-sm"><i class="zmdi zmdi-floppy"></i> Registrar Multa</button>
                         </p>
@@ -96,10 +103,11 @@
                 </div>
             </div>
         </div>
-        
+
     </section>
 
     <?php include "../component/scripts.php" ?>
 
 </body>
+
 </html>
