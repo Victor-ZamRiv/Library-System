@@ -2,7 +2,8 @@
 <html lang="es">
 
 <?php
-include "../component/heat.php";
+include BASE_PATH . '/app/views/component/heat.php';
+
 ?>
 
 <body>

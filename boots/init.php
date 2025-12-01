@@ -2,6 +2,9 @@
 require __DIR__ . '/autoload.php';
 $config = require __DIR__ . '/../config/config.php';
 
+define('BASE_PATH', dirname(__DIR__)); 
+
+
 $cfg = $config['db'];
 $dsn = "mysql:host={$cfg['host']};dbname={$cfg['dbname']};charset={$cfg['charset']}";
 $pdo = new PDO($dsn, $cfg['user'], $cfg['pass'], [
