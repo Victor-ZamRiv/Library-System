@@ -14,7 +14,7 @@ class LibroController extends BaseController {
 
     public function index(): string {
         $libros = $this->repo->all();
-        return $this->render('libros/index', ['libros' => $libros]);
+        return $this->render('catalog/catalog', ['libros' => $libros]);
     }
 
     public function show(): string {
