@@ -9,11 +9,11 @@ include BASE_PATH . '/app/views/component/heat.php';
 <body>
 
     <?php
-    include "../component/sidebar.php";
+    include BASE_PATH . '/app/views/component/sidebar.php';
     ?>
     <section class="full-box dashboard-contentPage">
         <?php
-        include "../component/navbar.php";
+        include BASE_PATH . '/app/views/component/navbar.php';
         ?>
         <div class="container-fluid ">
             <div class="page-header">
@@ -139,7 +139,7 @@ include BASE_PATH . '/app/views/component/heat.php';
     </section>
 
     <?php
-    include "../component/scripts.php";
+    include BASE_PATH . '/app/views/component/scripts.php';
     ?>
 </body>
 

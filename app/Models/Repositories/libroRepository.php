@@ -58,11 +58,49 @@ class LibroRepository extends BaseRepository {
             throw new \InvalidArgumentException("El libro ya tiene ID, no puede insertarse");
         }
 
-        $data = $libro->toArray();
-        $sql = "INSERT INTO {$this->table} (Titulo, Activo) VALUES (?, ?)";
-        $this->pdo->prepare($sql)->execute([$data['Titulo'], $data['Activo']]);
+        try{
+            $data = $libro->toArray();
+            $sql = "INSERT INTO {$this->table} (
+                                Titulo,
+                                ID_Editorial,
+                                ID_Area,
+                                Cota,
+                                ISBN,
+                                Paginas,
+                                Volume,
+                                Observaciones,
+                                Anio_Publicacion,
+                                Activo
+                            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        return (int)$this->pdo->lastInsertId();
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([
+                        $data['Titulo'] ?? '',
+                        $data['ID_Editorial'] ?? null,
+                        $data['ID_Area'] ?? null,
+                        $data['Cota'] ?? '',
+                        $data['ISBN'] ?? null,
+                        $data['Paginas'] ?? null,
+                        $data['Volume'] ?? null,
+                        $data['Observaciones'] ?? null,
+                        $data['Anio_Publicacion'] ?? null,
+                        isset($data['Activo']) ? (int)$data['Activo'] : 1
+                ]);
+            return (int)$this->pdo->lastInsertId();
+
+        } catch (\PDOException $e) {
+        throw new \RuntimeException("Error al insertar libro: " . $e->getMessage(), 0, $e);
+    }
+
+
+        
+
+    }
+
+    public function associateAutor(int $idLibro, int $idAutor): bool {
+        $sql = "INSERT INTO libros_autores (ID_Libro, ID_Autor) VALUES (?, ?)";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([$idLibro, $idAutor]);
     }
 
     public function update(Libro $libro): bool {

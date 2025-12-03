@@ -19,6 +19,14 @@ class EditorialRepository extends baseRepository{
         return (int)$this->pdo->lastInsertId();
     }
 
+    public function findByName(string $nombre): ?Editorial {
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE Nombre = ?");
+        $stmt->execute([$nombre]);
+        $row = $stmt->fetch();
+
+        return $row ? $this->mapToEntity($row) : null;
+    }
+
     protected function mapToEntity(array $row): object {
         return new Editorial(
             $row['ID_Editorial'] ?? null,

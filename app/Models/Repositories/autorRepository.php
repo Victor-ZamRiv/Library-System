@@ -33,6 +33,14 @@ class AutorRepository extends baseRepository{
         return array_map(fn($row) => Autor::fromArray($row), $rows);
     }
 
+    public function findByName(string $nombre): ?Autor {
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE Nombre = ?");
+        $stmt->execute([$nombre]);
+        $row = $stmt->fetch();
+
+        return $row ? $this->mapToEntity($row) : null;
+    }
+
     protected function mapToEntity(array $row): object {
         return new Autor(
             $row['ID_Autor'] ?? null,

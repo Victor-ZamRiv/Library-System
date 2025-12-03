@@ -30,7 +30,7 @@ class Libro extends baseEntity{
         ?string $observaciones = null,
         ?int $anioPublicacion = null,
         bool $activo = true,
-        ?string $volume = null
+        ?string $volumen = null
     ) {
         $this->id = $id;
         $this->setTitulo($titulo);
@@ -42,7 +42,7 @@ class Libro extends baseEntity{
         $this->observaciones = $observaciones;
         $this->anioPublicacion = $anioPublicacion;
         $this->activo = $activo;
-        $this->volume = $volume;
+        $this->volume = $volumen;
     }
 
     // Getters
