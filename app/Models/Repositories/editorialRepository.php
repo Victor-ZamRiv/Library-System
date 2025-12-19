@@ -28,10 +28,7 @@ class EditorialRepository extends baseRepository{
     }
 
     protected function mapToEntity(array $row): object {
-        return new Editorial(
-            $row['ID_Editorial'] ?? null,
-            $row['Nombre'] ?? ''
-        );
+        return Editorial::fromArray($row);
     }
 }
 ?>

@@ -42,11 +42,11 @@
 							<a href="../category/category.php"> Areas de Conocimiento</a>
 						</li>
 						<li>
-							<a href="../catalog/catalog.php"> Libros</a>
+							<a href="/library_system/libros"> Libros</a>
 						</li>
 						
 						<li>
-							<a href="../book/book.php"> Nuevo libro</a>
+							<a href="/library_system/libros/create"> Nuevo libro</a>
 						</li>
 					</ul>
 				</li>

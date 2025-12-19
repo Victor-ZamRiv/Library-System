@@ -40,21 +40,25 @@ class LibroController extends BaseController {
     }
 
     public function create(): string {
-        return $this->render('libros/create');
+        return $this->render('book/book', []);
     }
 
     public function store() {
-    try {
-        $libro = $this->libroRegistrationService->registrar($_POST, $_POST['autores'], $_POST['editorial'], (int)$_POST['numEjemplares']);
-        if ($libro) {
+        try {
+            $autores [] = $_POST['autores'];
+            $libro = $this->libroRegistrationService->registrar($_POST, $autores, $_POST['editorial'], (int)$_POST['ejemplares']);
             $this->redirect('/libros');
-        } else {
-            echo $this->render('libros/error', ['mensaje' => 'No se pudo registrar el libro']);
+            //var_dump($_POST);
+        /* if ($libro) {
+                $this->redirect('/libros');
+            } else {
+                echo $this->render('book/error', ['mensaje' => 'No se pudo registrar el libro']);
+            }*/
+        } catch (\RuntimeException $e) {
+            var_dump($libro);
+            echo $this->render('book/error', ['mensaje' => $e->getMessage()]);
         }
-    } catch (\RuntimeException $e) {
-        echo $this->render('libros/error', ['mensaje' => $e->getMessage()]);
     }
-}
 
     public function update(): string {
         $id = $this->input('id');

@@ -42,10 +42,7 @@ class AutorRepository extends baseRepository{
     }
 
     protected function mapToEntity(array $row): object {
-        return new Autor(
-            $row['ID_Autor'] ?? null,
-            $row['Nombre'] ?? ''
-        );
+        return Autor::fromArray($row);
     }
 }
 

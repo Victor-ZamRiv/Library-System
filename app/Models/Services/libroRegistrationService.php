@@ -40,16 +40,17 @@ class LibroRegistrationService {
         }
 
         // 2. Libro
+        $areaParaConstructor = ($datosLibro['id_sala'] === 'X') ? $datosLibro['id_area_color'] : null;
         $libro = new Libro(
             null,
-            $datosLibro['Titulo'],
+            $datosLibro['titulo'],
             $editorialId,
-            $datosLibro['ID_Area'] ?? null,
-            $datosLibro['Cota'] ?? '',
+            $areaParaConstructor,
+            $datosLibro['cota'] ?? '',
             $datosLibro['ISBN'] ?? null,
-            $datosLibro['Paginas'] ?? null,
-            $datosLibro['Observaciones'] ?? null,
-            $datosLibro['Anio_Publicacion'] ?? null,
+            $datosLibro['paginas'] ?? null,
+            $datosLibro['observaciones'] ?? null,
+            $datosLibro['year'] ?? null,
             true,
             $datosLibro['Volume'] ?? null
         );
@@ -58,14 +59,20 @@ class LibroRegistrationService {
         // 3. Autores
         foreach ($autores as $nombreAutor) {
             $autor = $this->autorRepo->findByName($nombreAutor);
+            
             if (!$autor) {
-                $autor = new Autor(null, $nombreAutor);
-                $autorId = $this->autorRepo->insert($autor);
-                $autor->setId($autorId);
+                $nuevoAutor = new Autor(null, $nombreAutor);
+                $autorId = $this->autorRepo->insert($nuevoAutor);
             } else {
                 $autorId = $autor->getId();
             }
-            $this->libroRepo->associateAutor($libroId, $autorId);
+
+            // Validación de seguridad antes de llamar a associateAutor
+            if ($autorId !== null) {
+                $this->libroRepo->associateAutor($libroId, $autorId);
+            } else {
+                throw new \Exception("No se pudo obtener el ID para el autor: " . $nombreAutor);
+            }
         }
 
         // 4. Ejemplares
@@ -82,8 +89,8 @@ class LibroRegistrationService {
 
     } catch (\RuntimeException $e) {
         // Error de repositorio (ej. fallo en insert)
-        error_log("Error al registrar libro: " . $e->getMessage());
-        throw new \RuntimeException("No se pudo registrar el libro", 0, $e);
+        //error_log("Error al registrar libro: " . $e->getMessage());
+        throw new \RuntimeException("error al registrar el libro" . $e->getMessage(), 0, $e);
         // return null;
     }
 }

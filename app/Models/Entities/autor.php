@@ -11,7 +11,7 @@
             $this->nombre = $nombre;
         }
 
-        public function setId(?int $id): void {
+        public function setIdAutor(?int $id): void {
             $this->id = $id;
         }
 
@@ -26,14 +26,6 @@
         public function setNombre(string $nombre): void {
             $this->nombre = $nombre;
         }
-
-        public static function fromArray(array $row): self {
-            return new self(
-                $data['ID_Autor'] ?? null,
-                $data['Nombre'] ?? ''
-            );
-        }
-
 
 
     }

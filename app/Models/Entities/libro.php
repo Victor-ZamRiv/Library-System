@@ -8,6 +8,7 @@ class Libro extends baseEntity{
     private ?int $id;
     private string $titulo;
     private array $autores = [];
+    private ?string $idSala;
     private ?int $idEditorial;
     private ?string $idArea;
     private string $cota;
@@ -20,9 +21,10 @@ class Libro extends baseEntity{
     private array $ejemplares = [];
 
     public function __construct(
-        ?int $id,
-        string $titulo,
+        ?int $id = null,
+        string $titulo = '',
         ?int $idEditorial = null,
+        ?string $idSala = null,
         ?string $idArea = null,
         string $cota = '',
         ?string $isbn = null,
@@ -33,9 +35,18 @@ class Libro extends baseEntity{
         ?string $volumen = null
     ) {
         $this->id = $id;
-        $this->setTitulo($titulo);
+        if ($titulo !== '') {
+            $this->setTitulo($titulo);
+        } else {
+            $this->titulo = '';
+        }
         $this->idEditorial = $idEditorial;
-        $this->idArea = $idArea;
+        $this->idSala = $idSala;
+        if ($this->idSala === 'X') {
+            $this->idArea = $idArea;
+        } else {
+            $this->idArea = $this->extraerAreaDeCota($cota);
+        }
         $this->cota = $cota;
         $this->isbn = $isbn;
         $this->paginas = $paginas;
@@ -62,7 +73,42 @@ class Libro extends baseEntity{
 
 
     // Setters
-    public function setTitulo(string $titulo): void {
+
+    public function setCota(string $cota): void {
+    $this->cota = trim($cota);
+    
+    // Si no es sala infantil (X), extraemos el área automáticamente
+        if ($this->idSala !== 'X' && !empty($this->cota)) {
+            $this->idArea = $this->extraerAreaDeCota($this->cota);
+        }
+    }
+
+    private function extraerAreaDeCota(string $cota): string {
+        // Buscamos el primer separador (punto o espacio)
+        $pos = strpos($cota, '.') ?: strpos($cota, ' ');
+        
+        if ($pos === false) return $cota; // Si no hay separador, la cota misma es el código
+
+        $codigo = substr($cota, 0, $pos);
+
+        // Lógica Dewey: Si empieza por número, el área suele ser la centena (ej: 823 -> 820)
+        if (is_numeric($codigo[0]) && strlen($codigo) >= 3) {
+            // Transformamos el último dígito en 0 para normalizar el área
+            $codigo[strlen($codigo) - 1] = '0';
+        }
+
+        return $codigo;
+    }
+
+    public function setIdSala(string $idSala): void {
+        $this->idSala = $idSala;
+        // Si cambiamos a una sala que no es X, recalculamos el área por si ya hay cota
+        if ($idSala !== 'X' && !empty($this->cota)) {
+            $this->idArea = $this->extraerAreaDeCota($this->cota);
+        }
+    }
+
+    public function setTitulo(?string $titulo): void {
         $titulo = trim($titulo);
         if ($titulo === '') throw new \InvalidArgumentException('El título no puede estar vacío');
         $this->titulo = $titulo;
@@ -98,7 +144,7 @@ class Libro extends baseEntity{
 
 
     // Creación de una entidad Libro a partir de un array
-    public static function fromArray(array $row): self {
+    /*public static function fromArray(array $row): self {
         return new self(
             isset($row['ID_Libro']) ? (int)$row['ID_Libro'] : null,
             $row['Titulo'] ?? '',
@@ -111,5 +157,5 @@ class Libro extends baseEntity{
             isset($row['Anio_Publicacion']) ? (int)$row['Anio_Publicacion'] : null,
             isset($row['Activo']) ? (bool)$row['Activo'] : true
         );
-    }
+    }*/
 }

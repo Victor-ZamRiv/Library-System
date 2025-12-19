@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
-<?php include "../component/heat.php"; ?>
+<?php include BASE_PATH . "/app/views/component/heat.php"; ?>
 
 
 <body>
 
-    <?php include "../component/sidebar.php"; ?>
+    <?php include BASE_PATH . '/app/views/component/sidebar.php'; ?>
 
     <!-- Content page-->
     <section class="full-box dashboard-contentPage">
 
         <!-- NavBar -->
-        <?php include "../component/navbar.php"; ?>
+        <?php include BASE_PATH . '/app/views/component/navbar.php'; ?>
 
         <!-- Content page -->
         <div class="container-fluid">
@@ -26,7 +26,7 @@
                     <h3 class="panel-title">&nbsp; REGISTRAR NUEVO LIBRO</h3>
                 </div>
                 <div class="panel-body">
-                    <form action="#" method="GET" enctype="multipart/form-data" id="form-registro-libro">
+                    <form action="/library_system/libros" method="POST" enctype="multipart/form-data" id="form-registro-libro">
                         <fieldset>
                             <legend> &nbsp; Información del Libro</legend>
                             <div class="container-fluid">
@@ -36,10 +36,10 @@
                                             <label class="control-label"><span class="text-danger">*</span> Sala</label>
                                             <select required name="sala-reg" id="salaSelect" class="form-control">
                                                 <option value="" disabled selected>Seleccione la Sala</option>
-                                                <option value="Sala General">Sala General</option>
-                                                <option value="Sala de Referencia">Sala de Referencia</option>
-                                                <option value="Sala Estatal">Sala Estatal</option>
-                                                <option value="Sala Infantil">Sala Infantil</option>
+                                                <option value="G">Sala General</option>
+                                                <option value="R">Sala de Referencia</option>
+                                                <option value="SE">Sala Estatal</option>
+                                                <option value="X">Sala Infantil</option>
                                             </select>
                                         </div>
                                     </div>
@@ -60,7 +60,7 @@
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
                                             <label class="control-label" for="titulo-reg"><span class="text-danger">*</span> Título:</label>
-                                            <input class="form-control mdl-textfield__input" type="text" name="titulo-reg" id="titulo-reg" maxlength="50"
+                                            <input class="form-control mdl-textfield__input" type="text" name="titulo" id="titulo-reg" maxlength="50"
                                                 pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s]+"
                                                 title="Solo se permiten letras, números y espacios"
                                                 required
@@ -80,7 +80,7 @@
                                                 pattern="[a-zA-Z0-9-]{1,30}"
                                                 class="form-control"
                                                 type="text"
-                                                name="cota-reg"
+                                                name="cota"
                                                 id="cota"
                                                 maxlength="30"
                                                 required
@@ -99,7 +99,7 @@
                                             <label class="control-label" for="autor-reg"><span class="text-danger">*</span> Autor:</label>
                                             <input type="text"
                                                 class="form-control"
-                                                name="autor-reg"
+                                                name="autores"
                                                 id="autor-reg"
                                                 maxlength="50"
                                                 pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios"
@@ -121,7 +121,7 @@
                                                 pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{1,50}"
                                                 class="form-control"
                                                 type="text"
-                                                name="ciudad-reg"
+                                                name="ciudad"
                                                 id="ciudad-reg"
                                                 maxlength="20"
                                                 required
@@ -146,7 +146,7 @@
                                                 class="form-control"
                                                 type="text"
                                                 inputmode="numeric"
-                                                name="edicion-reg"
+                                                name="edicion"
                                                 id="edicion-reg" maxlength="3"
                                                 required title="Solo se permiten números (del 1 al 999)"
                                                 aria-describedby="edicion-error"
@@ -166,7 +166,7 @@
                                                 pattern="[0-9]{4}"
                                                 class="form-control"
                                                 type="text"
-                                                inputmode="numeric" name="year-reg"
+                                                inputmode="numeric" name="year"
                                                 id="year-reg" maxlength="4"
                                                 required title="Solo se permiten 4 dígitos numéricos" aria-describedby="year-error"
                                                 onblur="validarAnio(this)"
@@ -186,7 +186,7 @@
                                                 class="form-control"
                                                 type="text"
                                                 inputmode="numeric"
-                                                name="ejemplares-reg"
+                                                name="ejemplares"
                                                 id="ejemplares-reg"
                                                 maxlength="2"
                                                 required
@@ -209,7 +209,7 @@
                                             <input
                                                 pattern="[0-9]{1,5}"
                                                 class="form-control"
-                                                type="text" inputmode="numeric" name="paginas-reg"
+                                                type="text" inputmode="numeric" name="paginas"
                                                 id="paginas-reg" maxlength="4"
                                                 required title="Solo se permiten números, entre 1 y 4 dígitos" aria-describedby="paginas-error" onblur="validarPaginas(this)" onkeypress="return isNumberKey(event)">
 
@@ -228,7 +228,7 @@
                                                 pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{1,70}"
                                                 class="form-control"
                                                 type="text"
-                                                name="editorial-reg"
+                                                name="editorial"
                                                 id="editorial-reg" maxlength="70"
                                                 required title="Solo se permiten letras y espacios, máximo 70 caracteres" aria-describedby="editorial-error" onblur="validarEditorial(this)">
 
@@ -246,7 +246,7 @@
                                                 class="form-control"
                                                 type="text"
                                                 inputmode="numeric"
-                                                name="isbn-reg"
+                                                name="ISBN"
                                                 id="isbn"
                                                 maxlength="17"
                                                 required
@@ -274,7 +274,7 @@
                                             <label class="control-label" for="observaciones-reg">Observaciones:</label>
 
                                             <textarea
-                                                name="observaciones-reg"
+                                                name="observaciones"
                                                 class="form-control"
                                                 id="observaciones-reg" rows="4"
                                                 maxlength="400" title="Solo se permiten letras, números y espacios. Máximo 400 caracteres." aria-describedby="observaciones-error" onblur="validarObservaciones(this)"></textarea>
@@ -326,14 +326,14 @@
 
     </section>
 
-    <?php include "../modal/confirmation-new-book.php" ?>
+    <?php //include "../modal/confirmation-new-book.php" ?>
 
 
     <!--====== Scripts -->
 
-    <?php include "../component/scripts.php" ?>
-    <script src="../../../public/js/validations/book/createvalidation.js"></script>
-    <script src="../../../public/js/modal/confirmation-new-book.js"></script>
+    <?php BASE_PATH . '/app/views/component/scripts.php' ?>
+    <script src="/Library_System/public/js/validations/book/createvalidation.js"></script>
+    <script src="/Library_System/public/js/modal/confirmation-new-book.js"></script>
 
 
 </body>

@@ -40,4 +40,9 @@ abstract class BaseRepository {
     }
 
     abstract protected function mapToEntity(array $row): object;
+
+    public function getPdo(): PDO {
+        return $this->pdo;
+    }
+
 }

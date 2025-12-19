@@ -5,7 +5,7 @@ class BaseController {
     protected function render(string $viewPath, array $data = []): string {
         extract($data);
         ob_start();
-        require __DIR__ . '/../views/' . $viewPath . '.php';
+        require VIEW_PATH . $viewPath . '.php';
         return ob_get_clean();
     }
 

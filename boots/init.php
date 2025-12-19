@@ -2,7 +2,8 @@
 require __DIR__ . '/autoload.php';
 $config = require __DIR__ . '/../config/config.php';
 
-define('BASE_PATH', dirname(__DIR__)); 
+define('BASE_PATH', dirname(__DIR__));
+define('VIEW_PATH', BASE_PATH . '/app/views/'); 
 
 
 $cfg = $config['db'];

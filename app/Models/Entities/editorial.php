@@ -27,12 +27,6 @@ class Editorial extends baseEntity{
         $this->nombre = $nombre;
     }
 
-    public static function fromArray(array $data): self {
-        return new self(
-            $data['ID_Editorial'] ?? null,
-            $data['Nombre'] ?? ''
-        );
-    }
 }
 
 ?>

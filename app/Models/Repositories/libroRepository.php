@@ -60,30 +60,33 @@ class LibroRepository extends BaseRepository {
 
         try{
             $data = $libro->toArray();
+            var_dump($data);
             $sql = "INSERT INTO {$this->table} (
                                 Titulo,
                                 ID_Editorial,
                                 ID_Area,
+                                ID_Sala,
                                 Cota,
                                 ISBN,
                                 Paginas,
-                                Volume,
+                                Volumen,
                                 Observaciones,
                                 Anio_Publicacion,
                                 Activo
-                            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute([
-                        $data['Titulo'] ?? '',
+                        $data['titulo'] ?? '',
                         $data['ID_Editorial'] ?? null,
                         $data['ID_Area'] ?? null,
-                        $data['Cota'] ?? '',
+                        $data['ID_Sala'] ?? 'G',
+                        $data['cota'] ?? '',
                         $data['ISBN'] ?? null,
                         $data['Paginas'] ?? null,
-                        $data['Volume'] ?? null,
+                        $data['Volumen'] ?? null,
                         $data['Observaciones'] ?? null,
-                        $data['Anio_Publicacion'] ?? null,
+                        $data['Year'] ?? null,
                         isset($data['Activo']) ? (int)$data['Activo'] : 1
                 ]);
             return (int)$this->pdo->lastInsertId();
