@@ -28,9 +28,9 @@ class Libro extends baseEntity{
         ?string $idArea = null,
         string $cota = '',
         ?string $isbn = null,
-        ?int $paginas = null,
+        ?int $paginas = 0,
         ?string $observaciones = null,
-        ?int $anioPublicacion = null,
+        $anio = null,
         bool $activo = true,
         ?string $volumen = null
     ) {
@@ -49,9 +49,9 @@ class Libro extends baseEntity{
         }
         $this->cota = $cota;
         $this->isbn = $isbn;
-        $this->paginas = $paginas;
+        $this->setPaginas($paginas);
         $this->observaciones = $observaciones;
-        $this->anioPublicacion = $anioPublicacion;
+        $this->setAnioPublicacion($anio);
         $this->activo = $activo;
         $this->volume = $volumen;
     }
@@ -121,6 +121,18 @@ class Libro extends baseEntity{
             }
         }
         $this->autores = $autores;
+    }
+
+    public function setPaginas($paginas): void {
+        $this->paginas = (int) $paginas;
+    }
+
+    public function setAnioPublicacion($anio): void {
+        if (empty($anio)) {
+            $this->anioPublicacion = null;
+        } else {
+            $this->anioPublicacion = (int) $anio;
+        }
     }
 
     public function setEjemplares(array $ejemplares): void {

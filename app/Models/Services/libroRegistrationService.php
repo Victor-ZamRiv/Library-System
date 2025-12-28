@@ -40,7 +40,7 @@ class LibroRegistrationService {
         }
 
         // 2. Libro
-        $areaParaConstructor = ($datosLibro['id_sala'] === 'X') ? $datosLibro['id_area_color'] : null;
+        $areaParaConstructor = ($datosLibro['sala_reg'] === 'X') ? $datosLibro['id_area_color'] : null;
         $libro = new Libro(
             null,
             $datosLibro['titulo'],

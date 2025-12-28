@@ -47,7 +47,7 @@
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
                                             <label class="control-label">Area infantil</label>
-                                            <select name="area-reg" id="areaSelect" class="form-control" disabled>
+                                            <select name="id_area_color" id="areaSelect" class="form-control" disabled>
                                                 <option value="" disabled selected>Seleccione el Área <i class="fa-solid fa-arrow-down"></i></option>
                                                 <option class="" value="Cuento infantil">Cuento infantil</option>
                                                 <option class="" value="Educativo">Educativo</option>
