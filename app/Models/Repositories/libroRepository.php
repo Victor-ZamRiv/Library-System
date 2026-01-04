@@ -78,16 +78,16 @@ class LibroRepository extends BaseRepository {
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute([
                         $data['titulo'] ?? '',
-                        $data['ID_Editorial'] ?? null,
-                        $data['ID_Area'] ?? null,
-                        $data['ID_Sala'] ?? 'G',
+                        $data['idEditorial'] ?? null,
+                        $data['idArea'] ?? null,
+                        $data['idSala'] ?? 'G',
                         $data['cota'] ?? '',
-                        $data['ISBN'] ?? null,
-                        $data['Paginas'] ?? null,
-                        $data['Volumen'] ?? null,
-                        $data['Observaciones'] ?? null,
-                        $data['Year'] ?? null,
-                        isset($data['Activo']) ? (int)$data['Activo'] : 1
+                        $data['isbn'] ?? null,
+                        $data['paginas'] ?? null,
+                        $data['volumen'] ?? null,
+                        $data['observaciones'] ?? null,
+                        $data['anioPublicacion'] ?? null,
+                        isset($data['activo']) ? (int)$data['activo'] : 1
                 ]);
             return (int)$this->pdo->lastInsertId();
 

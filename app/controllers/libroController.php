@@ -48,7 +48,7 @@ class LibroController extends BaseController {
             $autores [] = $_POST['autores'];
             $libro = $this->libroRegistrationService->registrar($_POST, $autores, $_POST['editorial'], (int)$_POST['ejemplares']);
             $this->redirect('/libros');
-            //var_dump($_POST);
+            var_dump($_POST);
         /* if ($libro) {
                 $this->redirect('/libros');
             } else {

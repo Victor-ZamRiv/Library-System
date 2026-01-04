@@ -28,7 +28,7 @@ class Libro extends baseEntity{
         ?string $idArea = null,
         string $cota = '',
         ?string $isbn = null,
-        ?int $paginas = 0,
+        $paginas = 0,
         ?string $observaciones = null,
         $anio = null,
         bool $activo = true,
