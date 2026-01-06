@@ -11,7 +11,7 @@ class Editorial extends baseEntity{
         $this->nombre = $nombre;
     }
 
-    public function setId(?int $id): void {
+    public function setIDEditorial(?int $id): void {
         $this->id = $id;
     }
 

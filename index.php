@@ -23,6 +23,6 @@ $container = [
     )
 ];
 
-$uri = str_replace('/library_system', '', $_SERVER['REQUEST_URI']);
+$uri = str_ireplace(BASE_URL, '', $_SERVER['REQUEST_URI']);
 
 $router->dispatch($uri, $_SERVER['REQUEST_METHOD'], $container);
