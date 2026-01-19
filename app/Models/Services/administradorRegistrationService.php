@@ -23,10 +23,8 @@ class AdministradorRegistrationService {
         $this->pdo = $pdo;
     }
 
-    /**
-     * Registra un administrador vinculado a una persona.
-     * Si la persona ya existe, se reutiliza su ID.
-     */
+    // Registra un administrador vinculado a una persona.
+    // Si la persona ya existe, se reutiliza su ID.
     public function registrar(Persona $persona, Administrador $admin): int {
         try {
             $this->pdo->beginTransaction();
