@@ -5,7 +5,7 @@
 					<a href="#!" class="btn-menu-dashboard"><i class="fa-solid fa-bars"></i></a>
 				</li>
 				<li>
-					<a href="../search/search.php" class="btn-search">
+					<a href= "<?php echo VIEW_PATH . 'search/search.php'; ?>" class="btn-search">
 						<i class="fa-solid fa-magnifying-glass"></i>
 					</a>
 				</li>

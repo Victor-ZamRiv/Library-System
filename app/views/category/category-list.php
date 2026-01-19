@@ -8,33 +8,20 @@
 <!-- sidebar -->
 	<?php
 	include "../component/sidebar.php";
-	?>
+	?> 
 
 	<!-- Content page-->
 	<section class="full-box dashboard-contentPage">
 		<!-- NavBar -->
-		<?php include "../component/navbar.php" ?>
+		<?php include "../component/navbar.php" ?> 
 		<!-- Content page -->
 		<div class="container-fluid">
 			<div class="page-header">
-			  <h1 class="text-titles"><i class="zmdi zmdi-labels zmdi-hc-fw"></i> Administración <small>CATEORÍAS</small></h1>
+			  <h1 class="text-titles"><i class="fa-solid fa-book"></i> Catálogo <small>Lista de Area de Conocimiento</small></h1>
 			</div>
 		</div>
 
-		<div class="container-fluid">
-			<ul class="breadcrumb breadcrumb-tabs">
-			  	<li>
-			  		<a href="category.php" class="btn btn-info">
-			  			<i class="zmdi zmdi-plus"></i> &nbsp; NUEVA CATEORÍA
-			  		</a>
-			  	</li>
-			  	<li>
-			  		<a href="category-list.php" class="btn btn-success">
-			  			<i class="zmdi zmdi-format-list-bulleted"></i> &nbsp; LISTA DE CATEORÍAS
-			  		</a>
-			  	</li>
-			</ul>
-		</div>
+		<?php include '../component/categorybar.php'; ?>
 
 		<!-- Panel listado de categorias -->
 		<div class="container-fluid">
@@ -47,7 +34,7 @@
 						<table class="table table-hover text-center">
 							<thead>
 								<tr>
-									<th class="text-center">Nº</th>
+									
 									<th class="text-center">CÓDIGO</th>
 									<th class="text-center">NOMBRE</th>
 									<th class="text-center">ACTUALIZAR</th>
@@ -56,39 +43,23 @@
 							</thead>
 							<tbody>
 								<tr>
-									<td>1</td>
+									
 									<td>700</td>
 									<td>Desarrollo web</td>
 									<td>
 										<a href="#!" class="btn btn-success btn-raised btn-xs">
-											<i class="zmdi zmdi-refresh"></i>
+											<i class="fa-solid fa-pencil"></i>
 										</a>
 									</td>
 									<td>
 										<form>
-											<button type="submit" class="btn btn-danger btn-raised btn-xs">
-												<i class="zmdi zmdi-delete"></i>
+											<button type="#" class="btn btn-danger btn-raised btn-xs">
+												<i class="fa-solid fa-ban"></i>
 											</button>
 										</form>
 									</td>
 								</tr>
-								<tr>
-									<td>2</td>
-									<td>900</td>
-									<td>Diseño gráfico</td>
-									<td>
-										<a href="#!" class="btn btn-success btn-raised btn-xs">
-											<i class="zmdi zmdi-refresh"></i>
-										</a>
-									</td>
-									<td>
-										<form>
-											<button type="submit" class="btn btn-danger btn-raised btn-xs">
-												<i class="zmdi zmdi-delete"></i>
-											</button>
-										</form>
-									</td>
-								</tr>
+								
 							</tbody>
 						</table>
 					</div>

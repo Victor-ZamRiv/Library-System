@@ -1,10 +1,12 @@
 <?php
 namespace App\Models\Repositories;
+
+use App\Contracts\IEditorialRepository;
 use App\Core\baseRepository;
 use App\Models\Entities\Editorial;
 use PDO;
 
-class EditorialRepository extends baseRepository{
+class EditorialRepository extends baseRepository implements IEditorialRepository{
     public function __construct(PDO $pdo){
         parent::__construct($pdo, 'editoriales', 'ID_Editorial');
     }
@@ -17,6 +19,11 @@ class EditorialRepository extends baseRepository{
         $stmt = $this->pdo->prepare("INSERT INTO {$this->table} (Nombre) VALUES (?)");
         $stmt->execute([$editorial->getNombre()]);
         return (int)$this->pdo->lastInsertId();
+    }
+
+    public function find(int $id): ?Editorial {
+        $row = $this->fetchById($id);
+        return $row ? $this->mapToEntity($row) : null;
     }
 
     public function findByName(string $nombre): ?Editorial {

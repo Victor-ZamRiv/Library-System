@@ -5,20 +5,23 @@ use App\Models\Entities\Autor;
 use App\Models\Entities\Ejemplar;
 
 class Libro extends baseEntity{
-    private ?int $id;
+    private ?int $idLibro;
     private string $titulo;
     private array $autores = [];
     private ?string $idSala;
     private ?int $idEditorial;
     private ?string $idArea;
     private string $cota;
+    private ?int $edicion;
+    private ?string $ciudad;
     private ?string $isbn;
     private ?int $paginas;
-    private ?string $volume;
+    private ?string $volumen;
     private ?string $observaciones;
     private ?int $anioPublicacion;
     private bool $activo;
     private array $ejemplares = [];
+    private ?Editorial $editorial = null;
 
     public function __construct(
         ?int $id = null,
@@ -27,14 +30,16 @@ class Libro extends baseEntity{
         ?string $idSala = null,
         ?string $idArea = null,
         string $cota = '',
+        $edicion = 0,
         ?string $isbn = null,
+        ?string $ciudad = null,
         $paginas = 0,
         ?string $observaciones = null,
         $anio = null,
         bool $activo = true,
         ?string $volumen = null
     ) {
-        $this->id = $id;
+        $this->idLibro = $id;
         if ($titulo !== '') {
             $this->setTitulo($titulo);
         } else {
@@ -48,28 +53,34 @@ class Libro extends baseEntity{
             $this->idArea = $this->extraerAreaDeCota($cota);
         }
         $this->cota = $cota;
+        $this->setEdicion($edicion);
         $this->isbn = $isbn;
+        $this->ciudad = $ciudad;
         $this->setPaginas($paginas);
         $this->observaciones = $observaciones;
         $this->setAnioPublicacion($anio);
         $this->activo = $activo;
-        $this->volume = $volumen;
+        $this->volumen = $volumen;
     }
 
     // Getters
-    public function getId(): ?int { return $this->id; }
+    public function getIdLibro(): ?int { return $this->idLibro; }
     public function getCota(): string { return $this->cota; }
     public function getTitulo(): string { return $this->titulo; }
     public function getAutores(): array { return $this->autores; }
     public function getIsbn(): ?string { return $this->isbn; }
     public function isActivo(): bool { return $this->activo; }
     public function getIdEditorial(): ?int { return $this->idEditorial; }
+    public function getIdSala(): ?string { return $this->idSala; }
+    public function getEdicion(): ?int { return $this->edicion; }
+    public function getCiudad(): ?string { return $this->ciudad; }
     public function getIdArea(): ?string { return $this->idArea; }
     public function getPaginas(): ?int { return $this->paginas; }
-    public function getVolume(): ?string { return $this->volume; }
+    public function getVolumen(): ?string { return $this->volumen; }
     public function getObservaciones(): ?string { return $this->observaciones; }
     public function getAnioPublicacion(): ?int { return $this->anioPublicacion; }
     public function getEjemplares(): array { return $this->ejemplares; }
+    public function getEditorial(): ?Editorial { return $this->editorial; }
 
 
     // Setters
@@ -125,6 +136,30 @@ class Libro extends baseEntity{
 
     public function setPaginas($paginas): void {
         $this->paginas = (int) $paginas;
+    }
+
+    public function setEdicion($edicion): void{
+        $this->edicion = (int) $edicion;
+    }
+
+    public function setVolumen(?string $volumen): void {
+        $this->volumen = $volumen !== null ? trim($volumen) : null;
+    }
+
+    public function setCiudad(?string $ciudad): void {
+        $this->ciudad = $ciudad !== null ? trim($ciudad) : null;
+    }
+
+    public function setObservaciones(?string $observaciones): void {
+        $this->observaciones = $observaciones !== null ? trim($observaciones) : null;
+    }
+
+    public function setIdEditorial(?int $idEditorial): void {
+        $this->idEditorial = $idEditorial;
+    }
+
+    public function setEditorial(?Editorial $editorial): void {
+        $this->editorial = $editorial;
     }
 
     public function setAnioPublicacion($anio): void {

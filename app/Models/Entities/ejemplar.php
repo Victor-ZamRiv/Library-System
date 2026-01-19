@@ -2,7 +2,7 @@
 namespace App\Models\Entities;
 use App\Core\baseEntity;
 
-class Ejemplar {
+class Ejemplar extends baseEntity {
     private int $id;
     private int $numeroEjemplar;
     private string $estado; // Disponible, Prestado, Descatalogado, En Reparacion
@@ -25,6 +25,7 @@ class Ejemplar {
     public function getLibroId(): int { return $this->libroId; }
 
     // Setters
+    public function setNumeroEjemplar(int $numeroEjemplar): void { $this->numeroEjemplar = $numeroEjemplar; }
     public function setEstado(string $estado): void { $this->estado = $estado; }
     public function setActivo(bool $activo): void { $this->activo = $activo; }
 

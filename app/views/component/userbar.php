@@ -8,13 +8,9 @@
 		</li>
 		<li>
 			<a href="user-list.php" class="btn btn-success">
-				<i class="fa-solid fa-list-ul"></i> &nbsp; LISTA DE USUARIOS
+				<i class="fa-solid fa-list-ul"></i> &nbsp; LISTA DE USUARIOs
 			</a>
 		</li>
-		<li>
-			<a href="user-search.php" class="btn btn-primary">
-				<i class="fa-solid fa-magnifying-glass"></i> &nbsp; BUSCAR USUARIO
-			</a>
-		</li>
+		
 	</ul>
 </div>

@@ -2,85 +2,81 @@
 <html lang="es">
 
 <?php
-include BASE_PATH . '/app/views/component/heat.php';
-
+include VIEW_PATH . '/component/heat.php';
 ?>
 
 <body>
 
     <?php
-    include BASE_PATH . '/app/views/component/sidebar.php';
+    include VIEW_PATH . '/component/sidebar.php';
     ?>
     <section class="full-box dashboard-contentPage">
         <?php
-        include BASE_PATH . '/app/views/component/navbar.php';
+        include VIEW_PATH . '/component/navbar.php';
         ?>
         <div class="container-fluid ">
             <div class="page-header">
-                <h1 class="text-titles"><i class="fa-solid fa-book"></i> Catálogo <small> Libros</small></h1>
+                 <h1 class="text-titles"><i class="fa-solid fa-book"></i> Catálogo <small> Libros</small></h1>
             </div>
         </div>
 
         <div class="container-fluid text-center">
-            <div class="d-inline-block" style="max-width: 1200px; width: 100%;">
-                <div class="card shadow-lg p-2 mb-5 bg-white rounded">
-                    <div class="card-body">
+    <div class="d-inline-block" style="max-width: 1200px; width: 100%;">
+    <div class="card shadow-lg p-2 mb-5 bg-white rounded">
+        <div class="card-body">
+            <div class="row justify-content-center mb-2 g-3 align-items-center">
 
-                        <form action="/buscar" method="GET">
-                            <div class="row justify-content-center mb-2 g-3 align-items-center">
+                <div class="col-12 col-md-5 col-lg-4">
+                    <input type="text" class="form-control" placeholder="Buscar libro, autor o tema...">
+                </div>
 
-                                <div class="col-12 col-md-5 col-lg-4">
-                                    <input type="text" class="form-control" placeholder="Buscar libro, autor o tema..." name="consulta">
-                                </div>
+                <div class="col-12 col-md-5 col-lg-5 d-flex justify-content-center justify-content-md-start flex-wrap gap-2 order-3 order-md-2">
 
-                                <div class="col-12 col-md-5 col-lg-5 d-flex justify-content-center justify-content-md-start flex-wrap gap-2 order-3 order-md-2">
+                    <div class="btn-group">
+                        <a href="javascript:void(0)" class="btn btn-default btn-raised">SALA</a>
+                        <a href="javascript:void(0)" data-target="dropdown-menu" class="btn btn-default btn-raised dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#!">Sala A - Literatura Clásica</a></li>
+                            <li><a href="#!">Sala B - Obras Modernas</a></li>
+                            <li><a href="#!">Sala C - Referencia</a></li>
+                        </ul>
+                    </div>
 
-                                    <div class="btn-group">
-                                        <a href="javascript:void(0)" class="btn btn-default btn-raised">SALA</a>
-                                        <a href="javascript:void(0)" data-target="dropdown-menu" class="btn btn-default btn-raised dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
-                                        <ul class="dropdown-menu">
-                                            <li><a href="#!" data-filter-name="sala" data-filter-value="Sala A">Sala A - Literatura Clásica</a></li>
-                                            <li><a href="#!" data-filter-name="sala" data-filter-value="Sala B">Sala B - Obras Modernas</a></li>
-                                            <li><a href="#!" data-filter-name="sala" data-filter-value="Sala C">Sala C - Referencia</a></li>
-                                        </ul>
-                                    </div>
+                    <div class="btn-group">
+                        <a href="javascript:void(0)" class="btn btn-default btn-raised">ÁREA</a>
+                        <a href="javascript:void(0)" data-target="dropdown-menu" class="btn btn-default btn-raised dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#!">Ficción</a></li>
+                            <li><a href="#!">No Ficción</a></li>
+                            <li><a href="#!">Cómics/Manga</a></li>
+                        </ul>
+                    </div>
 
-                                    <div class="btn-group">
-                                        <a href="javascript:void(0)" class="btn btn-default btn-raised">ÁREA</a>
-                                        <a href="javascript:void(0)" data-target="dropdown-menu" class="btn btn-default btn-raised dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
-                                        <ul class="dropdown-menu">
-                                            <li><a href="#!" data-filter-name="area" data-filter-value="Ficcion">Ficción</a></li>
-                                            <li><a href="#!" data-filter-name="area" data-filter-value="No Ficcion">No Ficción</a></li>
-                                            <li><a href="#!" data-filter-name="area" data-filter-value="Comics">Cómics/Manga</a></li>
-                                        </ul>
-                                    </div>
-
-                                    <div class="btn-group">
-                                        <a href="javascript:void(0)" class="btn btn-default btn-raised">ORDENAR POR</a>
-                                        <a href="javascript:void(0)" data-target="dropdown-menu" class="btn btn-default btn-raised dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
-                                        <ul class="dropdown-menu">
-                                            <li><a href="#!" data-filter-name="orden" data-filter-value="titulo">Título (A-Z)</a></li>
-                                            <li><a href="#!" data-filter-name="orden" data-filter-value="autor">Autor</a></li>
-                                            <li><a href="#!" data-filter-name="orden" data-filter-value="fecha">Fecha de Publicación</a></li>
-                                            <li><a href="#!" data-filter-name="orden" data-filter-value="popularidad">Popularidad</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-md-2 col-lg-2 d-flex justify-content-center order-2 order-md-3">
-                                    <button class="btn btn-primary w-100" type="submit">
-                                        <i class="fa-solid fa-magnifying-glass"></i> Buscar
-                                    </button>
-                                </div>
-
-                            </div>
-                        </form>
+                    <div class="btn-group">
+                        <a href="javascript:void(0)" class="btn btn-default btn-raised">ORDENAR POR</a>
+                        <a href="javascript:void(0)" data-target="dropdown-menu" class="btn btn-default btn-raised dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#!">Título (A-Z)</a></li>
+                            <li><a href="#!">Autor</a></li>
+                            <li><a href="#!">Fecha de Publicación</a></li>
+                            <li><a href="#!">Popularidad</a></li>
+                        </ul>
                     </div>
                 </div>
+
+                <div class="col-12 col-md-2 col-lg-2 d-flex justify-content-center order-2 order-md-3">
+                    <button class="btn btn-primary w-100" type="button">
+                        <i class="fa-solid fa-magnifying-glass"></i> Buscar
+                    </button>
+                </div>
+
             </div>
         </div>
+    </div>
+</div>
+</div>
         <div class="container-fluid">
-            <br>
+            <h2 class="text-titles text-center">Categoría seleccionada</h2>
 
             <div class="row ">
 
@@ -139,7 +135,7 @@ include BASE_PATH . '/app/views/component/heat.php';
     </section>
 
     <?php
-    include BASE_PATH . '/app/views/component/scripts.php';
+    include VIEW_PATH . '/component/scripts.php';
     ?>
 </body>
 

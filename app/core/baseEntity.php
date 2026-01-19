@@ -3,7 +3,7 @@ namespace App\Core;
 abstract class baseEntity {  
     public function toArray(): array {
         $data = [];
-        // Usamos Reflection para poder "ver" propiedades protegidas de la clase hija
+        // Usamos Reflection para poder ver propiedades protegidas de la clase hija
         $reflection = new \ReflectionClass($this);
         $properties = $reflection->getProperties();
 

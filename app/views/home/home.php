@@ -23,202 +23,141 @@ include "../component/heat.php";
 		<!-- contenido de la barra de navegacion -->
 
 
+
+
 		<!-- Content page -->
+		<div class="container-fluid" style="padding-top: 20px;">
+    <div class="page-header text-center">
+        <h2 class="text-titles">
+            <i class="fa-solid fa-landmark"></i> Gestión de la Biblioteca "Armando Zuloaga Blanco"
+        </h2>
+        
+    </div>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa-solid fa-users"></i> Perspectiva: Clientes</h3>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-xs-12 col-sm-4">
+                    <div class="well well-sm text-center">
+                        <h5 class="text-uppercase text-titles">Cobertura de Usuarios</h5>
+                        <h3 class="text-info">15%</h3>
+                        <small class="text-muted">Meta: Ascendente</small>
+                    </div>
+                    <div class="well well-sm text-center">
+                        <h5 class="text-uppercase text-titles">Consultas de Referencia</h5>
+                        <h3 class="text-info">2.4</h3>
+                        <small class="text-muted">Razón por usuario activo</small>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-8">
+                    <div class="thumbnail" style="padding: 15px;">
+                        <h5 class="text-center text-titles">Promedio de Consultas Mensuales</h5>
+                        <div style="height: 180px;">
+                            <canvas id="chartConsultas"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-success">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa-solid fa-gears"></i> Perspectiva: Procesos Internos</h3>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-xs-12 col-md-5">
+                    <div class="thumbnail" style="padding: 15px;">
+                        <h5 class="text-center text-titles">Tasa de Cumplimiento de Plazos</h5>
+                        <div style="height: 150px;">
+                            <canvas id="chartPlazos"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-7">
+                    <div class="row text-center">
+                        <div class="col-xs-6 col-sm-4">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <i class="fa-solid fa-rotate fa-2x text-success"></i>
+                                    <h5 style="font-size: 11px;">ROTACIÓN</h5>
+                                    <p class="h4">24%</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-sm-4">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <i class="fa-solid fa-chair fa-2x text-success"></i>
+                                    <h5 style="font-size: 11px;">OCUPACIÓN</h5>
+                                    <p class="h4">65%</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-sm-4">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <i class="fa-solid fa-book-medical fa-2x text-success"></i>
+                                    <h5 style="font-size: 11px;">ESTADO FÍSICO</h5>
+                                    <p class="h4">92%</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-sm-6">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <i class="fa-solid fa-map-location-dot fa-2x text-success"></i>
+                                    <h5 style="font-size: 11px;">ASISTENCIA SALA ESTATAL</h5>
+                                    <p class="h4">18%</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <i class="fa-solid fa-archive fa-2x text-success"></i>
+                                    <h5 style="font-size: 11px;">COLECCIÓN ESTATAL</h5>
+                                    <p class="h4">35%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa-solid fa-graduation-cap"></i> Perspectiva: Aprendizaje y Crecimiento</h3>
+        </div>
+        <div class="panel-body text-center">
+            <div class="col-xs-12">
+                <p class="lead text-titles">Participación en Actividades y Talleres</p>
+                <div class="progress" style="height: 30px;">
+                    <div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" style="width: 25%; line-height: 30px; font-size: 16px;">
+                        25% de Usuarios Registrados
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+		</div>
 		<div class="container-fluid">
-			<div class="page-header">
-				<h1 class="text-titles">Sistema <small>Gestion Bibliografica</small></h1>
-			</div>
-		</div>
-		<div class="full-box text-center" style="padding: 30px 10px;">
-			<article class="full-box tile">
-				<div class="full-box tile-title text-center text-titles text-uppercase">
-					Administradores
-				</div>
-				<div class="full-box tile-icon text-center">
-					<i class="fa-solid fa-user-tie"></i>
-				</div>
-				<div class="full-box tile-number text-titles">
-					<p class="full-box">7</p>
-					<small>Registrados</small>
-				</div>
-			</article>
-			<article class="full-box tile">
-				<div class="full-box tile-title text-center text-titles text-uppercase">
-					Blibliotecarios
-				</div>
-				<div class="full-box tile-icon text-center">
-					<i class="fa-solid fa-address-book"></i>
-				</div>
-				<div class="full-box tile-number text-titles">
-					<p class="full-box">10</p>
-					<small>Registrados</small>
-				</div>
-			</article>
+			<!-- contenedor de notificaciones -->
+			<?php
+			include "../component/notification.php";
+			?>
+			<!-- contenedor de notificaciones -->
 
-			<article class="full-box tile">
-				<div class="full-box tile-title text-center text-titles text-uppercase">
-					visitantes
-				</div>
-				<div class="full-box tile-icon text-center">
-					<i class="fa-solid fa-users"></i>
-				</div>
-				<div class="full-box tile-number text-titles">
-					<p class="full-box">10</p>
-					<small>Registrados</small>
-				</div>
-			</article>
-
-
-		</div>
-		<div class="container-fluid">
-
-
-			<div class="panel panel-info">
-				<div class="panel-heading">
-					<h3 class="panel-title"><i class="zmdi zmdi-chart-bar"></i> &nbsp; Biblioteca <small>Libros Más Solicitados</small></h3>
-				</div>
-				<div class="panel-body">
-
-					<section id="book-ranking" class="cd-container">
-
-						<div class="book-ranking-block">
-							<div class="book-ranking-position text-info">
-								<i class="zmdi zmdi-star zmdi-hc-2x"></i>
-								<span>#1</span>
-							</div>
-							<div class="book-ranking-content">
-								<h4 class="text-dark font-weight-bold mb-1">Cien años de soledad</h4>
-								<p class="text-muted small mb-0">
-									<i class="zmdi zmdi-account-box zmdi-hc-fw"></i> Autor: <em>Gabriel García Márquez</em>
-								</p>
-								<p class="text-muted small mb-1">
-									<i class="zmdi zmdi-bookmark-outline zmdi-hc-fw"></i> Total de Préstamos: <strong>125</strong>
-								</p>
-								<span class="badge badge-info">
-									<i class="zmdi zmdi-labels zmdi-hc-fw"></i> Ficción
-								</span>
-							</div>
-						</div>
-
-						<div class="book-ranking-block">
-							<div class="book-ranking-position text-info">
-								<i class="zmdi zmdi-chevron-up zmdi-hc-2x"></i>
-								<span>#2</span>
-							</div>
-							<div class="book-ranking-content">
-								<h4 class="text-dark font-weight-bold mb-1">El código Da Vinci</h4>
-								<p class="text-muted small mb-0">
-									<i class="zmdi zmdi-account-box zmdi-hc-fw"></i> Autor: <em>Dan Brown</em>
-								</p>
-								<p class="text-muted small mb-1">
-									<i class="zmdi zmdi-bookmark-outline zmdi-hc-fw"></i> Total de Préstamos: <strong>98</strong>
-								</p>
-								<span class="badge badge-info">
-									<i class="zmdi zmdi-labels zmdi-hc-fw"></i> Thriller
-								</span>
-							</div>
-						</div>
-
-						<div class="book-ranking-block">
-							<div class="book-ranking-position text-info">
-								<i class="zmdi zmdi-pin-drop zmdi-hc-2x"></i>
-								<span>#3</span>
-							</div>
-							<div class="book-ranking-content">
-								<h4 class="text-dark font-weight-bold mb-1">Sapiens: De animales a dioses</h4>
-								<p class="text-muted small mb-0">
-									<i class="zmdi zmdi-account-box zmdi-hc-fw"></i> Autor: <em>Yuval Noah Harari</em>
-								</p>
-								<p class="text-muted small mb-1">
-									<i class="zmdi zmdi-bookmark-outline zmdi-hc-fw"></i> Total de Préstamos: <strong>85</strong>
-								</p>
-								<span class="badge badge-info">
-									<i class="zmdi zmdi-labels zmdi-hc-fw"></i> No Ficción
-								</span>
-							</div>
-						</div>
-
-						<div class="book-ranking-block">
-							<div class="book-ranking-position text-info">
-								<i class="zmdi zmdi-bookmark zmdi-hc-2x"></i>
-								<span>#4</span>
-							</div>
-							<div class="book-ranking-content">
-								<h4 class="text-dark font-weight-bold mb-1">1984</h4>
-								<p class="text-muted small mb-0">
-									<i class="zmdi zmdi-account-box zmdi-hc-fw"></i> Autor: <em>George Orwell</em>
-								</p>
-								<p class="text-muted small mb-1">
-									<i class="zmdi zmdi-bookmark-outline zmdi-hc-fw"></i> Total de Préstamos: <strong>70</strong>
-								</p>
-								<span class="badge badge-info">
-									<i class="zmdi zmdi-labels zmdi-hc-fw"></i> Distopía
-								</span>
-							</div>
-						</div>
-
-					</section>
-				</div>
-			</div>
-		</div>
-		<!-- <div class="container-fluid">
-			<div class="page-header">
-				<h1 class="text-titles">Sistema <small>Tempo en linea</small></h1>
-			</div>
-			<section id="cd-timeline" class="cd-container">
-				<div class="cd-timeline-block">
-					<div class="cd-timeline-img">
-						<img src="assets/avatars/StudetMaleAvatar.png" alt="user-picture">
-					</div>
-					<div class="cd-timeline-content">
-						<h4 class="text-center text-titles">1 - Name (Admin)</h4>
-						<p class="text-center">
-							<i class="zmdi zmdi-timer zmdi-hc-fw"></i> Start: <em>7:00 AM</em> &nbsp;&nbsp;&nbsp;
-							<i class="zmdi zmdi-time zmdi-hc-fw"></i> End: <em>7:17 AM</em>
-						</p>
-						<span class="cd-date"><i class="zmdi zmdi-calendar-note zmdi-hc-fw"></i> 07/07/2016</span>
-					</div>
-				</div>
-				<div class="cd-timeline-block">
-					<div class="cd-timeline-img">
-						<img src="assets/avatars/StudetMaleAvatar.png" alt="user-picture">
-					</div>
-					<div class="cd-timeline-content">
-						<h4 class="text-center text-titles">2 - Name (Teacher)</h4>
-						<p class="text-center">
-							<i class="zmdi zmdi-timer zmdi-hc-fw"></i> Start: <em>7:00 AM</em> &nbsp;&nbsp;&nbsp;
-							<i class="zmdi zmdi-time zmdi-hc-fw"></i> End: <em>7:17 AM</em>
-						</p>
-						<span class="cd-date"><i class="zmdi zmdi-calendar-note zmdi-hc-fw"></i> 07/07/2016</span>
-					</div>
-				</div>
-				<div class="cd-timeline-block">
-					<div class="cd-timeline-img">
-						<img src="assets/avatars/StudetMaleAvatar.png" alt="user-picture">
-					</div>
-					<div class="cd-timeline-content">
-						<h4 class="text-center text-titles">3 - Name (Student)</h4>
-						<p class="text-center">
-							<i class="zmdi zmdi-timer zmdi-hc-fw"></i> Start: <em>7:00 AM</em> &nbsp;&nbsp;&nbsp;
-							<i class="zmdi zmdi-time zmdi-hc-fw"></i> End: <em>7:17 AM</em>
-						</p>
-						<span class="cd-date"><i class="zmdi zmdi-calendar-note zmdi-hc-fw"></i> 07/07/2016</span>
-					</div>
-				</div>
-				<div class="cd-timeline-block">
-					<div class="cd-timeline-img">
-						<img src="assets/avatars/StudetMaleAvatar.png" alt="user-picture">
-					</div>
-					<div class="cd-timeline-content">
-						<h4 class="text-center text-titles">4 - Name (Personal Ad.)</h4>
-						<p class="text-center">
-							<i class="zmdi zmdi-timer zmdi-hc-fw"></i> Start: <em>7:00 AM</em> &nbsp;&nbsp;&nbsp;
-							<i class="zmdi zmdi-time zmdi-hc-fw"></i> End: <em>7:17 AM</em>
-						</p>
-						<span class="cd-date"><i class="zmdi zmdi-calendar-note zmdi-hc-fw"></i> 07/07/2016</span>
-					</div>
-				</div>
-			</section> -->
+			
 
 
 		</div>
@@ -228,6 +167,45 @@ include "../component/heat.php";
 	<?php
 	include "../component/scripts.php";
 	?>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const optionsDefaults = {
+        maintainAspectRatio: false,
+        responsive: true,
+        plugins: { legend: { position: 'bottom', labels: { boxWidth: 10 } } }
+    };
+
+    // Gráfica de Consultas (Clientes)
+    new Chart(document.getElementById('chartConsultas'), {
+        type: 'line',
+        data: {
+            labels: ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+            datasets: [{
+                label: 'Promedio Consultas',
+                data: [40, 45, 38, 50, 42, 30],
+                borderColor: '#2e6da4',
+                backgroundColor: 'rgba(46, 109, 164, 0.1)',
+                fill: true
+            }]
+        },
+        options: optionsDefaults
+    });
+
+    // Gráfica de Plazos (Procesos Internos)
+    new Chart(document.getElementById('chartPlazos'), {
+        type: 'doughnut',
+        data: {
+            labels: ['A tiempo', 'Fuera de plazo'],
+            datasets: [{
+                data: [88, 12],
+                backgroundColor: ['#5cb85c', '#d9534f']
+            }]
+        },
+        options: optionsDefaults
+    });
+</script>
 </body>
 
 </html>

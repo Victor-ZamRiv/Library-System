@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="es">
-<?php include "../component/heat.php";
+<?php include VIEW_PATH . "/component/heat.php";
 ?>
 
 <body>
 
-    <?php include "../component/sidebar.php"; ?>
+    <?php include VIEW_PATH . "/component/sidebar.php"; ?>
 
     <section class="full-box dashboard-contentPage" ;>
 
-        <?php include "../component/navbar.php"; ?>
+        <?php include VIEW_PATH . "/component/navbar.php"; ?>
 
         <div class="container-fluid">
             <div class="page-header">
-                <h1 class="text-titles"><i class="fa-solid fa-book"></i> CATÁLOGO <small>Editar Libro</small></h1>
+                <h1 class="text-titles"><i class="fa-solid fa-book"></i> Catálago <small>Editar Libro</small></h1>
             </div>
         </div>
 
@@ -25,6 +25,7 @@
                 <div class="panel-body">
                     <form action="?" method="GET">
                         <fieldset>
+                            <input type="hidden" name="idLibro" value="<?= $libro->getIdLibro() ?>">
                             <legend> &nbsp; Información del Libro</legend>
                             <div class="container-fluid">
                                 <div class="row">
@@ -33,10 +34,10 @@
                                             <label class="control-label"><span class="text-danger">*</span> Sala</label>
                                             <select required name="sala-reg" id="salaSelect" class="form-control">
                                                 <option value="" disabled selected>Seleccione la Sala</option>
-                                                <option value="Sala General">Sala General</option>
-                                                <option value="Sala de Referencia">Sala de Referencia</option>
-                                                <option value="Sala Estatal">Sala Estatal</option>
-                                                <option value="Sala Infantil">Sala Infantil</option>
+                                                <option value="G">Sala General</option>
+                                                <option value="R">Sala de Referencia</option>
+                                                <option value="SE">Sala Estatal</option>
+                                                <option value="X">Sala Infantil</option>
                                             </select>
                                         </div>
                                     </div>
@@ -369,10 +370,10 @@
         </div>
 
     </section>
-    <?php include "../modal/confirmation_delete_copy.php"; ?>
-    <?php include "../component/scripts.php"; ?>
-    <script src="../../../public/js/validations/book/createvalidation.js"></script>
-    <script src="../../../public/js/modal/specimens.js"></script>
+    <?php include VIEW_PATH . "/modal/confirmation_delete_copy.php"; ?>
+    <?php include VIEW_PATH . "/component/scripts.php"; ?>
+    <script src="<?php echo PUBLIC_PATH; ?>/js/validations/book/createvalidation.js"></script>
+    <script src="<?php echo PUBLIC_PATH; ?>/js/modal/specimens.js"></script>
 </body>
 
 </html>

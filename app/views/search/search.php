@@ -3,13 +3,13 @@
 
 <!-- head -->
 <?php
-include "../component/heat.php";
+include VIEW_PATH . '/component/heat.php';
 ?>
 
 <body>
 	<!-- SideBar -->
 	<?php
-	include "../component/sidebar.php";
+	include VIEW_PATH . '/component/sidebar.php';
 	?>
 	<!-- contenido de la barra lateral -->
 
@@ -18,7 +18,7 @@ include "../component/heat.php";
 
 		<!-- NavBar -->
 		<?php
-		include "../component/navbar.php";
+		include VIEW_PATH . '/component/navbar.php';
 		?>
 		<!-- contenido de la barra de navegacion -->
 
@@ -119,7 +119,7 @@ include "../component/heat.php";
 
 	<!--====== Scripts -->
 	<?php 
-	include "../component/scripts.php";
+	include VIEW_PATH . '/component/scripts.php';
 	?>
 </body>
 </html>

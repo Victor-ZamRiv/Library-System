@@ -19,7 +19,7 @@ class LibroSearchService {
 
         foreach ($libros as $libro) {
             if ($libro instanceof Libro) {
-                $autores = $this->autorRepo->getAutoresLibro($libro->getId());
+                $autores = $this->autorRepo->getAutoresLibro($libro->getIdLibro());
                 $libro->setAutores($autores);
             }
         }

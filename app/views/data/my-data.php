@@ -22,7 +22,7 @@ include "../component/heat.php";
 		<!-- Content page -->
 		<div class="container-fluid">
 			<div class="page-header">
-				<h1 class="text-titles"><i class="zmdi zmdi-account-circle zmdi-hc-fw"></i> Información de Usuario</small></h1>
+				<h1 class="text-titles"> Información de Usuario</small></h1>
 			</div>
 		</div>
 
@@ -59,7 +59,7 @@ include "../component/heat.php";
 
 
 							<div class="card-footer text-center">
-								<a href="../admin/Edit-admin.php" class="btn btn-info btn-raised btn-sm">
+								<a href="../user/edit-user.php" class="btn btn-info btn-raised btn-sm">
 									Editar Datos
 								</a>
 							</div>

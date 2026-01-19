@@ -1,24 +1,24 @@
 <?php
 namespace App\Models\Services;
 
-use App\Models\Repositories\LibroRepository;
-use App\Models\Repositories\AutorRepository;
-use App\Models\Repositories\EditorialRepository;
 use App\Models\Repositories\EjemplarRepository;
+use App\Contracts\ILibroRepository;
+use App\Contracts\IAutorRepository;
+use App\Contracts\IEditorialRepository;
 use App\Models\Entities\Libro;
 use App\Models\Entities\Autor;
 use App\Models\Entities\Editorial;
 
 class LibroRegistrationService {
-    private LibroRepository $libroRepo;
-    private AutorRepository $autorRepo;
-    private EditorialRepository $editorialRepo;
+    private ILibroRepository $libroRepo;
+    private IAutorRepository $autorRepo;
+    private IEditorialRepository $editorialRepo;
     private EjemplarRepository $ejemplarRepo;
 
     public function __construct(
-        LibroRepository $libroRepo,
-        AutorRepository $autorRepo,
-        EditorialRepository $editorialRepo,
+        ILibroRepository $libroRepo,
+        IAutorRepository $autorRepo,
+        IEditorialRepository $editorialRepo,
         EjemplarRepository $ejemplarRepo
     ) {
         $this->libroRepo = $libroRepo;
@@ -34,7 +34,7 @@ class LibroRegistrationService {
         if (!$editorial) {
             $editorial = new Editorial(null, $editorialNombre);
             $editorialId = $this->editorialRepo->insert($editorial);
-            $editorial->setId($editorialId);
+            $editorial->setIDEditorial($editorialId);
         } else {
             $editorialId = $editorial->getId();
         }
@@ -48,7 +48,9 @@ class LibroRegistrationService {
             $datosLibro['sala-reg'],
             $areaParaConstructor,
             $datosLibro['cota'] ?? '',
+            $datosLibro['edicion'] ?? null,
             $datosLibro['ISBN'] ?? null,
+            $datosLibro['ciudad'] ?? null,
             $datosLibro['paginas'] ?? null,
             $datosLibro['observaciones'] ?? null,
             $datosLibro['year'] ?? null,

@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html lang="es">
-<?php include BASE_PATH . "/app/views/component/heat.php"; ?>
+<?php include VIEW_PATH . "/component/heat.php"; 
+$old = $_SESSION['old_data'] ?? [];
+$error = $_SESSION['error'] ?? null;
+unset($_SESSION['old_data'], $_SESSION['error']); // Limpiar para que no aparezcan la próxima vez
+?>
 
 
 <body>
 
-    <?php include BASE_PATH . '/app/views/component/sidebar.php'; ?>
+    <?php include VIEW_PATH . '/component/sidebar.php'; ?>
 
     <!-- Content page-->
     <section class="full-box dashboard-contentPage">
 
         <!-- NavBar -->
-        <?php include BASE_PATH . '/app/views/component/navbar.php'; ?>
+        <?php include VIEW_PATH . '/component/navbar.php'; ?>
 
         <!-- Content page -->
         <div class="container-fluid">
@@ -21,6 +25,12 @@
         </div>
 
         <div class="container-fluid">
+            <?php if ($error): ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Error:</strong> <?= htmlspecialchars($error) ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif; ?>
             <div class="panel panel-info">
                 <div class="panel-heading">
                     <h3 class="panel-title">&nbsp; REGISTRAR NUEVO LIBRO</h3>
@@ -63,6 +73,7 @@
                                             <input class="form-control mdl-textfield__input" type="text" name="titulo" id="titulo-reg" maxlength="50"
                                                 pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s]+"
                                                 title="Solo se permiten letras, números y espacios"
+                                                value="<?= htmlspecialchars($old['titulo'] ?? '') ?>"
                                                 required
                                                 aria-describedby="titulo-error"
                                                 onblur="validarTitulo(this)">
@@ -83,6 +94,8 @@
                                                 name="cota"
                                                 id="cota"
                                                 maxlength="30"
+                                                title="Ej: NH 234 o 120 A563."
+                                                value="<?= htmlspecialchars($old['cota'] ?? '') ?>"
                                                 required
                                                 aria-describedby="cota-error"
                                                 onblur="validarCota(this)">
@@ -103,6 +116,7 @@
                                                 id="autor-reg"
                                                 maxlength="50"
                                                 pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios"
+                                                value="<?= htmlspecialchars($old['autores'] ?? '') ?>"
                                                 required
                                                 aria-describedby="autor-error"
                                                 onblur="formatearAutor(this); if (!this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('autor-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('autor-error').style.display = 'none'; }">
@@ -122,8 +136,9 @@
                                                 class="form-control"
                                                 type="text"
                                                 name="ciudad"
-                                                id="ciudad-reg"
+                                                id="ciudad"
                                                 maxlength="20"
+                                                value="<?= htmlspecialchars($old['ciudad'] ?? '') ?>"
                                                 required
                                                 title="Solo se permiten letras y espacios, máximo 20 caracteres"
                                                 aria-describedby="ciudad-error"
@@ -147,7 +162,8 @@
                                                 type="text"
                                                 inputmode="numeric"
                                                 name="edicion"
-                                                id="edicion-reg" maxlength="3"
+                                                id="edicion" maxlength="3"
+                                                value="<?= htmlspecialchars($old['edicion'] ?? '') ?>"
                                                 required title="Solo se permiten números (del 1 al 999)"
                                                 aria-describedby="edicion-error"
                                                 onblur="validarEdicion(this)"
@@ -168,6 +184,7 @@
                                                 type="text"
                                                 inputmode="numeric" name="year"
                                                 id="year-reg" maxlength="4"
+                                                value="<?= htmlspecialchars($old['year'] ?? '') ?>"
                                                 required title="Solo se permiten 4 dígitos numéricos" aria-describedby="year-error"
                                                 onblur="validarAnio(this)"
                                                 onkeypress="return isNumberKey(event)">
@@ -189,6 +206,7 @@
                                                 name="ejemplares"
                                                 id="ejemplares-reg"
                                                 maxlength="2"
+                                                value="<?= htmlspecialchars($old['ejemplares'] ?? '') ?>"
                                                 required
                                                 title="Solo se permiten números, entre 1 y 2 dígitos"
                                                 aria-describedby="ejemplares-error"
@@ -211,6 +229,7 @@
                                                 class="form-control"
                                                 type="text" inputmode="numeric" name="paginas"
                                                 id="paginas-reg" maxlength="4"
+                                                value="<?= htmlspecialchars($old['paginas'] ?? '') ?>"
                                                 required title="Solo se permiten números, entre 1 y 4 dígitos" aria-describedby="paginas-error" onblur="validarPaginas(this)" onkeypress="return isNumberKey(event)">
 
                                             <div class="invalid-feedback bg-danger text-danger rounded-pill" id="paginas-error" style="display: none;">
@@ -230,6 +249,7 @@
                                                 type="text"
                                                 name="editorial"
                                                 id="editorial-reg" maxlength="70"
+                                                value="<?= htmlspecialchars($old['editorial'] ?? '') ?>"
                                                 required title="Solo se permiten letras y espacios, máximo 70 caracteres" aria-describedby="editorial-error" onblur="validarEditorial(this)">
 
                                             <div class="invalid-feedback bg-danger text-danger rounded-pill" id="editorial-error" style="display: none;">
@@ -249,6 +269,7 @@
                                                 name="ISBN"
                                                 id="isbn"
                                                 maxlength="17"
+                                                value="<?= htmlspecialchars($old['isbn'] ?? '') ?>"
                                                 required
                                                 aria-describedby="isbn-error"
                                                 title="Ingrese un ISBN válido (10 o 13 caracteres)."
@@ -277,7 +298,8 @@
                                                 name="observaciones"
                                                 class="form-control"
                                                 id="observaciones-reg" rows="4"
-                                                maxlength="400" title="Solo se permiten letras, números y espacios. Máximo 400 caracteres." aria-describedby="observaciones-error" onblur="validarObservaciones(this)"></textarea>
+                                                maxlength="400" title="Solo se permiten letras, números y espacios. Máximo 400 caracteres."
+                                                value="<?= htmlspecialchars($old['observaciones'] ?? '') ?>" aria-describedby="observaciones-error" onblur="validarObservaciones(this)"></textarea>
 
                                             <div class="invalid-feedback bg-danger text-danger rounded-pill" id="observaciones-error" style="display: none;">
                                                 <i class="fas fa-exclamation-circle"></i> Por favor, ingrese observaciones válidas (solo letras, números y espacios).
@@ -331,7 +353,7 @@
 
     <!--====== Scripts -->
 
-    <?php BASE_PATH . '/app/views/component/scripts.php' ?>
+    <?php include VIEW_PATH . '/component/scripts.php' ?>
     <script src="/Library_System/public/js/validations/book/createvalidation.js"></script>
     <script src="/Library_System/public/js/modal/confirmation-new-book.js"></script>
 

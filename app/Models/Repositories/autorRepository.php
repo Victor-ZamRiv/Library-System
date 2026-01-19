@@ -1,12 +1,19 @@
 <?php
 namespace App\Models\Repositories;
+
+use App\Contracts\IAutorRepository;
 use App\Core\baseRepository;
 use App\Models\Entities\Autor;
 use PDO;
 
-class AutorRepository extends baseRepository{
+class AutorRepository extends baseRepository implements IAutorRepository{
     public function __construct(PDO $pdo){
         parent::__construct($pdo, 'autores', 'ID_Autor');
+    }
+
+    public function find(int $id): ?Autor {
+        $row = $this->fetchById($id);
+        return $row ? $this->mapToEntity($row) : null;
     }
 
     public function insert(Autor $autor): int {
@@ -31,6 +38,16 @@ class AutorRepository extends baseRepository{
         $rows = $stmt->fetchAll();
 
         return array_map(fn($row) => Autor::fromArray($row), $rows);
+    }
+
+    public function deleteRelacionesPorLibro(int $idLibro): bool {
+        $sql = "DELETE FROM libro_autores WHERE ID_Libro = ?";
+        return $this->pdo->prepare($sql)->execute([$idLibro]);
+    }
+
+    public function vincularConLibro(int $idLibro, int $idAutor): bool {
+        $sql = "INSERT INTO libro_autores (ID_Libro, ID_Autor) VALUES (?, ?)";
+        return $this->pdo->prepare($sql)->execute([$idLibro, $idAutor]);
     }
 
     public function findByName(string $nombre): ?Autor {

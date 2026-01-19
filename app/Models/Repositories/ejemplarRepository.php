@@ -4,8 +4,9 @@ namespace App\Models\Repositories;
 use PDO;
 use App\Models\Entities\Ejemplar;
 use App\Core\BaseRepository;
+use App\Contracts\IEjemplarRepository;
 
-class EjemplarRepository extends BaseRepository {
+class EjemplarRepository extends BaseRepository implements IEjemplarRepository {
     public function __construct(PDO $pdo) {
         parent::__construct($pdo, 'ejemplares', 'ID_Ejemplar');
     }
@@ -26,6 +27,11 @@ class EjemplarRepository extends BaseRepository {
     }
 
     // Obtiene todos los ejemplares de un libro
+
+    public function find(int $id): ?Ejemplar {
+        $row = $this->fetchById($id);
+        return $row ? $this->mapToEntity($row) : null;
+    }
     
     public function findByLibro(int $libroId): array {
         $sql = "SELECT * FROM ejemplares WHERE ID_Libro = :libroId";
@@ -48,12 +54,12 @@ class EjemplarRepository extends BaseRepository {
 
     // Actualiza el estado de un ejemplar
 
-    public function updateEstado(int $ejemplarId, string $estado): void {
+    public function updateEstado(Ejemplar $ejemplar): bool {
         $sql = "UPDATE ejemplares SET Estado = :estado WHERE ID_Ejemplar = :id";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([
-            ':estado' => $estado,
-            ':id' => $ejemplarId
+        return $stmt->execute([
+            ':estado' => $ejemplar->getEstado(),
+            ':id' => $ejemplar->getId()
         ]);
     }
 

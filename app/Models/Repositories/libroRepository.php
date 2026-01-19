@@ -2,12 +2,36 @@
 namespace App\Models\Repositories;
 
 use App\Core\BaseRepository;
+use App\Contracts\ILibroRepository;
 use App\Models\Entities\Libro;
 use PDO;
 
-class LibroRepository extends BaseRepository {
+class LibroRepository extends BaseRepository implements ILibroRepository {
+
+    protected array $mapaColumnas = [
+        'titulo'          => 'Titulo',
+        'idEditorial'     => 'ID_Editorial',
+        'idSala'          => 'ID_Sala',
+        'idArea'          => 'ID_Area',
+        'cota'            => 'Cota',
+        'edicion'         => 'Edicion',
+        'ciudad'          => 'Ciudad',
+        'isbn'            => 'ISBN',
+        'paginas'         => 'Paginas',
+        'volumen'          => 'Volumen',
+        'observaciones'   => 'Observaciones',
+        'anioPublicacion' => 'Anio_Publicacion',
+        'activo'          => 'Activo'
+    ];
+
+
     public function __construct(PDO $pdo) {
         parent::__construct($pdo, 'libros', 'ID_Libro');
+    }
+
+    public function find(int $id): ?libro {
+        $row = $this->fetchById($id);
+        return $row ? $this->mapToEntity($row) : null;
     }
     
     public function search(array $filtros): array {
@@ -53,8 +77,22 @@ class LibroRepository extends BaseRepository {
         return $this->runFilteredQuery($sql, $params);
     }
 
+    public function existsCota(string $cota, ?int $excludeId = null): bool {
+        $sql = "SELECT COUNT(*) FROM {$this->table} WHERE Cota = :cota";
+        if ($excludeId) {
+            $sql .= " AND {$this->primaryKey} != :id";
+        }
+        
+        $stmt = $this->pdo->prepare($sql);
+        $params = ['cota' => $cota];
+        if ($excludeId) $params['id'] = $excludeId;
+        
+        $stmt->execute($params);
+        return $stmt->fetchColumn() > 0;
+    }
+
     public function insert(Libro $libro): int {
-        if ($libro->getId() !== null) {
+        if ($libro->getIdLibro() !== null) {
             throw new \InvalidArgumentException("El libro ya tiene ID, no puede insertarse");
         }
 
@@ -67,13 +105,15 @@ class LibroRepository extends BaseRepository {
                                 ID_Area,
                                 ID_Sala,
                                 Cota,
+                                Edicion,
+                                Ciudad,
                                 ISBN,
                                 Paginas,
                                 Volumen,
                                 Observaciones,
                                 Anio_Publicacion,
                                 Activo
-                            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute([
@@ -82,6 +122,8 @@ class LibroRepository extends BaseRepository {
                         $data['idArea'] ?? null,
                         $data['idSala'] ?? 'G',
                         $data['cota'] ?? '',
+                        $data['edicion'] ?? null,
+                        $data['ciudad'] ?? null,
                         $data['isbn'] ?? null,
                         $data['paginas'] ?? null,
                         $data['volumen'] ?? null,
@@ -94,9 +136,7 @@ class LibroRepository extends BaseRepository {
         } catch (\PDOException $e) {
         throw new \RuntimeException("Error al insertar libro: " . $e->getMessage(), 0, $e);
     }
-
-
-        
+    
 
     }
 
@@ -107,14 +147,33 @@ class LibroRepository extends BaseRepository {
     }
 
     public function update(Libro $libro): bool {
-        if ($libro->getId() === null) {
-            throw new \InvalidArgumentException("El libro no tiene ID, no puede actualizarse");
+        $id = $libro->getIdLibro();
+        if ($id === null) {
+            throw new \InvalidArgumentException("No se puede actualizar un libro sin ID.");
         }
 
-        $data = $libro->toArray();
-        $sql = "UPDATE {$this->table} SET Titulo = ?, Activo = ? WHERE {$this->primaryKey} = ?";
+        $datosEntidad = $libro->toArray();
+        $camposSQL = [];
+        $valores = [];
+
+        foreach ($this->mapaColumnas as $propiedad => $columna) {
+            // 1. Saltamos la clave primaria porque no se debe actualizar en el SET
+            if ($columna === $this->primaryKey) continue;
+
+            // 2. Si la propiedad existe en el array de la entidad, la preparamos
+            if (array_key_exists($propiedad, $datosEntidad)) {
+                $camposSQL[] = "{$columna} = ?";
+                $valores[] = $datosEntidad[$propiedad];
+            }
+        }
+
+        // 3. Añadimos el ID al final para el WHERE
+        $valores[] = $id;
+
+        $sql = "UPDATE {$this->table} SET " . implode(', ', $camposSQL) . " WHERE {$this->primaryKey} = ?";
+        
         $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([$data['Titulo'], $data['Activo'], $data[$this->primaryKey]]);
+        return $stmt->execute($valores);
     }
 
 
