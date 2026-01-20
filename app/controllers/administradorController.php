@@ -3,6 +3,7 @@ namespace App\Controllers;
 
 use App\Core\BaseController;
 use App\Models\Services\AdministradorRegistrationService;
+use App\Models\Services\ListAdministradorService;
 use App\Contracts\IAdministradorRepository;
 use App\Models\Entities\Persona;
 use App\Models\Entities\Administrador;
@@ -11,15 +12,17 @@ use RuntimeException;
 class AdministradorController extends BaseController {
 
     private AdministradorRegistrationService $registrationService;
+    private ListAdministradorService $listAdminService;
     private IAdministradorRepository $adminRepo;
 
-    public function __construct(AdministradorRegistrationService $registrationService, IAdministradorRepository $adminRepo) {
+    public function __construct(AdministradorRegistrationService $registrationService, ListAdministradorService $listAdminService, IAdministradorRepository $adminRepo) {
         $this->registrationService = $registrationService;
+        $this->listAdminService = $listAdminService;
         $this->adminRepo = $adminRepo;
     }
 
     public function list(): string {
-        $administradores = $this->adminRepo->all();
+        $administradores = $this->listAdminService->listar();
         return $this->render('user/user-list', ['administradores' => $administradores]);
     }
 

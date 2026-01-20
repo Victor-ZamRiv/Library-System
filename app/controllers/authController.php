@@ -17,15 +17,15 @@ class AuthController extends BaseController {
     }
     
     public function login(): void {
-        $email = $this->input('email', '');
+        $usuario = $this->input('username', '');
         $password = $this->input('password', '');
 
-        if ($this->authService->login($email, $password)) {
+        if ($this->authService->login($usuario, $password)) {
             $_SESSION['success'] = "Bienvenido al sistema.";
             $this->redirect("/"); // redirige al home o dashboard
         } else {
             $_SESSION['error'] = "Credenciales inválidas.";
-            $_SESSION['old_data'] = ['email' => $email];
+            $_SESSION['old_data'] = ['usuario' => $usuario];
             $this->redirect("/login/login");
         }
     }

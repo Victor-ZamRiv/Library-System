@@ -19,6 +19,7 @@ use App\Models\Services\LibroRegistrationService;
 use App\Models\Services\libroDetailService;
 use App\Models\Services\LibroUpdateService;
 use App\Models\Services\AdministradorRegistrationService;
+use App\Models\Services\ListAdministradorService;
 
 $router = require __DIR__ . '/app/routes/web.php';
 
@@ -65,7 +66,11 @@ $container = [
         $personaRepo,
         $administradorRepo,
         $pdo
-    )
+    ),
+    ListAdministradorService::class => new ListAdministradorService(
+        $administradorRepo,
+        $personaRepo
+    ),
 ];
 
 $uri = str_ireplace(BASE_URL, '', $_SERVER['REQUEST_URI']);
