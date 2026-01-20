@@ -13,7 +13,7 @@ class AuthController extends BaseController {
     }
 
     public function loginForm(): string {
-        return $this->render('auth/login');
+        return $this->render('login/login');
     }
     
     public function login(): void {
@@ -26,7 +26,7 @@ class AuthController extends BaseController {
         } else {
             $_SESSION['error'] = "Credenciales inválidas.";
             $_SESSION['old_data'] = ['email' => $email];
-            $this->redirect("/auth/login");
+            $this->redirect("/login/login");
         }
     }
     

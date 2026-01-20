@@ -10,6 +10,8 @@ class Administrador extends Persona {
     private string $rol;
     private bool $activo;
 
+    private ?Persona $persona = null;
+
     public function __construct(
         ?int $idAdmin = null,
         int $idPersona = 0,
@@ -33,12 +35,14 @@ class Administrador extends Persona {
     public function getContrasenaHash(): string { return $this->contrasenaHash; }
     public function getRol(): string { return $this->rol; }
     public function isActivo(): bool { return $this->activo; }
+    public function getPersona(): ?Persona { return $this->persona; }
 
     // Setters
     public function setNombreUsuario(string $nombreUsuario): void { $this->nombreUsuario = $nombreUsuario; }
     public function setContrasenaHash(string $hash): void { $this->contrasenaHash = $hash; }
     public function setRol(string $rol): void { $this->rol = $rol; }
     public function setActivo(bool $activo): void { $this->activo = $activo; }
+    public function setPersona(Persona $persona): void { $this->persona = $persona; }
 
     
 }

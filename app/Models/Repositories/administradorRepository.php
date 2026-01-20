@@ -44,7 +44,7 @@ class AdministradorRepository extends BaseRepository implements IAdministradorRe
         $stmt->execute([
             ':idPersona' => $Administrador->getIdPersona(),
             ':nombreUsuario' => $Administrador->getNombreUsuario(),
-            ':contrasena' => $Administrador->getContrasena(),
+            ':contrasena' => $Administrador->getContrasenaHash(),
             ':rol' => $Administrador->getRol(),
             ':activo' => $Administrador->isActivo() ? 1 : 0
         ]);
@@ -60,7 +60,7 @@ class AdministradorRepository extends BaseRepository implements IAdministradorRe
         return $stmt->execute([
             ':idPersona' => $Administrador->getIdPersona(),
             ':nombreUsuario' => $Administrador->getNombreUsuario(),
-            ':contrasena' => $Administrador->getContrasena(),
+            ':contrasena' => $Administrador->getContrasenaHash(),
             ':rol' => $Administrador->getRol(),
             ':activo' => $Administrador->isActivo() ? 1 : 0,
             ':id' => $Administrador->getIdAdministrador()

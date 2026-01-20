@@ -2,17 +2,17 @@
 <html lang="es">
 <!-- head -->
  <title>Lista de Usuarios</title>
-<?php include "../component/heat.php" ?>
+<?php include VIEW_PATH . "/component/heat.php" ?>
 
 <body>
 	<!-- SideBar -->
-	<?php include "../component/sidebar.php" ?>
+	<?php include VIEW_PATH . "/component/sidebar.php" ?>
 
 	<!-- Content page-->
 	<section class="full-box dashboard-contentPage">
 		<!-- NavBar -->
 
-		<?php include "../component/navbar.php" ?>
+		<?php include VIEW_PATH . "/component/navbar.php" ?>
 
 		<!-- Content page -->
 		<div class="container-fluid">
@@ -20,7 +20,7 @@
 				<h1 class="text-titles"> Usuarios <small>Lista de Usuarios</small></h1>
 			</div>
 		</div>
-		<?php include "../component/userbar.php" ?>
+		<?php include VIEW_PATH . "/component/userbar.php" ?>
 
 		<!-- Panel listado de administradores -->
 		<div class="container-fluid">
@@ -58,11 +58,13 @@
 							</thead>
 							<tbody>
 								<tr>
-									<td>Admin</td>
-									<td>0</td>
-									<td>Firsh Admin</td>
-									<td></td>
-									<td></td>
+									<?php foreach ($administradores as $admin): ?>
+									<td><?= htmlspecialchars($admin->getNombreUsuario()) ?></td>
+									<td><?= htmlspecialchars($admin->getPersona()->getCedula()) ?></td>
+									<td><?= htmlspecialchars($admin->getPersona()->getNombre()) ?></td>
+									<td><?= htmlspecialchars($admin->getPersona()->getApellido()) ?></td>
+									<td><?= htmlspecialchars($admin->getPersona()->getTelefono()) ?></td>
+									<?php endforeach; ?>
 
 									<td>
 										<a href="#!" class="btn btn-success btn-raised btn-sm">
@@ -77,24 +79,7 @@
 										</a>
 									</td>
 								</tr>
-								<tr>
-									<td>Administrador1</td>
-									<td>27459925</td>
-									<td>Victor Simón</td>
-									<td>Zambrano Rivero</td>
-									<td>0424-8630743</td>
-
-									<td>
-										<a href="#!" class="btn btn-success btn-raised btn-sm">
-											<i class="fa-solid fa-info"></i>
-										</a>
-									</td>
-									<td>
-										<a href="#!" class="btn btn-danger btn-raised btn-sm">
-											<i class="fa-solid fa-info"></i>
-										</a>
-									</td>
-								</tr>
+								
 							</tbody>
 						</table>
 					</div>
@@ -118,7 +103,7 @@
 
 	<!--====== Scripts -->
 
-	<?php include "../component/scripts.php" ?>
+	<?php include VIEW_PATH . "/component/scripts.php" ?>
 
 </body>
 

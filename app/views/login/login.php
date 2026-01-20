@@ -4,12 +4,12 @@
 	<title>LogIn</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-	<link rel="stylesheet" href="../../../public/css/login.css">
+	<link rel="stylesheet" href="<?= PUBLIC_PATH ?>/css/login.css">
 </head>
 
     <div class="header-slogan">
         <p>Sistema de Gestión Bibliográfica</p>
-        <img src="../../../public/img/img-login/libro.png" alt="Logo de la biblioteca">
+        <img src="<?= PUBLIC_PATH ?>/img/img-login/libro.png" alt="Logo de la biblioteca">
     </div>
 
     <div class="login-container">
@@ -17,7 +17,7 @@
         <div class="form-section">
             <div class="login-box">
                 <h2>Iniciar Sesión</h2>
-                <form action="../home/home.php" method="">
+                <form action="/login" method="POST">
                     <div class="input-group">
                         <input type="text" id="username" name="username" placeholder="Usuario" required>
                     </div>

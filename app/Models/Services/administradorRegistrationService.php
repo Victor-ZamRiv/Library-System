@@ -30,7 +30,7 @@ class AdministradorRegistrationService {
             $this->pdo->beginTransaction();
 
             // 1. Verificar si la persona ya existe (ej. por email o nombre+apellido)
-            $personaExistente = $this->personaRepo->findByEmail($persona->getEmail());
+            $personaExistente = $this->personaRepo->findByCedula($persona->getCedula());
 
             if ($personaExistente) {
                 $idPersona = $personaExistente->getIdPersona();

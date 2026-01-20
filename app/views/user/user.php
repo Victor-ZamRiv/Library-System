@@ -2,20 +2,20 @@
 <html lang="es">
 
     <title>Nuevo Usuario</title>
-    <?php include "../component/heat.php" ?>
+    <?php include VIEW_PATH . "/component/heat.php" ?>
 
 <body>
-    <?php include "../component/sidebar.php" ?>
+    <?php include VIEW_PATH . "/component/sidebar.php" ?>
 
     <section class="full-box dashboard-contentPage">
-        <?php include "../component/navbar.php" ?>
+        <?php include VIEW_PATH . "/component/navbar.php" ?>
         
         <div class="container-fluid">
             <div class="page-header">
                 <h1 class="text-titles"> Usuarios <small>Nuevo Usuario</small></h1>
             </div>
         </div>
-        <?php include "../component/userbar.php" ?>
+        <?php include VIEW_PATH . "/component/userbar.php" ?>
 
         <div class="container-fluid">
             <div class="panel panel-info">
@@ -23,7 +23,7 @@
                     <h3 class="panel-title"> &nbsp; CREAR USUARIO</h3>
                 </div>
                 <div class="panel-body">
-                    <form action="#" method="POST" id="form-registro-usuario">
+                    <form action="<?= BASE_URL ?>/administradores/store" method="POST" id="form-registro-usuario">
                         <fieldset>
                             <legend> &nbsp; Información personal</legend>
                             <div class="container-fluid">
@@ -35,7 +35,7 @@
                                                 pattern="[0-9]{6,12}"
                                                 class="form-control"
                                                 type="text"
-                                                name="dni-reg"
+                                                name="cedula"
                                                 id="dni-reg"
                                                 required
                                                 maxlength="8"
@@ -171,15 +171,15 @@
                             <div class="container-fluid">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-6">
-                                        <p class="text-left"><span class="label label-success">Nivel 1</span> Control total del sistema</p>
-                                        <p class="text-left"><span class="label label-primary">Nivel 2</span> Permiso para registro y actualización</p>
-                                        <p class="text-left"><span class="label label-info">Nivel 3</span> Permiso para registro</p>
+                                        <p class="text-left"><span class="label label-success">Nivel 1</span> Director (Control total del sistema)</p>
+                                        <p class="text-left"><span class="label label-primary">Nivel 2</span> Jefe de sala (Permiso para registro y control estadístico) </p>
+                                        <p class="text-left"><span class="label label-info">Nivel 3</span> Bibliotecario (Permiso para Gestion de catálogo y circulación)</p>
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
                                         <label>Selecciona el Nivel de Privilegio:</label><br>
-                                        <label><input type="radio" name="optionsPrivilegio" value="1" checked> Nivel 1</label><br>
-                                        <label><input type="radio" name="optionsPrivilegio" value="2"> Nivel 2</label><br>
-                                        <label><input type="radio" name="optionsPrivilegio" value="3"> Nivel 3</label>
+                                        <label><input type="radio" name="rol" value="Director"> Nivel 1</label><br>
+                                        <label><input type="radio" name="rol" value="Jefe de sala"> Nivel 2</label><br>
+                                        <label><input type="radio" name="rol" value="Bibliotecario" checked> Nivel 3</label>
                                     </div>
                                 </div>
                             </div>
@@ -194,7 +194,7 @@
         </div>
     </section>
 
-    <?php include "../component/scripts.php" ?>
-	<script src="../../../public/js/validations/user/createuser.js"></script>
+    <?php include VIEW_PATH . "/component/scripts.php" ?>
+	<script src="<?= PUBLIC_PATH ?>/js/validations/user/createuser.js"></script>
 </body>
 </html>

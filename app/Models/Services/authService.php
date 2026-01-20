@@ -16,8 +16,8 @@ class AuthService {
     }
 
     
-    public function login(string $email, string $password): bool {
-        $Administrador = $this->AdministradorRepo->findByEmail($email);
+    public function login(string $nombreUsuario, string $password): bool {
+        $Administrador = $this->AdministradorRepo->findByUsername($nombreUsuario);
 
         if (!$Administrador) {
             return false; // Administrador no encontrado
@@ -30,8 +30,7 @@ class AuthService {
         // Guardar datos mínimos en sesión
         $_SESSION['administrador'] = [
             'id' => $Administrador->getIdAdministrador(),
-            'nombre' => $Administrador->getNombre(),
-            'email' => $Administrador->getEmail(),
+            'nombre_usuario' => $Administrador->getNombreUsuario(),
             'rol' => $Administrador->getRol()
         ];
 

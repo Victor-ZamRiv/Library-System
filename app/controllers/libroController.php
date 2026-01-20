@@ -2,7 +2,7 @@
 namespace App\Controllers;
 
 use App\Core\BaseController;
-use App\Models\Repositories\LibroRepository;
+use App\Contracts\ILibroRepository;
 use App\Models\Services\LibroRegistrationService;
 use App\Models\Services\LibroSearchService;
 use App\Models\Services\libroDetailService;
@@ -10,14 +10,14 @@ use App\Models\Entities\Libro;
 use App\Models\Services\LibroUpdateService;
 
 class LibroController extends BaseController {
-    private LibroRepository $repo;
+    private ILibroRepository $repo;
     private LibroRegistrationService $libroRegistrationService;
     private LibroSearchService $libroSearchService;
     private libroDetailService $libroDetailsService;
     private LibroUpdateService $libroUpdateService;
 
     public function __construct(
-        LibroRepository $repo, LibroRegistrationService $libroRegistrationService, 
+        ILibroRepository $repo, LibroRegistrationService $libroRegistrationService, 
         LibroSearchService $libroSearchService, libroDetailService $libroDetailsService, 
         LibroUpdateService $libroUpdateService)
         {
