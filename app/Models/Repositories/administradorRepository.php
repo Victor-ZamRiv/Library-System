@@ -27,7 +27,7 @@ class AdministradorRepository extends BaseRepository implements IAdministradorRe
 
     public function findByUsername(string $username): ?Administrador
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM {$this->table} Where NombreAdministrador = :nombre AND Activo = 1");
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->table} Where Nombre_Usuario = :nombre AND Activo = 1");
         $stmt->execute([':nombre' => $username]);
         $row = $stmt->fetch();
         return $row ? $this->mapToEntity($row) : null;

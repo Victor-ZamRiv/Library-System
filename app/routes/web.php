@@ -3,6 +3,9 @@ use App\Core\Router;
 
 $router = new Router();
 
+//rutas generales
+$router->get('/dashboard', 'DashboardController@index');
+
 // Rutas para libros
 $router->get('/libros', 'LibroController@index');
 $router->get('/libros/create', 'LibroController@create');

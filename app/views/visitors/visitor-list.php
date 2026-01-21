@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
     <title>Gestión de Visitantes</title>
-<?php include "../component/heat.php"; ?>
+<?php include VIEW_PATH . "/component/heat.php"; ?>
 
 <body>
-    <?php include "../component/sidebar.php"; ?>
+    <?php include VIEW_PATH . "/component/sidebar.php"; ?>
 
     <section class="full-box dashboard-contentPage">
-        <?php include "../component/navbar.php"; ?>
+        <?php include VIEW_PATH . "/component/navbar.php"; ?>
 
         <div class="container-fluid">
             <div class="page-header">
@@ -105,7 +105,7 @@
         </div>
     </section>
 
-    <?php include "../component/scripts.php"; ?>
+    <?php include VIEW_PATH . "/component/scripts.php"; ?>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>

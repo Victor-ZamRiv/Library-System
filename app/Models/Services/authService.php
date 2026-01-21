@@ -10,31 +10,36 @@ class AuthService {
 
     public function __construct(IAdministradorRepository $AdministradorRepo) {
         $this->AdministradorRepo = $AdministradorRepo;
-        if (session_status() === PHP_SESSION_NONE) {
+        /*if (session_status() === PHP_SESSION_NONE) {
             session_start();
-        }
+        }*/
     }
 
     
     public function login(string $nombreUsuario, string $password): bool {
-        $Administrador = $this->AdministradorRepo->findByUsername($nombreUsuario);
+        try{
+            $Administrador = $this->AdministradorRepo->findByUsername($nombreUsuario);
 
-        if (!$Administrador) {
-            return false; // Administrador no encontrado
+            if (!$Administrador) {
+                return false; // Administrador no encontrado
+            }
+
+            if (!password_verify($password, $Administrador->getContrasenaHash())) {
+                return false; // Contraseña incorrecta
+            }
+
+            // Guardar datos mínimos en sesión
+            $_SESSION['administrador'] = [
+                'id' => $Administrador->getIdAdministrador(),
+                'nombre_usuario' => $Administrador->getNombreUsuario(),
+                'rol' => $Administrador->getRol()
+            ];
+
+            return true;
+        } catch (\Exception $e) {
+            throw new \RuntimeException("Error al intentar iniciar sesión: " . $e->getMessage());
         }
-
-        if (!password_verify($password, $Administrador->getContrasenaHash())) {
-            return false; // Contraseña incorrecta
-        }
-
-        // Guardar datos mínimos en sesión
-        $_SESSION['administrador'] = [
-            'id' => $Administrador->getIdAdministrador(),
-            'nombre_usuario' => $Administrador->getNombreUsuario(),
-            'rol' => $Administrador->getRol()
-        ];
-
-        return true;
+        
     }
 
 

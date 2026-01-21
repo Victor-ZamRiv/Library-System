@@ -16,23 +16,31 @@ class AuthController extends BaseController {
         return $this->render('login/login');
     }
     
-    public function login(): void {
+    public function login() {
+        try {
         $usuario = $this->input('username', '');
         $password = $this->input('password', '');
 
         if ($this->authService->login($usuario, $password)) {
             $_SESSION['success'] = "Bienvenido al sistema.";
-            $this->redirect("/"); // redirige al home o dashboard
+            $this->redirect("/dashboard"); // redirige al home o dashboard
         } else {
             $_SESSION['error'] = "Credenciales inválidas.";
             $_SESSION['old_data'] = ['usuario' => $usuario];
-            $this->redirect("/login/login");
+            $this->redirect("/login");
+        }
+        } catch (\Exception $e) {
+            http_response_code(500);
+            return $this->render('errors/error', [
+                'mensaje' => "Ocurrió un error inesperado al registrar el libro.",
+                'detalle' => $e->getMessage()
+            ]);
         }
     }
     
     public function logout(): void {
         $this->authService->logout();
         $_SESSION['success'] = "Sesión cerrada correctamente.";
-        $this->redirect("/auth/login");
+        $this->redirect("/login");
     }
 }

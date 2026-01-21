@@ -1,4 +1,5 @@
 <?php
+session_start();
 require __DIR__ . '/boots/init.php';
 
 use App\Models\Repositories\LibroRepository;

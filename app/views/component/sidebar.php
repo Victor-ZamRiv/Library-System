@@ -20,7 +20,7 @@
 				</li>
 
 				<li>
-					<a href="../login/login.php" title="Salir del sistema">
+					<a href="<?= BASE_URL ?>/login" title="Salir del sistema">
 						<i class="fa-solid fa-door-open"></i>
 					</a>
 				</li>
@@ -112,10 +112,10 @@
 				<ul class="list-unstyled full-box">
 
 					<li>
-						<a href="../user/user.php"> Nuevo Usuario</a>
+						<a href="<?= BASE_URL ?> administradores/register"> Nuevo Usuario</a>
 					</li>
 					<li>
-						<a href="../user/user-list.php"> Lista de Usuarios</a>
+						<a href="<?= BASE_URL ?> administradores"> Lista de Usuarios</a>
 					</li>
 
 

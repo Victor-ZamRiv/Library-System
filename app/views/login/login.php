@@ -17,7 +17,7 @@
         <div class="form-section">
             <div class="login-box">
                 <h2>Iniciar Sesión</h2>
-                <form action="/login" method="POST">
+                <form action="<?= BASE_URL ?>/login" method="POST">
                     <div class="input-group">
                         <input type="text" id="username" name="username" placeholder="Usuario" required>
                     </div>
