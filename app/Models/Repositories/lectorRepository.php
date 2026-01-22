@@ -3,9 +3,10 @@ namespace App\Models\Repositories;
 
 use App\Core\BaseRepository;
 use App\Models\Entities\Lector;
+use App\Contracts\ILectorRepository;
 use PDO;
 
-class LectorRepository extends BaseRepository {
+class LectorRepository extends BaseRepository implements ILectorRepository {
 
     public function __construct(PDO $pdo) {
         parent::__construct($pdo, 'lectores', 'ID_Lector');

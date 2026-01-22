@@ -3,18 +3,18 @@
 
 <title>Editar Datos</title>
 <?php
-include "../component/heat.php";
+include VIEW_PATH . "/component/heat.php";
 ?>
 
 <body>
 
     <?php
-    include "../component/sidebar.php";
+    include VIEW_PATH . "/component/sidebar.php";
     ?>
 
     <section class="full-box dashboard-contentPage">
         <?php
-        include "../component/navbar.php";
+        include VIEW_PATH . "/component/navbar.php";
         ?>
         
         <div class="container-fluid">
@@ -195,8 +195,8 @@ include "../component/heat.php";
     </section>
 
     <?php
-    include "../component/scripts.php";
+    include VIEW_PATH . "/component/scripts.php";
     ?>
-    <script src="../../../public/js/validations/user/createuser.js"></script>
+    <script src="<?= PUBLIC_PATH ?>/js/validations/user/createuser.js"></script>
 </body>
 </html>

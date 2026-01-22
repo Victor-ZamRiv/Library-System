@@ -4,11 +4,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const areaSelect = document.getElementById('areaSelect');
 
     // 2. Obtener la etiqueta (label) del select de Área Infantil
-    // Se asume que la estructura HTML es similar a:
-    // <div class="form-group">
-    //   <label class="control-label">Área Infantil</label>
-    //   <select id="areaSelect" ...></select>
-    // </div>
     const areaLabel = areaSelect.closest('.form-group').querySelector('.control-label');
 
     // Función para añadir el asterisco al lado izquierdo de la etiqueta
@@ -640,10 +635,9 @@ document.getElementById('cota').addEventListener('input', function (e) {
     } else {
         e.target.setCustomValidity('');
     }
-    // Nota: Para Cota, la validación del evento onblur deberá ser implementada si se requiere feedback visual con clases is-invalid/is-valid.
 });
 
-// --- Lógica de verificación de formato (la mantenemos como auxiliar) ---
+// --- Lógica de verificación de formato---
 
 /**
  * Función auxiliar para verificar el formato básico del ISBN (10 o 13).
@@ -772,6 +766,20 @@ function validarCota(inputElement) {
     }
 }
 
+function validarVolumen(input) {
+    const errorDiv = document.getElementById('volumen-error');
+    
+    // Verifica si el valor cumple con el pattern [0-9]{1,2} y no está vacío
+    if (!input.checkValidity()) {
+        input.classList.add('is-invalid');
+        input.classList.remove('is-valid');
+        errorDiv.style.display = 'block';
+    } else {
+        input.classList.remove('is-invalid');
+        input.classList.add('is-valid');
+        errorDiv.style.display = 'none';
+    }
+}
 
 
 

@@ -8,19 +8,23 @@ use App\Models\Repositories\AutorRepository;
 use App\Models\Repositories\EditorialRepository;
 use App\Models\Repositories\PersonaRepository;
 use App\Models\Repositories\AdministradorRepository;
+use App\Models\Repositories\LectorRepository;
 use App\Contracts\ILibroRepository;
 use App\Contracts\IAutorRepository;
 use App\Contracts\IEditorialRepository;
 use App\Contracts\IEjemplarRepository;
 use App\Contracts\IPersonaRepository;
 use App\Contracts\IAdministradorRepository;
+use App\Contracts\ILectorRepository;
 use App\Models\Services\AuthService;
 use App\Models\Services\LibroSearchService;
 use App\Models\Services\LibroRegistrationService;
 use App\Models\Services\libroDetailService;
 use App\Models\Services\LibroUpdateService;
 use App\Models\Services\AdministradorRegistrationService;
+use App\Models\Services\LectorRegistrationService;
 use App\Models\Services\ListAdministradorService;
+use App\Models\Services\ListLectorService;
 
 $router = require __DIR__ . '/app/routes/web.php';
 
@@ -30,6 +34,7 @@ $editorialRepo = new EditorialRepository($pdo);
 $ejemplarRepo = new EjemplarRepository($pdo);
 $personaRepo = new PersonaRepository($pdo);
 $administradorRepo = new AdministradorRepository($pdo);
+$lectorRepo = new LectorRepository($pdo);
 
 $container = [
     \PDO::class => $pdo,
@@ -39,6 +44,7 @@ $container = [
     IEjemplarRepository::class => $ejemplarRepo,
     IPersonaRepository::class => $personaRepo,
     IAdministradorRepository::class => $administradorRepo,
+    ILectorRepository::class => $lectorRepo,
     LibroSearchService::class => new LibroSearchService(
         $libroRepo, $autorRepo),
     LibroRegistrationService::class => new LibroRegistrationService(
@@ -70,6 +76,15 @@ $container = [
     ),
     ListAdministradorService::class => new ListAdministradorService(
         $administradorRepo,
+        $personaRepo
+    ),
+    LectorRegistrationService::class => new LectorRegistrationService(
+        $personaRepo,
+        $lectorRepo,
+        $pdo
+    ),
+    ListLectorService::class => new ListLectorService(
+        $lectorRepo,
         $personaRepo
     ),
 ];

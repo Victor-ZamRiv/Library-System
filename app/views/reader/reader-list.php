@@ -3,20 +3,20 @@
 
 <head>
     <title>Lista de Lectores</title>
-    <?php include "../component/heat.php" ?>
+    <?php include VIEW_PATH . "/component/heat.php" ?>
 </head>
 
 <body>
-    <?php include "../component/sidebar.php" ?>
+    <?php include VIEW_PATH . "/component/sidebar.php" ?>
 
     <section class="full-box dashboard-contentPage">
-        <?php include "../component/navbar.php" ?>
+        <?php include VIEW_PATH . "/component/navbar.php" ?>
         <div class="container-fluid">
             <div class="page-header">
                 <h1 class="text-titles"> <i class="fa-solid fa-book-open-reader"></i> Lectores <small> Lista de Lectores</small></h1>
             </div>
         </div>
-        <?php include "../component/readerbar.php" ?>
+        <?php include VIEW_PATH . "/component/readerbar.php" ?>
 
         <div class="container-fluid">
             <div class="panel panel-success">
@@ -90,7 +90,7 @@
         </div>
     </section>
 
-    <?php include "../component/scripts.php" ?>
+    <?php include VIEW_PATH . "/component/scripts.php" ?>
 </body>
 
 </html>

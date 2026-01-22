@@ -3,17 +3,17 @@
 
 <title>Lectores</title>
 <!-- head -->
-<?php include "../component/heat.php" ?>
+<?php include VIEW_PATH . "/component/heat.php" ?>
 
 <body>
     <!-- SideBar -->
-    <?php include "../component/sidebar.php" ?>
+    <?php include VIEW_PATH . "/component/sidebar.php" ?>
 
 
     <!-- Content page-->
     <section class="full-box dashboard-contentPage">
         <!-- NavBar -->
-        <?php include "../component/navbar.php" ?>
+        <?php include VIEW_PATH . "/component/navbar.php" ?>
         <!-- Content page -->
 
         <div class="container-fluid">
@@ -21,7 +21,7 @@
                 <h1 class="text-titles"> <i class="fa-solid fa-book-open-reader"></i> Lectores <small> Nuevo Lector</small></h1>
             </div>
         </div>
-        <?php include "../component/readerbar.php" ?>
+        <?php include VIEW_PATH . "/component/readerbar.php" ?>
 
         <!-- Panel nuevo lector -->
         <div class="container-fluid">
@@ -322,8 +322,8 @@
     </section>
 
     <!--====== Scripts -->
-    <?php include "../component/scripts.php" ?>
-    <script src="../../../public/js/validations/reader/createvalidation.js"></script>
+    <?php include VIEW_PATH . "/component/scripts.php" ?>
+    <script src="<?= PUBLIC_PATH ?>/js/validations/reader/createvalidation.js"></script>
 </body>
 
 </html>

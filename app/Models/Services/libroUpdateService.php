@@ -42,7 +42,8 @@ class LibroUpdateService {
         array $autores,
         string $editorialNombre,
         array $ejemplaresParaDescatalogar = [],
-        int $nuevosEjemplares = 0
+        int $nuevosEjemplares = 0,
+        array $estadosEjemplares = []
     ): ?Libro {
         try {
             $this->pdo->beginTransaction();
@@ -79,15 +80,27 @@ class LibroUpdateService {
             }
 
             // 4. Ejemplares
-            // Descatalogar ejemplares seleccionados
+            // 4.1 Actualizar estados de ejemplares existentes (opcional)
             foreach ($ejemplaresParaDescatalogar as $ejemplarId) {
-                $this->ejemplarRepo->deactivate($ejemplarId);
+                /*var_dump($ejemplarId);
+                throw new Exception("Prueba");*/
+                $this->ejemplarRepo->deactivate((int)$ejemplarId);
             }
 
+            foreach ($estadosEjemplares as $id => $estado) {
+                $ejemplar = $this->ejemplarRepo->find((int)$id);
+                /*var_dump($ejemplar->getIdEjemplar());
+                var_dump($estado);
+                throw new Exception("Prueba");*/
+                if ($ejemplar && $ejemplar->getIdEjemplar() !== null) {
+                    $ejemplar->setEstado($estado);
+                    $this->ejemplarRepo->updateEstado($ejemplar);
+                }
+            }
+            // 4.2
             // Añadir nuevos ejemplares
             if ($nuevosEjemplares > 0) {
-                $ejemplaresExistentes = $this->ejemplarRepo->findByLibro($libro->getIdLibro());
-                $ultimoNumero = count($ejemplaresExistentes);
+                $ultimoNumero = $this->ejemplarRepo->getMaxNumeroEjemplar($libro->getIdLibro());
 
                 for ($i = 1; $i <= $nuevosEjemplares; $i++) {
                     $this->ejemplarRepo->insert([

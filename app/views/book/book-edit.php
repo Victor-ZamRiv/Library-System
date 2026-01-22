@@ -1,3 +1,14 @@
+<?php
+    if (isset($_SESSION['error'])) { 
+        var_dump($_SESSION['error']);
+        echo "<script>alert('" . $_SESSION['error'] . "');</script>"; 
+        unset($_SESSION['error']);
+    }
+    $autores = $libro->getAutores();
+    $editorial = $libro->getEditorial() ?? '';
+    $ejemplares = $libro->getEjemplares();
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <?php include VIEW_PATH . "/component/heat.php";
@@ -23,7 +34,7 @@
                     <h3 class="panel-title"> &nbsp; EDITAR LIBRO</h3>
                 </div>
                 <div class="panel-body">
-                    <form action="?" method="GET">
+                    <form action="<?= BASE_URL ?>/libros/update" method="POST">
                         <fieldset>
                             <input type="hidden" name="idLibro" value="<?= $libro->getIdLibro() ?>">
                             <legend> &nbsp; Información del Libro</legend>
@@ -54,13 +65,13 @@
                                         </div>
                                     </div>
 
-
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
                                             <label class="control-label" for="titulo-reg"><span class="text-danger">*</span> Título:</label>
                                             <input class="form-control mdl-textfield__input" type="text" name="titulo-reg" id="titulo-reg" maxlength="50"
                                                 pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s]+"
                                                 title="Solo se permiten letras, números y espacios"
+                                                value ="<?= htmlspecialchars($libro->getTitulo() ?? '') ?>"
                                                 required
                                                 aria-describedby="titulo-error"
                                                 onblur="validarTitulo(this)">
@@ -69,7 +80,6 @@
                                             </div>
                                         </div>
                                     </div>
-
 
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
@@ -81,6 +91,7 @@
                                                 name="cota-reg"
                                                 id="cota"
                                                 maxlength="30"
+                                                value="<?= htmlspecialchars($libro->getCota() ?? '') ?>"
                                                 required
                                                 aria-describedby="cota-error"
                                                 onblur="validarCota(this)">
@@ -91,7 +102,6 @@
                                         </div>
                                     </div>
 
-
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
                                             <label class="control-label" for="autor-reg"><span class="text-danger">*</span> Autor:</label>
@@ -101,6 +111,9 @@
                                                 id="autor-reg"
                                                 maxlength="50"
                                                 pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios"
+                                                <?php foreach ($libro->getAutores() as $autor) : ?>
+                                                    value="<?= htmlspecialchars($autor->getNombre()) ?>"
+                                                <?php endforeach; ?>
                                                 required
                                                 aria-describedby="autor-error"
                                                 onblur="formatearAutor(this); if (!this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('autor-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('autor-error').style.display = 'none'; }">
@@ -109,7 +122,6 @@
                                             </div>
                                         </div>
                                     </div>
-
 
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
@@ -120,8 +132,9 @@
                                                 class="form-control"
                                                 type="text"
                                                 name="ciudad-reg"
-                                                id="ciudad-reg"
+                                                id="ciudad"
                                                 maxlength="20"
+                                                value="<?= htmlspecialchars($libro->getCiudad() ?? '') ?>"
                                                 required
                                                 title="Solo se permiten letras y espacios, máximo 20 caracteres"
                                                 aria-describedby="ciudad-error"
@@ -134,7 +147,6 @@
                                         </div>
                                     </div>
 
-
                                     <div class="col-xs-12 col-sm-3">
                                         <div class="form-group label-floating">
                                             <label class="control-label" for="edicion-reg"><span class="text-danger">*</span> Edición:</label>
@@ -145,7 +157,8 @@
                                                 type="text"
                                                 inputmode="numeric"
                                                 name="edicion-reg"
-                                                id="edicion-reg" maxlength="3"
+                                                id="edicion" maxlength="3"
+                                                value="<?= htmlspecialchars($libro->getEdicion() ?? '') ?>"
                                                 required title="Solo se permiten números (del 1 al 999)"
                                                 aria-describedby="edicion-error"
                                                 onblur="validarEdicion(this)"
@@ -155,7 +168,6 @@
                                             </div>
                                         </div>
                                     </div>
-
 
                                     <div class="col-xs-12 col-sm-3">
                                         <div class="form-group label-floating">
@@ -167,6 +179,7 @@
                                                 type="text"
                                                 inputmode="numeric" name="year-reg"
                                                 id="year-reg" maxlength="4"
+                                                value="<?= htmlspecialchars($libro->getAnioPublicacion() ?? '') ?>"
                                                 required title="Solo se permiten 4 dígitos numéricos" aria-describedby="year-error"
                                                 onblur="validarAnio(this)"
                                                 onkeypress="return isNumberKey(event)">
@@ -193,7 +206,6 @@
                                         </div>
                                     </div>
 
-
                                     <div class="col-xs-12 col-sm-3">
                                         <div class="form-group label-floating">
                                             <label class="control-label" for="paginas-reg"><span class="text-danger">*</span> Páginas:</label>
@@ -203,6 +215,7 @@
                                                 class="form-control"
                                                 type="text" inputmode="numeric" name="paginas-reg"
                                                 id="paginas-reg" maxlength="4"
+                                                value="<?= $libro->getPaginas() ?>"
                                                 required title="Solo se permiten números, entre 1 y 4 dígitos" aria-describedby="paginas-error" onblur="validarPaginas(this)" onkeypress="return isNumberKey(event)">
 
                                             <div class="invalid-feedback bg-danger text-danger rounded-pill" id="paginas-error" style="display: none;">
@@ -210,7 +223,6 @@
                                             </div>
                                         </div>
                                     </div>
-
 
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
@@ -220,8 +232,9 @@
                                                 pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{1,70}"
                                                 class="form-control"
                                                 type="text"
-                                                name="editorial-reg"
+                                                name="editorial"
                                                 id="editorial-reg" maxlength="70"
+                                                value="<?= $editorial->getNombre() ?>"
                                                 required title="Solo se permiten letras y espacios, máximo 70 caracteres" aria-describedby="editorial-error" onblur="validarEditorial(this)">
 
                                             <div class="invalid-feedback bg-danger text-danger rounded-pill" id="editorial-error" style="display: none;">
@@ -230,7 +243,6 @@
                                         </div>
                                     </div>
 
-
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
                                             <label class="control-label" for="isbn"><span class="text-danger">*</span> ISBN:</label>
@@ -238,12 +250,13 @@
                                                 class="form-control"
                                                 type="text"
                                                 inputmode="numeric"
-                                                name="isbn-reg"
+                                                name="isbn"
                                                 id="isbn"
                                                 maxlength="17"
                                                 required
                                                 aria-describedby="isbn-error"
                                                 title="Ingrese un ISBN válido (10 o 13 caracteres)."
+                                                value="<?= htmlspecialchars($libro->getIsbn() ?? '') ?>"
                                                 oninput="formatearIsbn(this)"
                                                 onblur="validarIsbn(this)">
                                             <div class="invalid-feedback bg-danger text-danger rounded-pill" id="isbn-error" style="display: none;">
@@ -252,7 +265,6 @@
                                         </div>
                                     </div>
 
-
                                 </div>
                             </div>
                         </fieldset>
@@ -260,6 +272,17 @@
                         <hr>
 
                         <fieldset>
+                            <!-- Contenedor para inputs dinámicos de ejemplares -->
+                            <div id="ejemplares-hidden-fields">
+                            <!-- Array de IDs a descatalogar -->
+                            <!-- Se irán agregando <input type="hidden" name="ejemplares_descatalogar[]" value="ID"> desde JS -->
+                            
+                            <!-- Cantidad de nuevos ejemplares -->
+                            <input type="hidden" name="nuevos_ejemplares" id="nuevos_ejemplares" value="0">
+
+                            <!-- Estados de ejemplares existentes (pares ID->Estado) -->
+                            <!-- Se irán agregando <input type="hidden" name="estado_ejemplar[ID]" value="Disponible"> desde JS -->
+                            </div>
                             <legend><i class="fa-solid fa-copy"></i> &nbsp;Ejemplares</legend>
                             <div class="container-fluid">
                                 <div class="row">
@@ -272,6 +295,9 @@
 
                                         <div class="table-responsive">
                                             <table class="table table-hover text-center" id="ejemplares-table">
+                                                <?php if (empty($ejemplares)): ?>
+                                                    <p>No hay ejemplares registrados para este libro.</p>
+                                                <?php else:?>
                                                 <thead>
                                                     <tr>
                                                         <th class="text-center">Numero Ejemplar</th>
@@ -281,26 +307,28 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr data-ejemplar-id="ej-1">
-                                                        <td data-label="Código Ejemplar">EJ-1</td>
-                                                        <td data-label="Estado">
-                                                            <select name="estado_ejemplar_1" class="form-control" style="width: auto; display: inline-block;">
-                                                                <option value="Disponible" selected>Disponible</option>
-                                                                <option value="Prestado">Prestado</option>
-                                                                <option value="Dañado">Dañado</option>
-                                                                <option value="En Reparación">En Reparación</option>
+                                                    <?php foreach ($ejemplares as $ejemplar): ?>
+                                                    <tr data-ejemplar-id="<?= $ejemplar->getIdEjemplar() ?>">
+                                                        <td>EJ-<?= $ejemplar->getNumeroEjemplar() ?></td>
+                                                        <td>
+                                                            <select class="form-control estado-ejemplar" width=auto display=block
+                                                                    data-id="<?= $ejemplar->getIdEjemplar() ?>">
+                                                            <option value="Dañado"     <?= $ejemplar->getEstado() === 'Dañado' ? 'selected' : '' ?>>Dañado</option>
+                                                            <option value="Disponible" <?= $ejemplar->getEstado() === 'Disponible' ? 'selected' : '' ?>>Disponible</option>
+                                                            <option value="En Reparación" <?= $ejemplar->getEstado() === 'En Reparación' ? 'selected' : '' ?>>En Reparación</option>
                                                             </select>
                                                         </td>
-                                                        <td data-label="Último Préstamo">2025-10-15</td>
-                                                        <td data-label="Acciones">
-                                                            <button type="button" class="btn btn-danger btn-raised btn-xs" title="Descatalogar"
-                                                                onclick="mostrarModalEliminar(1, 'EJ-1', this)">
-                                                                <i class="fa-solid fa-trash-can"></i>
+                                                        <td>N/A</td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-danger btn-xs" title="Descatalogar"
+                                                                    onclick="mostrarModalEliminar(<?= $ejemplar->getIdEjemplar() ?>, 'EJ-<?= $ejemplar->getNumeroEjemplar() ?>', this)">
+                                                            <i class="fa-solid fa-trash-can"></i>
                                                             </button>
-                                                            <input type="hidden" name="ejemplar_eliminado_1" id="ejemplar_eliminado_1" value="0">
                                                         </td>
-                                                    </tr>
+                                                        </tr>
+                                                <?php endforeach; ?>
                                                 </tbody>
+                                                <?php endif; ?>
                                             </table>
                                         </div>
                                     </div>
@@ -321,6 +349,7 @@
                                                 name="observaciones-reg"
                                                 class="form-control"
                                                 id="observaciones-reg" rows="4"
+                                                value="<?= htmlspecialchars($libro->getObservaciones() ?? '') ?>"
                                                 maxlength="400" title="Solo se permiten letras, números y espacios. Máximo 400 caracteres." aria-describedby="observaciones-error" onblur="validarObservaciones(this)"></textarea>
 
                                             <div class="invalid-feedback bg-danger text-danger rounded-pill" id="observaciones-error" style="display: none;">
@@ -358,7 +387,6 @@
                                 </div>
                             </div>
                         </div>
-
 
                         <p class="text-center " style="margin-top: 20px">
                             <button type="submit" class="btn btn-success btn-raised btn-lg" style="background-color: #5cb85c; border-color: #5cb85c;" id="btn-enviar-libro"> Enviar</button>

@@ -15,6 +15,7 @@ class Lector extends Persona {
     private ?string $refLaboralTel;
     private ?string $estado; // Activo, Inactivo, Inhabilitado
     private ?string $vencimientoCarnet;
+    private Persona $persona;
 
     public function __construct(
         ?int $idLector = null,
@@ -62,6 +63,7 @@ class Lector extends Persona {
     public function getRefLaboralTel(): ?string { return $this->refLaboralTel; }
     public function getEstado(): ?string { return $this->estado; }
     public function getVencimientoCarnet(): ?string { return $this->vencimientoCarnet; }
+    public function getPersona(): Persona { return $this->persona; }
     // Setters
     public function setCarnet(?string $carnet): void { $this->carnet = $carnet; }
     public function setSexo(?string $sexo): void { $this->sexo = $sexo; }
@@ -75,5 +77,6 @@ class Lector extends Persona {
     public function setRefLaboralTel(?string $refLaboralTel): void { $this->refLaboralTel = $refLaboralTel; }
     public function setEstado(?string $estado): void { $this->estado = $estado; }
     public function setVencimientoCarnet(?string $vencimientoCarnet): void { $this->vencimientoCarnet = $vencimientoCarnet; }
+    public function setPersona(Persona $persona): void { $this->persona = $persona; }
 
 }

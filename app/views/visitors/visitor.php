@@ -9,11 +9,11 @@ include "../component/heat.php";
 <body>
 
     <?php
-    include "../component/sidebar.php";
+    include VIEW_PATH . "/component/sidebar.php";
     ?>
     <section class="full-box dashboard-contentPage">
         <?php
-        include "../component/navbar.php";
+        include VIEW_PATH . "/component/navbar.php";
         ?>
         <div class="container-fluid">
             <div class="page-header">
@@ -108,7 +108,7 @@ include "../component/heat.php";
     </section>
 
     <?php
-    include "../component/scripts.php";
+    include VIEW_PATH . "/component/scripts.php";
     ?>
 </body>
 </html>

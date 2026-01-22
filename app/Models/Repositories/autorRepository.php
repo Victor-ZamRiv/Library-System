@@ -41,12 +41,12 @@ class AutorRepository extends baseRepository implements IAutorRepository{
     }
 
     public function deleteRelacionesPorLibro(int $idLibro): bool {
-        $sql = "DELETE FROM libro_autores WHERE ID_Libro = ?";
+        $sql = "DELETE FROM libros_autores WHERE ID_Libro = ?";
         return $this->pdo->prepare($sql)->execute([$idLibro]);
     }
 
     public function vincularConLibro(int $idLibro, int $idAutor): bool {
-        $sql = "INSERT INTO libro_autores (ID_Libro, ID_Autor) VALUES (?, ?)";
+        $sql = "INSERT INTO libros_autores (ID_Libro, ID_Autor) VALUES (?, ?)";
         return $this->pdo->prepare($sql)->execute([$idLibro, $idAutor]);
     }
 

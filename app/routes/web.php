@@ -23,7 +23,15 @@ $router->get('/logout', 'AuthController@logout');
 $router->get('/administradores', 'AdministradorController@list');
 $router->get('/administradores/register', 'AdministradorController@create');
 $router->post('/administradores/store', 'AdministradorController@store');
+$router->get('/administradores/edit', 'AdministradorController@edit');
+$router->post('/administradores/update', 'AdministradorController@update');
+$router->get('/administradores/show', 'AdministradorController@show');
 
-
+// Rutas para lectores
+$router->get('/lectores', 'LectorController@list');
+$router->get('/lectores/show', 'LectorController@show');
+$router->get('/lectores/delete', 'LectorController@delete');
+$router->get('/lectores/create', 'LectorController@create');
+$router->post('/lectores/store', 'LectorController@store');
 
 return $router;

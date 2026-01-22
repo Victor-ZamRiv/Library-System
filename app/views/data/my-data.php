@@ -3,13 +3,13 @@
 
 <!-- heat -->
 <?php
-include "../component/heat.php";
+include VIEW_PATH . "/component/heat.php";
 ?>
 
 <body>
 	<!-- SideBar -->
 	<?php
-	include "../component/sidebar.php";
+	include VIEW_PATH . "/component/sidebar.php";
 	?>
 	<!-- contenido de la barra lateral -->
 
@@ -17,7 +17,7 @@ include "../component/heat.php";
 	<section class="full-box dashboard-contentPage">
 		<!-- NavBar -->
 		<?php
-		include "../component/navbar.php";
+		include VIEW_PATH . "/component/navbar.php";
 		?>
 		<!-- Content page -->
 		<div class="container-fluid">
@@ -74,7 +74,7 @@ include "../component/heat.php";
 
 	<!--====== Scripts -->
 	<?php
-	include "../component/scripts.php";
+	include VIEW_PATH . "/component/scripts.php";
 	?>
 </body>
 

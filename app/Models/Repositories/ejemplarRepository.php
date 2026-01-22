@@ -26,7 +26,7 @@ class EjemplarRepository extends BaseRepository implements IEjemplarRepository {
         return (int)$this->pdo->lastInsertId();
     }
 
-    // Obtiene todos los ejemplares de un libro
+    // Metodos de lectura
 
     public function find(int $id): ?Ejemplar {
         $row = $this->fetchById($id);
@@ -34,7 +34,7 @@ class EjemplarRepository extends BaseRepository implements IEjemplarRepository {
     }
     
     public function findByLibro(int $libroId): array {
-        $sql = "SELECT * FROM ejemplares WHERE ID_Libro = :libroId";
+        $sql = "SELECT * FROM ejemplares WHERE ID_Libro = :libroId AND Activo = 1";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':libroId' => $libroId]);
 
@@ -52,6 +52,17 @@ class EjemplarRepository extends BaseRepository implements IEjemplarRepository {
         return $ejemplares;
     }
 
+    public function getMaxNumeroEjemplar(int $idLibro): int {
+        $sql = "SELECT MAX(Numero_Ejemplar) as max_numero 
+                FROM ejemplares 
+                WHERE ID_Libro = :idLibro";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':idLibro' => $idLibro]);
+        $max = $stmt->fetchColumn();
+        return $max ? (int)$max : 0;
+    }
+
+
     // Actualiza el estado de un ejemplar
 
     public function updateEstado(Ejemplar $ejemplar): bool {
@@ -59,17 +70,16 @@ class EjemplarRepository extends BaseRepository implements IEjemplarRepository {
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             ':estado' => $ejemplar->getEstado(),
-            ':id' => $ejemplar->getId()
+            ':id' => $ejemplar->getIdEjemplar()
         ]);
     }
-
-    // Marca un ejemplar como inactivo (eliminado lógico)
-
+    
     public function deactivate(int $ejemplarId): void {
         $sql = "UPDATE ejemplares SET Activo = 0 WHERE ID_Ejemplar = :id";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':id' => $ejemplarId]);
     }
+
     protected function mapToEntity(array $row): object {
         return Ejemplar::fromArray($row);
     }

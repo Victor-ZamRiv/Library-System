@@ -93,7 +93,7 @@ class LibroController extends BaseController {
             return "ID inválido";
         }
 
-        $libro = $this->repo->find((int)$id);
+        $libro = $this->libroDetailsService->obtenerDetallesLibro((int)$id);
         if (!$libro) {
             http_response_code(404);
             return "Libro no encontrado";
@@ -102,72 +102,77 @@ class LibroController extends BaseController {
         return $this->render('book/book-edit', ['libro' => $libro]);
     }
 
+    
     public function update() {
-        // 1. Capturar el ID que viene del formulario (hidden input)
-            $idLibro = (int)$this->input('id_libro', 0);
-            $cota = $this->input('cota', '');
-            $editorialNombre = $this->input('editorial', '');
-            $autores = $this->input('autores', []); // array de nombres
-            $ejemplaresDescatalogar = $this->input('ejemplares_descatalogar', []); // array de IDs
-            $nuevosEjemplares = (int)$this->input('nuevos_ejemplares', 0);
-
+        $idLibro = (int)$this->input('idLibro', 0);
 
         try {
             if (!$idLibro) {
                 throw new \Exception("ID de libro no proporcionado.");
             }
 
-            // 2. Buscar el libro actual en la base de datos
-            $libro = $this->repo->find((int)$idLibro);
+            $libro = $this->repo->find($idLibro);
             if (!$libro) {
                 throw new \Exception("El libro que intenta editar no existe.");
             }
 
-            // 3. Validar la Cota: que no exista en OTRO libro (excluyendo el actual)
+            // Validar cota
+            $cota = $this->input('cota-reg', '');
             if ($this->repo->existsCota($cota, $idLibro)) {
-                throw new \RuntimeException("La cota '{$cota}' ya está asignada a otro libro.");
+                throw new \App\Exceptions\RegistroLibroException("La cota '{$cota}' ya está asignada a otro libro.");
             }
 
-            // 4. Actualizar las propiedades del objeto Libro con los datos de $_POST
+            // Actualizar propiedades con los nombres correctos de los inputs
+            $libro->setIdSala($this->input('sala-reg', $libro->getIdSala()));
             $libro->setCota($cota);
-            $libro->setTitulo($this->input('titulo', ''));
-            $libro->setIsbn($this->input('isbn'));
-            $libro->setAnioPublicacion($this->input('year'));
-            $libro->setPaginas($this->input('paginas'));
-            $libro->setIdEditorial((int)$this->input('editorial', 0));
-            $libro->setIdSala($this->input('sala-reg'));
-            $libro->setEdicion($this->input('edicion'));
-            $libro->setVolumen($this->input('Volume'));
-            $libro->setCiudad($this->input('ciudad'));
-            $libro->setObservaciones($this->input('observaciones'));
+            $libro->setTitulo($this->input('titulo-reg', $libro->getTitulo()));
+            $libro->setIsbn($this->input('isbn', $libro->getIsbn()));
+            $libro->setAnioPublicacion($this->input('year-reg', $libro->getAnioPublicacion()));
+            $libro->setPaginas($this->input('paginas-reg', $libro->getPaginas()));
+            $libro->setEdicion($this->input('edicion-reg', $libro->getEdicion()));
+            $libro->setVolumen($this->input('volumen-reg', $libro->getVolumen())); // corrige el name en la vista
+            $libro->setCiudad($this->input('ciudad-reg', $libro->getCiudad()));
+            $libro->setObservaciones($this->input('observaciones', $libro->getObservaciones()));
 
-            // 5. Llamar al método update dinámico del Repositorio
+            // Autores y editorial
+            $autores = $this->input('autor-reg', []); // ajusta a array si permites múltiples
+            $editorialNombre = $this->input('editorial', '');
+
+            // Ejemplares
+            $ejemplaresDescatalogar = $this->input('ejemplares_descatalogar', []);
+            $nuevosEjemplares = (int)$this->input('nuevos_ejemplares', 0);
+            $estadosEjemplares = $this->input('estado_ejemplar', []); // array asociativo [id => estado]
+            /*    var_dump($estadosEjemplares);
+                var_dump($ejemplaresDescatalogar);
+                var_dump($_POST);
+            throw new \Exception("Prueba de error antes de actualizar.");*/
+
             $libroActualizado = $this->libroUpdateService->actualizar(
                 $libro,
-                $autores,
+                (array)$autores,
                 $editorialNombre,
-                $ejemplaresDescatalogar,
-                $nuevosEjemplares
+                (array)$ejemplaresDescatalogar,
+                $nuevosEjemplares,
+                (array)$estadosEjemplares
             );
 
             if (!$libroActualizado) {
                 throw new \Exception("No se pudieron guardar los cambios en la base de datos.");
             }
 
-            // 6. Todo salió bien: Mensaje de éxito y redirección a detalles
             $_SESSION['success'] = "Libro actualizado correctamente.";
             $this->redirect("/libros/show?id=" . $idLibro);
 
-        } catch (\RuntimeException $e) {
-            // Error de validación (Cota duplicada, etc.)
+        } catch (\App\Exceptions\RegistroLibroException $e) {
             $_SESSION['old_data'] = $_POST;
             $_SESSION['error'] = $e->getMessage();
             $this->redirect("/libros/edit?id=" . $idLibro);
-
         } catch (\Exception $e) {
-            // Error técnico o inesperado
-            $_SESSION['error'] = "Error al actualizar: " . $e->getMessage();
-            $this->redirect("/libros/edit?id=" . $idLibro);
+            http_response_code(500);
+            return $this->render('errors/error', [
+                'mensaje' => "Ocurrió un error inesperado al actualizar el libro.",
+                'detalle' => $e->getMessage()
+            ]);
         }
     }
 

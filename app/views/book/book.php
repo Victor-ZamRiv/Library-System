@@ -26,9 +26,8 @@ unset($_SESSION['old_data'], $_SESSION['error']); // Limpiar para que no aparezc
 
         <div class="container-fluid">
             <?php if ($error): ?>
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <div class="alert alert-danger" role="alert">
                     <strong>Error:</strong> <?= htmlspecialchars($error) ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             <?php endif; ?>
             <div class="panel panel-info">
@@ -269,7 +268,7 @@ unset($_SESSION['old_data'], $_SESSION['error']); // Limpiar para que no aparezc
                                                 name="ISBN"
                                                 id="isbn"
                                                 maxlength="17"
-                                                value="<?= htmlspecialchars($old['isbn'] ?? '') ?>"
+                                                value="<?= htmlspecialchars($old['ISBN'] ?? '') ?>"
                                                 required
                                                 aria-describedby="isbn-error"
                                                 title="Ingrese un ISBN válido (10 o 13 caracteres)."

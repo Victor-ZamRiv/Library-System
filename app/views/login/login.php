@@ -1,3 +1,7 @@
+<?php 
+if ($_SESSION)
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -19,11 +23,20 @@
                 <h2>Iniciar Sesión</h2>
                 <form action="<?= BASE_URL ?>/login" method="POST">
                     <div class="input-group">
-                        <input type="text" id="username" name="username" placeholder="Usuario" required>
+                        <input type="text" id="username" name="username" placeholder="Usuario" 
+                        <?php if (isset($_SESSION['old_data']['usuario'])): ?>
+                            value="<?= htmlspecialchars($_SESSION['old_data']['usuario']); unset($_SESSION['old_data']['usuario']); ?>"
+                        <?php endif; ?>
+                        required>
                     </div>
                     <div class="input-group">
                         <input type="password" id="password" name="password" placeholder="Contraseña" required>
                     </div>
+                    <?php if (isset($_SESSION['error'])): ?>
+                        <div class="alert alert-danger">
+                            <?= $_SESSION['error']; unset($_SESSION['error']); ?>
+                        </div>
+                    <?php endif; ?>
                     <button type="submit">ACCEDER</button>
 
                 </form> <br>

@@ -1,4 +1,5 @@
 <?php
+
 $password_ingresada = 'holamundo'; // Lo que crees que pusiste
 $hash_en_db = '$2y$10$Hk2E9b3D1CJvJwwG8xusOeXSWln23qTsCArlLB/87J4npLqlYSvg6'; // El hash que ves en tu tabla administradores
 
