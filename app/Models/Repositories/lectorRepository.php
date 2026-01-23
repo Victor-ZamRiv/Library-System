@@ -57,6 +57,11 @@ class LectorRepository extends BaseRepository implements ILectorRepository {
             throw new \InvalidArgumentException("El lector ya tiene ID, no puede insertarse");
         }
 
+        if ($lector->getCarnet() && $this->findByCarnet($lector->getCarnet())) {
+            throw new \RuntimeException("El carnet '{$lector->getCarnet()}' ya está registrado.");
+        }
+
+
         $sql = "INSERT INTO lectores (
                     ID_Persona, Carnet, Sexo, Direccion, Profesion, 
                     Telefono_Profesion, Direccion_Profesion, Ref_Personal, Ref_Personal_Tel, 

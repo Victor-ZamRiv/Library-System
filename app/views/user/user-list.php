@@ -30,16 +30,18 @@
 				</div>
 				<div class="panel-body">
 					<div class="row">
-                        <div class="col-xs-12 col-md-6">
-                            <div class="form-group label-floating">
-                                <label class="control-label">¿A quién buscas?</label>
-                                <input type="text" class="form-control" id="inputSearch">
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-md-6 text-right">
-                            <br>
-                            <button class="btn btn-info btn-raised btn-sm"><i class="zmdi zmdi-search"></i> Buscar</button>
-                        </div>
+						<form action="<?= BASE_URL ?>/administradores/search">
+							<div class="col-xs-12 col-md-6">
+								<div class="form-group label-floating">
+									<label class="control-label">¿A quién buscas?</label>
+									<input type="text" class="form-control" name="buscar" id="inputSearch">
+								</div>
+							</div>
+							<div class="col-xs-12 col-md-6 text-right">
+								<br>
+								<button type="submit" class="btn btn-info btn-raised btn-sm"><i class="zmdi zmdi-search"></i> Buscar</button>
+							</div>
+						</form>		
                     </div>
 					<br>
 
@@ -58,14 +60,16 @@
 							</thead>
 							<tbody>
 								<tr>
+									<?php if (empty($administradores)): ?>
+										<td colspan="7">No se encontraron administradores.</td>
+									<?php else: ?>
 									<?php foreach ($administradores as $admin): ?>
 									<td><?= htmlspecialchars($admin->getNombreUsuario()) ?></td>
 									<td><?= htmlspecialchars($admin->getPersona()->getCedula()) ?></td>
 									<td><?= htmlspecialchars($admin->getPersona()->getNombre()) ?></td>
 									<td><?= htmlspecialchars($admin->getPersona()->getApellido()) ?></td>
 									<td><?= htmlspecialchars($admin->getPersona()->getTelefono()) ?></td>
-									<?php endforeach; ?>
-
+									
 									<td>
 										<a href="#!" class="btn btn-success btn-raised btn-sm">
 
@@ -78,6 +82,8 @@
 											<i class="fa-solid fa-info"></i>
 										</a>
 									</td>
+									<?php endforeach; ?>
+									<?php endif; ?>
 								</tr>
 								
 							</tbody>

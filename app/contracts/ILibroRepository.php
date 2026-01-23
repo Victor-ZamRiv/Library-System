@@ -11,5 +11,6 @@ interface ILibroRepository {
     public function update(Libro $libro): bool;
     public function find(int $id): ?Libro;
     public function existsCota(string $cota): bool;
+    public function existsISBN(string $isbn, ?int $excludeId = null): bool;
     public function deactivate(int $id): void;
 }

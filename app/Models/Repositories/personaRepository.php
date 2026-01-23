@@ -49,6 +49,10 @@ class PersonaRepository extends BaseRepository Implements IPersonaRepository {
             throw new \InvalidArgumentException("La persona ya tiene ID, no puede insertarse");
         }
 
+        if ($this->findByCedula($persona->getCedula())) {
+            throw new \RuntimeException("La cédula '{$persona->getCedula()}' ya está registrada.");
+        }
+
         $sql = "INSERT INTO persona (Cedula, Nombre, Apellido, Telefono)
                 VALUES (:cedula, :nombre, :apellido, :telefono)";
         $stmt = $this->pdo->prepare($sql);

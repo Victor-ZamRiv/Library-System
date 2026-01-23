@@ -4,7 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Registro de Logros</title>
-    <?php include VIEW_PATH . "/component/heat.php"; ?>
+    <?php 
+    $old = $_SESSION['old'] ?? [];
+    $error = $_SESSION['error'] ?? null;
+    unset($_SESSION['old'], $_SESSION['error']);
+    include VIEW_PATH . "/component/heat.php"; ?>
 </head>
 
 <body>
@@ -26,23 +30,28 @@
         <div class="container-fluid text-center" style="max-width: 900px;">
             <div class="card shadow-lg p-3 mb-4 bg-white rounded text-left">
                 <div class="card-body">
+                    <?php if ($error): ?>
+                        <div class="alert alert-danger">
+                            <?= htmlspecialchars($error) ?>
+                        </div>
+                    <?php endif; ?>
                     <h3 class="text-center text-titles">Nuevo Logro Alcanzado</h3>
                     <hr>
                     
-                    <form action="controlador_registro_logros.php" method="POST">
-                        
+                    <form action="<?= BASE_URL ?>/logro/store" method="POST">
+                        <input type="hidden" name="idAdmin" value="<?= $_SESSION['administrador']['id'] ?>">                        
                         <div class="row">
                             <div class="col-xs-12 col-sm-6">
                                 <div class="form-group">
                                     <label class="control-label">Fecha del Logro:</label>
-                                    <input type="date" class="form-control" name="fecha_logro" required>
+                                    <input type="date" value="<?= htmlspecialchars($old['fecha'] ?? '') ?>" class="form-control" name="fecha" required>
                                 </div>
                             </div>
 
                             <div class="col-xs-12 col-sm-6">
                                 <div class="form-group">
                                     <label class="control-label">Involucrados:</label>
-                                    <input type="text" class="form-control" name="involucrados" placeholder="Ej: Equipo de Mantenimiento, Juan Pérez..." required>
+                                    <input type="text" value="<?= htmlspecialchars($old['involucrados'] ?? '') ?>" class="form-control" name="involucrados" placeholder="Ej: Equipo de Mantenimiento, Bibliotecarios..." required>
                                     <small class="text-muted">Personas o departamentos que participaron.</small>
                                 </div>
                             </div>
@@ -50,7 +59,7 @@
 
                         <div class="form-group">
                             <label class="control-label">Descripción del Logro:</label>
-                            <textarea class="form-control" name="descripcion_logro" rows="5" placeholder="Describa detalladamente el éxito o meta alcanzada..." required></textarea>
+                            <textarea class="form-control" name="descripcion" rows="5" placeholder="Describa el éxito o meta alcanzada..." required><?= htmlspecialchars($old['descripcion'] ?? '') ?></textarea>
                         </div>
 
                         <div class="form-group text-right">

@@ -5,6 +5,7 @@ use App\Core\BaseController;
 use App\Models\Services\AdministradorRegistrationService;
 use App\Models\Services\ListAdministradorService;
 use App\Contracts\IAdministradorRepository;
+use App\Contracts\IPersonaRepository;
 use App\Models\Entities\Persona;
 use App\Models\Entities\Administrador;
 use RuntimeException;
@@ -14,15 +15,36 @@ class AdministradorController extends BaseController {
     private AdministradorRegistrationService $registrationService;
     private ListAdministradorService $listAdminService;
     private IAdministradorRepository $adminRepo;
+    private IPersonaRepository $personaRepo;
 
-    public function __construct(AdministradorRegistrationService $registrationService, ListAdministradorService $listAdminService, IAdministradorRepository $adminRepo) {
+    public function __construct(AdministradorRegistrationService $registrationService, ListAdministradorService $listAdminService, IAdministradorRepository $adminRepo, IPersonaRepository $personaRepo) {
         $this->registrationService = $registrationService;
         $this->listAdminService = $listAdminService;
         $this->adminRepo = $adminRepo;
+        $this->personaRepo = $personaRepo;
     }
 
     public function list(): string {
         $administradores = $this->listAdminService->listar();
+        return $this->render('user/user-list', ['administradores' => $administradores]);
+    }
+
+    public function show(): string {
+        $id = (int)$this->input('id', 0);
+        $administrador = $this->adminRepo->find($id);
+
+        if (!$administrador) {
+            http_response_code(404);
+            return "Administrador no encontrado";
+        }
+        $administrador->setPersona($this->personaRepo->find($administrador->getIdPersona()));
+        //var_dump($administrador);
+        return $this->render('data/my-data', ['administrador' => $administrador]);
+    }
+
+    public function search(): string {
+        $input = $this->input('buscar', '');
+        $administradores = $this->listAdminService->search($input);
         return $this->render('user/user-list', ['administradores' => $administradores]);
     }
 

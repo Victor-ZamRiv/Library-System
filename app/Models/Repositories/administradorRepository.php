@@ -33,12 +33,51 @@ class AdministradorRepository extends BaseRepository implements IAdministradorRe
         return $row ? $this->mapToEntity($row) : null;
     }
 
+    public function existsUsername(string $username, ?int $excludeId = null): bool {
+        $sql = "SELECT COUNT(*) FROM {$this->table} WHERE Nombre_Usuario = :username";
+        $params = [':username' => $username];
+
+        if ($excludeId !== null) {
+            $sql .= " AND {$this->primaryKey} != :excludeId";
+            $params[':excludeId'] = $excludeId;
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchColumn() > 0;
+    }
+
+    public function duplicatePersona(int $idPersona): bool {
+        $sql = "SELECT COUNT(*) FROM {$this->table} WHERE ID_Persona = :idPersona";
+        $params = [':idPersona' => $idPersona];
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchColumn() > 0;
+    }
+
+    public function search(string $input): array {
+        $sql = "SELECT * FROM {$this->table} WHERE Activo = 1";
+        $params = [];
+
+        if (!empty($input)) {
+            $sql .= " AND Nombre_Usuario LIKE :nombreUsuario";
+            $params[':nombreUsuario'] = '%' . $input . '%';
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        $rows = $stmt->fetchAll();
+
+        return array_map(fn($row) => $this->mapToEntity($row), $rows);
+    }
+
     public function insert(Administrador $Administrador): int {
         if ($Administrador->getIdAdministrador() !== null) {
             throw new \InvalidArgumentException("El Administrador ya tiene ID, no puede insertarse");
         }
 
-        $sql = "INSERT INTO administradores (ID_Persona, Nombre_Usuario, Contrasena, Rol, Activo)
+        $sql = "INSERT INTO administradores (ID_Persona, Nombre_Usuario, ContrasenaHash, Rol, Activo)
                 VALUES (:idPersona, :nombreUsuario, :contrasena, :rol, :activo)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
@@ -54,7 +93,7 @@ class AdministradorRepository extends BaseRepository implements IAdministradorRe
 
     public function update(Administrador $Administrador): bool {
         $sql = "UPDATE administradores 
-                SET ID_Persona = :idPersona, Nombre_Usuario = :nombreUsuario, Contrasena = :contrasena, Rol = :rol, Activo = :activo
+                SET ID_Persona = :idPersona, Nombre_Usuario = :nombreUsuario, ContrasenaHash = :contrasena, Rol = :rol, Activo = :activo
                 WHERE ID_Administrador = :id";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([

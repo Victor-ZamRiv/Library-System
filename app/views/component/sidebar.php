@@ -10,11 +10,11 @@
 		<div class="full-box dashboard-sideBar-UserInfo">
 			<figure class="full-box">
 				<img src=<?php echo PUBLIC_PATH . "/assets/avatars/AdminMaleAvatar.png"?> alt="UserIcon">
-				<figcaption class="text-center text-titles">Nombre de usuario</figcaption>
+				<figcaption class="text-center text-titles"><?= $_SESSION['administrador']['nombre_usuario'] ?></figcaption>
 			</figure>
 			<ul class="full-box list-unstyled text-center">
 				<li>
-					<a href="../data/my-data.php" title="Mis datos">
+					<a href="<?= BASE_URL ?>/administradores/show?id=<?= $_SESSION['administrador']['id'] ?>" title="Mis datos">
 						<i class="fa-solid fa-user"></i>
 					</a>
 				</li>
@@ -58,10 +58,13 @@
 				</a>
 				<ul class="list-unstyled full-box">
 					<li>
-						<a href="<?= BASE_URL ?>/evento/actividad"> Registro de Actividades</a>
+						<a href="<?= BASE_URL ?>/actividad/create"> Registro de Actividades</a>
 					</li>
 					<li>
-						<a href="<?= BASE_URL ?>/evento/logro.php"> Registro de Logros</a>
+						<a href="<?= BASE_URL ?>/logro/create"> Registro de Logros</a>
+					</li>
+					<li>
+						<a href="<?= BASE_URL ?>/evento-list"> Lista de Eventos</a>
 					</li>
 
 				</ul>

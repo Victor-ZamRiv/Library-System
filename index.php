@@ -9,6 +9,8 @@ use App\Models\Repositories\EditorialRepository;
 use App\Models\Repositories\PersonaRepository;
 use App\Models\Repositories\AdministradorRepository;
 use App\Models\Repositories\LectorRepository;
+use App\Models\Repositories\ActividadRepository;
+use App\Models\Repositories\LogroRepository;
 use App\Contracts\ILibroRepository;
 use App\Contracts\IAutorRepository;
 use App\Contracts\IEditorialRepository;
@@ -16,6 +18,8 @@ use App\Contracts\IEjemplarRepository;
 use App\Contracts\IPersonaRepository;
 use App\Contracts\IAdministradorRepository;
 use App\Contracts\ILectorRepository;
+use App\Contracts\IActividadRepository;
+use App\Contracts\ILogroRepository;
 use App\Models\Services\AuthService;
 use App\Models\Services\LibroSearchService;
 use App\Models\Services\LibroRegistrationService;
@@ -35,6 +39,8 @@ $ejemplarRepo = new EjemplarRepository($pdo);
 $personaRepo = new PersonaRepository($pdo);
 $administradorRepo = new AdministradorRepository($pdo);
 $lectorRepo = new LectorRepository($pdo);
+$actividadRepo = new ActividadRepository($pdo);
+$logroRepo = new LogroRepository($pdo);
 
 $container = [
     \PDO::class => $pdo,
@@ -45,6 +51,8 @@ $container = [
     IPersonaRepository::class => $personaRepo,
     IAdministradorRepository::class => $administradorRepo,
     ILectorRepository::class => $lectorRepo,
+    IActividadRepository::class => $actividadRepo,
+    ILogroRepository::class => $logroRepo,
     LibroSearchService::class => new LibroSearchService(
         $libroRepo, $autorRepo),
     LibroRegistrationService::class => new LibroRegistrationService(

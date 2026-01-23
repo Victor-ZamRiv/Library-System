@@ -1,9 +1,7 @@
 <?php 
-if(isset($_SESSION['error'])) {
-    $errorMessage = $_SESSION['error'];
-    var_dump($errorMessage);
-    unset($_SESSION['error']);
-}
+$old = $_SESSION['old_data'] ?? [];
+$error = $_SESSION['error'] ?? null;
+unset($_SESSION['old_data'], $_SESSION['error']);
 ?>
 
 <!DOCTYPE html>
@@ -52,6 +50,7 @@ if(isset($_SESSION['error'])) {
                                                 type="text"
                                                 name="carnet-reg"
                                                 id="carnet-reg"
+                                                value="<?= htmlspecialchars($old['carnet-reg'] ?? '') ?>"
                                                 required
                                                 minlength="10"
                                                 maxlength="10"
@@ -73,6 +72,7 @@ if(isset($_SESSION['error'])) {
                                                 type="text"
                                                 name="cedula"
                                                 id="cedula-reg"
+                                                value="<?= htmlspecialchars($old['cedula'] ?? '') ?>"
                                                 required
                                                 maxlength="8"
                                                 minlength="6"
@@ -93,6 +93,7 @@ if(isset($_SESSION['error'])) {
                                                 type="text"
                                                 name="nombre-reg"
                                                 id="nombre-reg"
+                                                value="<?= htmlspecialchars($old['nombre-reg'] ?? '') ?>"
                                                 required
                                                 maxlength="30"
                                                 title="Solo letras y espacios (máximo 30 caracteres)"
@@ -112,6 +113,7 @@ if(isset($_SESSION['error'])) {
                                                 type="text"
                                                 name="apellido-reg"
                                                 id="apellido-reg"
+                                                value="<?= htmlspecialchars($old['apellido-reg'] ?? '') ?>"
                                                 required
                                                 maxlength="30"
                                                 title="Solo letras y espacios (máximo 30 caracteres)"
@@ -126,9 +128,9 @@ if(isset($_SESSION['error'])) {
                                         <div class="form-group label-floating">
                                             <label class="control-label" for="sexo-reg"><span class="text-danger">*</span> Sexo</label>
                                             <select class="form-control" name="sexo-reg" id="sexo-reg" required>
-                                                <option value="" disabled selected>Seleccione el sexo</option>
-                                                <option value="M">Masculino</option>
-                                                <option value="F">Femenino</option>
+                                                <option value="" disabled <?php if (isset($old['sexo-reg']) && $old['sexo-reg'] == '') echo 'selected'; ?>>Seleccione el sexo</option>
+                                                <option value="M" <?php if (isset($old['sexo-reg']) && $old['sexo-reg'] == 'M') echo 'selected'; ?>>Masculino</option>
+                                                <option value="F" <?php if (isset($old['sexo-reg']) && $old['sexo-reg'] == 'F') echo 'selected'; ?>>Femenino</option>
                                             </select>
                                         </div>
                                     </div>
@@ -140,6 +142,7 @@ if(isset($_SESSION['error'])) {
                                                 type="text"
                                                 name="direccion-reg"
                                                 id="direccion-reg"
+                                                value="<?= htmlspecialchars($old['direccion-reg'] ?? '') ?>"
                                                 required
                                                 maxlength="100"
                                                 title="Dirección (máximo 100 caracteres)"
@@ -159,6 +162,7 @@ if(isset($_SESSION['error'])) {
                                                 type="text"
                                                 name="telefono-reg"
                                                 id="telefono-reg"
+                                                value="<?= htmlspecialchars($old['telefono-reg'] ?? '') ?>"
                                                 maxlength="11" placeholder="XXXXXXXXXXX" title="Solo números (11 caracteres)"
                                                 aria-describedby="telefono-error"
                                                 onblur="if (this.value !== '' && !this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('telefono-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('telefono-error').style.display = 'none'; }">
@@ -186,6 +190,7 @@ if(isset($_SESSION['error'])) {
                                                 type="text"
                                                 name="profesion-reg"
                                                 id="profesion-reg"
+                                                value="<?= htmlspecialchars($old['profesion-reg'] ?? '') ?>"
                                                 maxlength="50"
                                                 title="Solo letras y espacios (máximo 50 caracteres)"
                                                 aria-describedby="profesion-error"
@@ -203,6 +208,7 @@ if(isset($_SESSION['error'])) {
                                                 type="text"
                                                 name="direccion-profesion-reg"
                                                 id="direccion-profesion-reg"
+                                                value="<?= htmlspecialchars($old['direccion-profesion-reg'] ?? '') ?>"
                                                 maxlength="100"
                                                 title="Dirección de la Profesión (máximo 100 caracteres)"
                                                 aria-describedby="direccion-profesion-error"
@@ -221,6 +227,7 @@ if(isset($_SESSION['error'])) {
                                                 type="text"
                                                 name="telefono-profesion-reg"
                                                 id="telefono-profesion-reg"
+                                                value="<?= htmlspecialchars($old['telefono-profesion-reg'] ?? '') ?>"
                                                 maxlength="11"
                                                 placeholder="XXXX-XXXXXXX"
                                                 title="Solo números (11 dígitos)"
@@ -250,6 +257,7 @@ if(isset($_SESSION['error'])) {
                                                 type="text"
                                                 name="ref-legal-reg"
                                                 id="referencia-legal-personal-reg"
+                                                value="<?= htmlspecialchars($old['ref-legal-reg'] ?? '') ?>"
                                                 maxlength="100"
                                                 title="Solo letras y espacios (máximo 100 caracteres)"
                                                 aria-describedby="referencia-legal-personal-error"
@@ -268,6 +276,7 @@ if(isset($_SESSION['error'])) {
                                                 type="text"
                                                 name="ref-personal-reg"
                                                 id="referencia-personal-reg"
+                                                value="<?= htmlspecialchars($error['ref-personal-reg'] ?? '') ?>"
                                                 maxlength="100"
                                                 title="Solo letras y espacios (máximo 100 caracteres)"
                                                 aria-describedby="referencia-personal-error"
@@ -286,6 +295,7 @@ if(isset($_SESSION['error'])) {
                                                 type="text"
                                                 name="telefono-ref-legal-reg"
                                                 id="telefono-referencia-legal-reg"
+                                                value="<?= htmlspecialchars($old['telefono-ref-legal-reg'] ?? '') ?>"
                                                 maxlength="11"
                                                 placeholder="XXXX-XXXXXXX"
                                                 title="Solo números (11 dígitos)"
@@ -305,6 +315,7 @@ if(isset($_SESSION['error'])) {
                                                 type="text"
                                                 name="telefono-ref-personal-reg"
                                                 id="telefono-referencia-personal-reg"
+                                                value="<?= htmlspecialchars($old['telefono-ref-personal-reg'] ?? '') ?>"
                                                 maxlength="11"
                                                 placeholder="XXXX-XXXXXXX"
                                                 title="Solo números(11 dígitos)"

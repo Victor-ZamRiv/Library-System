@@ -33,10 +33,14 @@ class AdministradorRegistrationService {
             $personaExistente = $this->personaRepo->findByCedula($persona->getCedula());
 
             if ($personaExistente) {
-                $idPersona = $personaExistente->getIdPersona();
+                $idPersona = $personaExistente->getIdPersona();                
             } else {
                 // Insertar nueva persona
                 $idPersona = $this->personaRepo->insert($persona);
+            }
+
+            if ($this->adminRepo->duplicatePersona($idPersona)) {
+                throw new \Exception("La persona con cédula '{$persona->getCedula()}' ya está registrada como administrador.");
             }
 
             // 2. Asignar el ID_Persona al administrador
@@ -46,7 +50,7 @@ class AdministradorRegistrationService {
             $idAdmin = $this->adminRepo->insert($admin);
 
             $this->pdo->commit();
-            return $idAdmin;
+            return $idAdmin;            
 
         } catch (\Exception $e) {
             $this->pdo->rollBack();

@@ -1,3 +1,8 @@
+<?php
+$old = $_SESSION['old_data'] ?? [];
+$error = $_SESSION['error'] ?? null;
+unset($_SESSION['old_data'], $_SESSION['error']);
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -15,6 +20,15 @@
                 <h1 class="text-titles"> Usuarios <small>Nuevo Usuario</small></h1>
             </div>
         </div>
+
+        <?php if ($error !== null): ?>
+        <div class="container-fluid">
+            <div class="alert alert-danger" role="alert">
+                <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?>
+            </div>
+        </div>
+        <?php endif; ?>
+
         <?php include VIEW_PATH . "/component/userbar.php" ?>
 
         <div class="container-fluid">
@@ -26,6 +40,7 @@
                     <form action="<?= BASE_URL ?>/administradores/store" method="POST" id="form-registro-usuario">
                         <fieldset>
                             <legend> &nbsp; Información personal</legend>
+
                             <div class="container-fluid">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-6">
@@ -37,6 +52,7 @@
                                                 type="text"
                                                 name="cedula"
                                                 id="dni-reg"
+                                                value="<?= htmlspecialchars($old['cedula'] ?? '') ?>"
                                                 required
                                                 maxlength="8"
                                                 aria-describedby="dni-error"
@@ -56,6 +72,7 @@
                                                 type="text"
                                                 name="nombre-reg"
                                                 id="nombre-reg"
+                                                value="<?= htmlspecialchars($old['nombre-reg'] ?? '') ?>"
                                                 required
                                                 maxlength="30"
                                                 onblur="if (!this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('nombre-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('nombre-error').style.display = 'none'; }">
@@ -74,6 +91,7 @@
                                                 type="text"
                                                 name="apellido-reg"
                                                 id="apellido-reg"
+                                                value="<?= htmlspecialchars($old['apellido-reg'] ?? '') ?>"
                                                 required
                                                 maxlength="30"
                                                 onblur="if (!this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('apellido-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('apellido-error').style.display = 'none'; }">
@@ -91,6 +109,7 @@
                                                 class="form-control"
                                                 type="text"
                                                 name="telf-reg"
+                                                value="<?= htmlspecialchars($old['telf-reg'] ?? '') ?>"
                                                 id="telf-reg"
                                                 maxlength="11"
 												placeholder="XXXX-XXXXXXX"
@@ -120,6 +139,7 @@
                                                 type="text"
                                                 name="usuario-reg"
                                                 id="usuario-reg"
+                                                value="<?= htmlspecialchars($old['usuario-reg'] ?? '') ?>"
                                                 required
                                                 maxlength="15"
                                                 onblur="if (!this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('user-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('user-error').style.display = 'none'; }">

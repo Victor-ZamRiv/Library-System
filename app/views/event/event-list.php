@@ -49,13 +49,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <?php foreach ($actividades as $actividad): ?>
                                     <tr>
-                                        <td style="vertical-align: middle;">22/01/2026</td>
-                                        <td style="vertical-align: middle;">Educativa</td>
+                                        <td style="vertical-align: middle;"><?= htmlspecialchars($actividad->getFecha()) ?></td>
+                                        <td style="vertical-align: middle;"><?= htmlspecialchars($actividad->getCategoria()) ?></td>
                                         <td style="vertical-align: middle;">
-                                            <span class="label label-success">Completado</span>
+                                            <span class="label label-success"><?= htmlspecialchars($actividad->getEstado()) ?></span>
                                         </td>
-                                        <td style="vertical-align: middle;">Descripción breve de la actividad...</td>
+                                        <td style="vertical-align: middle;"><?= htmlspecialchars($actividad->getDescripcion()) ?></td>
                                         <td style="vertical-align: middle;">
                                             <div class="d-flex justify-content-center">
                                                 <a href="#!" class="btn btn-success btn-raised btn-sm" style="margin-right: 5px;">
@@ -67,6 +68,7 @@
                                             </div>
                                         </td>
                                     </tr>
+                                    <?php endforeach; ?>
                                 </tbody>
                             </table>
                         </div>
@@ -78,6 +80,7 @@
                         <div class="table-responsive">
                             <table class="table table-hover text-center">
                                 <thead>
+                                    
                                     <tr>
                                         <th class="text-center">Fecha</th>
                                         <th class="text-center">Involucrados</th>
@@ -86,10 +89,11 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <?php foreach ($logros as $logro): ?>
                                     <tr>
-                                        <td style="vertical-align: middle;">15/01/2026</td>
-                                        <td style="vertical-align: middle;">Equipo Técnico</td>
-                                        <td style="vertical-align: middle;">Descripción del éxito alcanzado...</td>
+                                        <td style="vertical-align: middle;"><?= htmlspecialchars($logro->getFecha()) ?></td>
+                                        <td style="vertical-align: middle;"><?= htmlspecialchars($logro->getInvolucrados()) ?></td>
+                                        <td style="vertical-align: middle;"><?= htmlspecialchars($logro->getDescripcion()) ?></td>
                                         <td style="vertical-align: middle;">
                                             <div class="d-flex justify-content-center">
                                                 <a href="#!" class="btn btn-success btn-raised btn-sm" style="margin-right: 5px;">
@@ -101,6 +105,7 @@
                                             </div>
                                         </td>
                                     </tr>
+                                    <?php endforeach; ?>
                                 </tbody>
                             </table>
                         </div>

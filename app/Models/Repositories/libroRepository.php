@@ -91,6 +91,20 @@ class LibroRepository extends BaseRepository implements ILibroRepository {
         return $stmt->fetchColumn() > 0;
     }
 
+    public function existsISBN(string $isbn, ?int $excludeId = null): bool {
+        $sql = "SELECT COUNT(*) FROM {$this->table} WHERE ISBN = :isbn";
+        if ($excludeId) {
+            $sql .= " AND {$this->primaryKey} != :id";
+        }
+        
+        $stmt = $this->pdo->prepare($sql);
+        $params = ['isbn' => $isbn];
+        if ($excludeId) $params['id'] = $excludeId;
+        
+        $stmt->execute($params);
+        return $stmt->fetchColumn() > 0;
+    }
+
     public function insert(Libro $libro): int {
         if ($libro->getIdLibro() !== null) {
             throw new \InvalidArgumentException("El libro ya tiene ID, no puede insertarse");

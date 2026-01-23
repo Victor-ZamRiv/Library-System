@@ -34,4 +34,17 @@ class ListAdministradorService {
 
         return $administradores;
     }
+
+    public function search(string $input): array {
+        $administradores = $this->adminRepo->search($input);
+
+        foreach ($administradores as $admin) {
+            $persona = $this->personaRepo->find($admin->getIdPersona());
+            if ($persona) {
+                $admin->setPersona($persona);
+            }
+        }
+
+        return $administradores;
+    }
 }

@@ -98,6 +98,7 @@ class LectorController extends BaseController {
 
         } catch (\Exception $e) {
             $_SESSION['error'] = "Error al registrar lector: " . $e->getMessage();
+            $_SESSION['old_data'] = $_POST;
             $this->redirect("/lectores/create");
         }
     }

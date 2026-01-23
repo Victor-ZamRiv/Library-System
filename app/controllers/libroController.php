@@ -61,6 +61,11 @@ class LibroController extends BaseController {
                 throw new \App\Exceptions\RegistroLibroException("La cota '{$cota}' ya está registrada en el sistema.");
             }
 
+            $isbn = $this->input('isbn', '');
+            if ($this->repo->existsISBN($isbn)) {
+                throw new \App\Exceptions\RegistroLibroException("El ISBN '{$isbn}' ya está registrado en el sistema.");
+            }
+
             $autores [] = $_POST['autores'];
             $libro = $this->libroRegistrationService->registrar($_POST, $autores, $_POST['editorial'], (int)$_POST['ejemplares']);
             $_SESSION['success'] = "Libro registrado con éxito";
