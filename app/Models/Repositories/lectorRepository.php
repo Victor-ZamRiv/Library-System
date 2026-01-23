@@ -28,6 +28,29 @@ class LectorRepository extends BaseRepository implements ILectorRepository {
         return $row ? Lector::fromArray($row) : null;
     }
 
+    public function search($input): array {
+        $sql = "SELECT lectores.* FROM lectores
+                JOIN persona ON lectores.ID_Persona = persona.ID_Persona
+                WHERE (persona.Nombre LIKE :in1 
+                OR persona.Apellido LIKE :in2 
+                OR persona.Cedula LIKE :in3 
+                OR lectores.Carnet LIKE :in4)
+                AND lectores.Activo = 1";
+        $stmt = $this->pdo->prepare($sql);
+
+        $searchTerm = "%$input%";
+
+        $stmt->execute([
+            ':in1' => $searchTerm,
+            ':in2' => $searchTerm,
+            ':in3' => $searchTerm,
+            ':in4' => $searchTerm
+        ]);
+
+        $rows = $stmt->fetchAll();
+        return array_map(fn($row) => $this->mapToEntity($row), $rows);
+    }
+
     // Insertar lector (requiere ID_Persona ya existente)
     public function insert(Lector $lector): int {
         if ($lector->getIdLector() !== null) {
@@ -35,13 +58,13 @@ class LectorRepository extends BaseRepository implements ILectorRepository {
         }
 
         $sql = "INSERT INTO lectores (
-                    ID_Persona, Carnet, Sexo, Direccion, Ocupacion, 
-                    Telefono_Ocupacion, Direccion_Ocupacion, Ref_Personal, Ref_Personal_Tel, 
-                    Ref_Laboral, Ref_Laboral_Tel, Estado, Vencimiento_Carnet, Activo
+                    ID_Persona, Carnet, Sexo, Direccion, Profesion, 
+                    Telefono_Profesion, Direccion_Profesion, Ref_Personal, Ref_Personal_Tel, 
+                    Ref_Legal, Ref_Legal_Tel, Estado, Activo
                 ) VALUES (
-                    :idPersona, :carnet, :sexo, :direccion, :ocupacion,
-                    :telefonoOcupacion, :direccionOcupacion, :refPersonal, :refPersonalTel,
-                    :refLaboral, :refLaboralTel, :estado, :vencimientoCarnet, :activo
+                    :idPersona, :carnet, :sexo, :direccion, :Profesion,
+                    :telefonoProfesion, :direccionProfesion, :refPersonal, :refPersonalTel,
+                    :refLegal, :refLegalTel, :estado, :activo
                 )";
 
         $stmt = $this->pdo->prepare($sql);
@@ -50,15 +73,14 @@ class LectorRepository extends BaseRepository implements ILectorRepository {
             ':carnet' => $lector->getCarnet(),
             ':sexo' => $lector->getSexo(),
             ':direccion' => $lector->getDireccion(),
-            ':ocupacion' => $lector->getOcupacion(),
-            ':telefonoOcupacion' => $lector->getTelefonoOcupacion(),
-            ':direccionOcupacion' => $lector->getDireccionOcupacion(),
+            ':Profesion' => $lector->getProfesion(),
+            ':telefonoProfesion' => $lector->getTelefonoProfesion(),
+            ':direccionProfesion' => $lector->getDireccionProfesion(),
             ':refPersonal' => $lector->getRefPersonal(),
             ':refPersonalTel' => $lector->getRefPersonalTel(),
-            ':refLaboral' => $lector->getRefLaboral(),
-            ':refLaboralTel' => $lector->getRefLaboralTel(),
+            ':refLegal' => $lector->getRefLegal(),
+            ':refLegalTel' => $lector->getRefLegalTel(),
             ':estado' => $lector->getEstado(),
-            ':vencimientoCarnet' => $lector->getVencimientoCarnet(),
             ':activo' => 1
         ]);
 
@@ -67,11 +89,11 @@ class LectorRepository extends BaseRepository implements ILectorRepository {
 
     public function update(Lector $lector): bool {
         $sql = "UPDATE lectores SET 
-                    Carnet = :carnet, Sexo = :sexo, Direccion = :direccion, Ocupacion = :ocupacion,
-                    Telefono_Ocupacion = :telefonoOcupacion, Direccion_Ocupacion = :direccionOcupacion,
+                    Carnet = :carnet, Sexo = :sexo, Direccion = :direccion, Profesion = :Profesion,
+                    Telefono_Profesion = :telefonoProfesion, Direccion_Profesion = :direccionProfesion,
                     Ref_Personal = :refPersonal, Ref_Personal_Tel = :refPersonalTel,
-                    Ref_Laboral = :refLaboral, Ref_Laboral_Tel = :refLaboralTel,
-                    Estado = :estado, Vencimiento_Carnet = :vencimientoCarnet, Activo = :activo
+                    Ref_Legal = :refLegal, Ref_Legal_Tel = :refLegalTel,
+                    Estado = :estado, Activo = :activo
                 WHERE ID_Lector = :id";
 
         $stmt = $this->pdo->prepare($sql);
@@ -79,13 +101,13 @@ class LectorRepository extends BaseRepository implements ILectorRepository {
             ':carnet' => $lector->getCarnet(),
             ':sexo' => $lector->getSexo(),
             ':direccion' => $lector->getDireccion(),
-            ':ocupacion' => $lector->getOcupacion(),
-            ':telefonoOcupacion' => $lector->getTelefonoOcupacion(),
-            ':direccionOcupacion' => $lector->getDireccionOcupacion(),
+            ':Profesion' => $lector->getProfesion(),
+            ':telefonoProfesion' => $lector->getTelefonoProfesion(),
+            ':direccionProfesion' => $lector->getDireccionProfesion(),
             ':refPersonal' => $lector->getRefPersonal(),
             ':refPersonalTel' => $lector->getRefPersonalTel(),
-            ':refLaboral' => $lector->getRefLaboral(),
-            ':refLaboralTel' => $lector->getRefLaboralTel(),
+            ':refLegal' => $lector->getRefLegal(),
+            ':refLegalTel' => $lector->getRefLegalTel(),
             ':estado' => $lector->getEstado(),
             ':vencimientoCarnet' => $lector->getVencimientoCarnet(),
             ':activo' => $lector->getEstado() === 'Activo' ? 1 : 0,

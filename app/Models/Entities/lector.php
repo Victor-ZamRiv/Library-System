@@ -6,13 +6,13 @@ class Lector extends Persona {
     private ?string $carnet;
     private ?string $sexo;
     private ?string $direccion;
-    private ?string $ocupacion;
-    private ?string $telefonoOcupacion;
-    private ?string $direccionOcupacion;
+    private ?string $profesion;
+    private ?string $telefonoProfesion;
+    private ?string $direccionProfesion;
     private ?string $refPersonal;
     private ?string $refPersonalTel;
-    private ?string $refLaboral;
-    private ?string $refLaboralTel;
+    private ?string $refLegal;
+    private ?string $refLegalTel;
     private ?string $estado; // Activo, Inactivo, Inhabilitado
     private ?string $vencimientoCarnet;
     private Persona $persona;
@@ -23,13 +23,13 @@ class Lector extends Persona {
         ?string $carnet = null,
         ?string $sexo = null,
         ?string $direccion = null,
-        ?string $ocupacion = null,
-        ?string $telefonoOcupacion = null,
-        ?string $direccionOcupacion = null,
+        ?string $profesion = null,
+        ?string $telefonoProfesion = null,
+        ?string $direccionProfesion = null,
         ?string $refPersonal = null,
         ?string $refPersonalTel = null,
-        ?string $refLaboral = null,
-        ?string $refLaboralTel = null,
+        ?string $refLegal = null,
+        ?string $refLegalTel = null,
         ?string $estado = null,
         ?string $vencimientoCarnet = null
     ) {
@@ -38,13 +38,13 @@ class Lector extends Persona {
         $this->carnet = $carnet;
         $this->sexo = $sexo;
         $this->direccion = $direccion;
-        $this->ocupacion = $ocupacion;
-        $this->telefonoOcupacion = $telefonoOcupacion;
-        $this->direccionOcupacion = $direccionOcupacion;
+        $this->profesion = $profesion;
+        $this->telefonoProfesion = $telefonoProfesion;
+        $this->direccionProfesion = $direccionProfesion;
         $this->refPersonal = $refPersonal;
         $this->refPersonalTel = $refPersonalTel;
-        $this->refLaboral = $refLaboral;
-        $this->refLaboralTel = $refLaboralTel;
+        $this->refLegal = $refLegal;
+        $this->refLegalTel = $refLegalTel;
         $this->estado = $estado;
         $this->vencimientoCarnet = $vencimientoCarnet;
     }
@@ -54,13 +54,13 @@ class Lector extends Persona {
     public function getCarnet(): ?string { return $this->carnet; }
     public function getSexo(): ?string { return $this->sexo; }
     public function getDireccion(): ?string { return $this->direccion; }
-    public function getOcupacion(): ?string { return $this->ocupacion; }
-    public function getTelefonoOcupacion(): ?string { return $this->telefonoOcupacion; }
-    public function getDireccionOcupacion(): ?string { return $this->direccionOcupacion; }
+    public function getProfesion(): ?string { return $this->profesion; }
+    public function getTelefonoProfesion(): ?string { return $this->telefonoProfesion; }
+    public function getDireccionProfesion(): ?string { return $this->direccionProfesion; }
     public function getRefPersonal(): ?string { return $this->refPersonal; }
     public function getRefPersonalTel(): ?string { return $this->refPersonalTel; }
-    public function getRefLaboral(): ?string { return $this->refLaboral; }
-    public function getRefLaboralTel(): ?string { return $this->refLaboralTel; }
+    public function getRefLegal(): ?string { return $this->refLegal; }
+    public function getRefLegalTel(): ?string { return $this->refLegalTel; }
     public function getEstado(): ?string { return $this->estado; }
     public function getVencimientoCarnet(): ?string { return $this->vencimientoCarnet; }
     public function getPersona(): Persona { return $this->persona; }
@@ -68,13 +68,13 @@ class Lector extends Persona {
     public function setCarnet(?string $carnet): void { $this->carnet = $carnet; }
     public function setSexo(?string $sexo): void { $this->sexo = $sexo; }
     public function setDireccion(?string $direccion): void { $this->direccion = $direccion; }
-    public function setOcupacion(?string $ocupacion): void { $this->ocupacion = $ocupacion; }
-    public function setTelefonoOcupacion(?string $telefonoOcupacion): void { $this->telefonoOcupacion = $telefonoOcupacion; }
-    public function setDireccionOcupacion(?string $direccionOcupacion): void { $this->direccionOcupacion = $direccionOcupacion; }
+    public function setProfesion(?string $profesion): void { $this->profesion = $profesion; }
+    public function setTelefonoProfesion(?string $telefonoProfesion): void { $this->telefonoProfesion = $telefonoProfesion; }
+    public function setDireccionProfesion(?string $direccionProfesion): void { $this->direccionProfesion = $direccionProfesion; }
     public function setRefPersonal(?string $refPersonal): void { $this->refPersonal = $refPersonal; }
     public function setRefPersonalTel(?string $refPersonalTel): void { $this->refPersonalTel = $refPersonalTel; }
-    public function setRefLaboral(?string $refLaboral): void { $this->refLaboral = $refLaboral; }
-    public function setRefLaboralTel(?string $refLaboralTel): void { $this->refLaboralTel = $refLaboralTel; }
+    public function setRefLegal(?string $refLegal): void { $this->refLegal = $refLegal; }
+    public function setRefLegalTel(?string $refLegalTel): void { $this->refLegalTel = $refLegalTel; }
     public function setEstado(?string $estado): void { $this->estado = $estado; }
     public function setVencimientoCarnet(?string $vencimientoCarnet): void { $this->vencimientoCarnet = $vencimientoCarnet; }
     public function setPersona(Persona $persona): void { $this->persona = $persona; }

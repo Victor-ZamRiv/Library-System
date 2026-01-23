@@ -4,15 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Registro de Logros</title>
-    <?php include "../component/heat.php"; ?>
+    <?php include VIEW_PATH . "/component/heat.php"; ?>
 </head>
 
 <body>
 
-    <?php include "../component/sidebar.php"; ?>
+    <?php include VIEW_PATH . "/component/sidebar.php"; ?>
     
     <section class="full-box dashboard-contentPage">
-        <?php include "../component/navbar.php"; ?>
+        <?php include VIEW_PATH . "/component/navbar.php"; ?>
         
         <div class="container-fluid">
             <div class="page-header">
@@ -65,6 +65,6 @@
         <br>
     </section>
 
-    <?php include "../component/scripts.php"; ?>
+    <?php include VIEW_PATH . "/component/scripts.php"; ?>
 </body>
 </html>

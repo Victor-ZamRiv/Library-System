@@ -33,5 +33,8 @@ $router->get('/lectores/show', 'LectorController@show');
 $router->get('/lectores/delete', 'LectorController@delete');
 $router->get('/lectores/create', 'LectorController@create');
 $router->post('/lectores/store', 'LectorController@store');
+$router->get('/lectores/edit', 'LectorController@edit');
+$router->post('/lectores/update', 'LectorController@update');
+$router->get('/lectores/search', 'LectorController@search');
 
 return $router;

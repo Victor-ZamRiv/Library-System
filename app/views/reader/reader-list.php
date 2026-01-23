@@ -25,16 +25,18 @@
                 </div>
                 <div class="panel-body">
                     <div class="row">
+                        <form action="<?= BASE_URL ?>/lectores/search">
                         <div class="col-xs-12 col-md-6">
                             <div class="form-group label-floating">
                                 <label class="control-label">¿A quién buscas?</label>
-                                <input type="text" class="form-control" id="inputSearch">
+                                <input type="text" class="form-control" id="inputSearch" name="buscar">
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-6 text-right">
                             <br>
-                            <button class="btn btn-info btn-raised btn-sm"><i class="zmdi zmdi-search"></i> Buscar</button>
+                            <button type="submit" class="btn btn-info btn-raised btn-sm"><i class="zmdi zmdi-search"></i> Buscar</button>
                         </div>
+                    </form>
                     </div>
 
                     <hr>
@@ -52,26 +54,28 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <?php foreach ($lectores as $lector): ?>
                                 <tr>
-                                    <td>00000010/26</td>
-                                    <td>25.444.333</td>
-                                    <td>Juan Pérez</td>
-                                    <td>04241234567</td>
-                                    <td>Ingeniero</td>
+                                    <td><?= $lector->getCarnet() ?></td>
+                                    <td><?= $lector->getPersona()->getCedula() ?></td>
+                                    <td><?= $lector->getPersona()->getNombre() . " " . $lector->getPersona()->getApellido() ?></td>
+                                    <td><?= $lector->getPersona()->getTelefono() ?></td>
+                                    <td><?= $lector->getProfesion() ?></td>
                                     <td>
                                         <a href="#!" class="btn btn-success btn-raised btn-xs" title="Editar">
 
                                         </a>
-                                        <a href="#!" class="btn btn-info btn-raised btn-xs" title="Ver Detalles">
+                                        <a href="<?= BASE_URL ?>/lectores/show?id=<?= $lector->getIdLector() ?>" class="btn btn-info btn-raised btn-xs" title="Ver Detalles">
 
                                         </a>
-                                        <form action="" method="POST" style="display: inline-block;">
+                                        <form action="<?= BASE_URL ?>/lectores/delete?id=<?= $lector->getIdLector() ?>" method="POST" style="display: inline-block;">
                                             <button type="submit" class="btn btn-danger btn-raised btn-xs" title="Eliminar">
 
                                             </button>
                                         </form>
                                     </td>
                                 </tr>
+                                <?php endforeach; ?>
                             </tbody>
                         </table>
                     </div>

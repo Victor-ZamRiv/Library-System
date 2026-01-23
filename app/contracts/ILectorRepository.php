@@ -8,4 +8,5 @@ interface ILectorRepository {
     public function find(int $id): ?Lector;
     public function all(): array;
     public function deactivate(int $id): void;
+    public function search(string $input): array;
 }

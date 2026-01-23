@@ -28,8 +28,18 @@ class PersonaRepository extends BaseRepository Implements IPersonaRepository {
     }
 
     public function findByCedula(string $cedula): ?Persona {
-        $stmt = $this->pdo->prepare("SELECT * FROM persona WHERE Cedula = :cedula");
+        $stmt = $this->pdo->prepare("SELECT * FROM persona WHERE Cedula = :cedula AND Activo = 1");
         $stmt->execute([':cedula' => $cedula]);
+        $row = $stmt->fetch();
+        return $row ? Persona::fromArray($row) : null;
+    }
+
+    public function findByNombreApellido(string $nombre, string $apellido): ?Persona {
+        $stmt = $this->pdo->prepare("SELECT * FROM persona WHERE Nombre LIKE %:nombre% OR Apellido LIKE %:apellido% AND Activo = 1");
+        $stmt->execute([
+            ':nombre' => $nombre,
+            ':apellido' => $apellido
+        ]);
         $row = $stmt->fetch();
         return $row ? Persona::fromArray($row) : null;
     }

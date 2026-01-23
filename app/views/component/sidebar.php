@@ -20,7 +20,7 @@
 				</li>
 
 				<li>
-					<a href="<?= BASE_URL ?>/login" title="Salir del sistema">
+					<a href="<?= BASE_URL ?>/logout" title="Salir del sistema">
 						<i class="fa-solid fa-door-open"></i>
 					</a>
 				</li>
@@ -29,12 +29,12 @@
 		<!-- Menú de barra lateral -->
 		<ul class="list-unstyled full-box dashboard-sideBar-Menu">
 			<li>
-				<a href="/home">
+				<a href="<?= BASE_URL ?>/dashboard">
 					<i class="fa-solid fa-gauge"></i> Dashboard 
 				</a>
 			</li>
 			<li>
-				<a href="../reader/reader.php"> 
+				<a href="<?= BASE_URL ?>/lectores"> 
 					<i class="fa-solid fa-book-open-reader"></i> Lectores</a>
 			</li>
 			<li>
@@ -58,10 +58,10 @@
 				</a>
 				<ul class="list-unstyled full-box">
 					<li>
-						<a href="../event/actividad.php"> Registro de Actividades</a>
+						<a href="<?= BASE_URL ?>/evento/actividad"> Registro de Actividades</a>
 					</li>
 					<li>
-						<a href="../event/achievement.php"> Registro de Logros</a>
+						<a href="<?= BASE_URL ?>/evento/logro.php"> Registro de Logros</a>
 					</li>
 
 				</ul>
@@ -72,7 +72,7 @@
 				</a>
 				<ul class="list-unstyled full-box">
 					<li>
-						<a href="../category/category.php"> Areas de Conocimiento</a>
+						<a href="<?php //../category/category.php?>"> Areas de Conocimiento</a>
 					</li>
 					<li>
 						<a href= <?php echo BASE_URL ."/libros"; ?>> Libros</a>
@@ -112,10 +112,10 @@
 				<ul class="list-unstyled full-box">
 
 					<li>
-						<a href="<?= BASE_URL ?> administradores/register"> Nuevo Usuario</a>
+						<a href="<?= BASE_URL ?>/administradores/register"> Nuevo Usuario</a>
 					</li>
 					<li>
-						<a href="<?= BASE_URL ?> administradores"> Lista de Usuarios</a>
+						<a href="<?= BASE_URL ?>/administradores"> Lista de Usuarios</a>
 					</li>
 
 

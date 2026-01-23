@@ -1,3 +1,11 @@
+<?php 
+if(isset($_SESSION['error'])) {
+    $errorMessage = $_SESSION['error'];
+    var_dump($errorMessage);
+    unset($_SESSION['error']);
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -27,10 +35,10 @@
         <div class="container-fluid">
             <div class="panel panel-info">
                 <div class="panel-heading">
-                    <h3 class="panel-title"> CREAR LECTOR</h3>
+                    <h3 class="panel-title"> REGISTRAR LECTOR</h3>
                 </div>
                 <div class="panel-body">
-                    <form action="#" method="POST" enctype="application/x-www-form-urlencoded" id="form-registro-lector">
+                    <form action="<?= BASE_URL?>/lectores/store" method="POST" enctype="application/x-www-form-urlencoded" id="form-registro-lector">
                         <fieldset>
                             <legend> &nbsp; Información personal</legend>
                             <div class="container-fluid">
@@ -63,7 +71,7 @@
                                                 pattern="[0-9-]{1,30}"
                                                 class="form-control"
                                                 type="text"
-                                                name="cedula-reg"
+                                                name="cedula"
                                                 id="cedula-reg"
                                                 required
                                                 maxlength="8"
@@ -119,8 +127,8 @@
                                             <label class="control-label" for="sexo-reg"><span class="text-danger">*</span> Sexo</label>
                                             <select class="form-control" name="sexo-reg" id="sexo-reg" required>
                                                 <option value="" disabled selected>Seleccione el sexo</option>
-                                                <option value="m">Masculino</option>
-                                                <option value="f">Femenino</option>
+                                                <option value="M">Masculino</option>
+                                                <option value="F">Femenino</option>
                                             </select>
                                         </div>
                                     </div>
@@ -240,7 +248,7 @@
                                                 pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{1,100}"
                                                 class="form-control"
                                                 type="text"
-                                                name="referencia-legal-personal-reg"
+                                                name="ref-legal-reg"
                                                 id="referencia-legal-personal-reg"
                                                 maxlength="100"
                                                 title="Solo letras y espacios (máximo 100 caracteres)"
@@ -258,7 +266,7 @@
                                                 pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{1,100}"
                                                 class="form-control"
                                                 type="text"
-                                                name="referencia-personal-reg"
+                                                name="ref-personal-reg"
                                                 id="referencia-personal-reg"
                                                 maxlength="100"
                                                 title="Solo letras y espacios (máximo 100 caracteres)"
@@ -276,7 +284,7 @@
                                                 pattern="[0-9-]{1,15}"
                                                 class="form-control"
                                                 type="text"
-                                                name="telefono-referencia-legal-reg"
+                                                name="telefono-ref-legal-reg"
                                                 id="telefono-referencia-legal-reg"
                                                 maxlength="11"
                                                 placeholder="XXXX-XXXXXXX"
@@ -295,7 +303,7 @@
                                                 pattern="[0-9-]{1,15}"
                                                 class="form-control"
                                                 type="text"
-                                                name="telefono-referencia-personal-reg"
+                                                name="telefono-ref-personal-reg"
                                                 id="telefono-referencia-personal-reg"
                                                 maxlength="11"
                                                 placeholder="XXXX-XXXXXXX"

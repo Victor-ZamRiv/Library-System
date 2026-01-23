@@ -33,4 +33,16 @@ class ListLectorService {
 
         return $lectores;
     }
+
+    public function search($input): array {
+        $lectores = $this->lectorRepo->search($input);
+        foreach ($lectores as $lector) {
+            $persona = $this->personaRepo->find($lector->getIdPersona());
+            if ($persona) {
+                $lector->setPersona($persona);
+            }
+        }
+        return $lectores;
+    }
+    
 }

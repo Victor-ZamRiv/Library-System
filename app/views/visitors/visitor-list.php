@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
     <title>Gestión de Visitantes</title>
-<?php include VIEW_PATH . "/component/heat.php"; ?>
+<?php include "../component/heat.php"; ?>
 
 <body>
-    <?php include VIEW_PATH . "/component/sidebar.php"; ?>
+    <?php include "../component/sidebar.php"; ?>
 
     <section class="full-box dashboard-contentPage">
-        <?php include VIEW_PATH . "/component/navbar.php"; ?>
+        <?php include "../component/navbar.php"; ?>
 
         <div class="container-fluid">
             <div class="page-header">
@@ -105,9 +105,9 @@
         </div>
     </section>
 
-    <?php include VIEW_PATH . "/component/scripts.php"; ?>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    <?php include "../component/scripts.php"; ?>
+    <script src="../../../public/js/chart.js"></script>
+ 
     <script>
         const ctx = document.getElementById('graficaEvolucion').getContext('2d');
         new Chart(ctx, {
