@@ -1,88 +1,135 @@
-
-
 document.addEventListener("DOMContentLoaded", function () {
-    // 1. CONFIGURACIÓN DINÁMICA DE LA FECHA
-    const inputFecha = document.getElementById('fecha-reg');
-    const hoy = new Date();
-    const anioActual = hoy.getFullYear();
-    const mes = String(hoy.getMonth() + 1).padStart(2, '0');
-    const dia = String(hoy.getDate()).padStart(2, '0');
-    const fechaActualFormateada = `${anioActual}-${mes}-${dia}`;
-    const inicioAnioFormateado = `${anioActual}-01-01`;
+    const formulario = document.getElementById('form-registro-visitantes');
+    const fechaInput = document.getElementById('fecha-reg');
+    const fechaError = document.getElementById('fecha-error');
 
-    inputFecha.setAttribute('max', fechaActualFormateada);
-    inputFecha.setAttribute('min', inicioAnioFormateado);
+    /**
+     * --- 1. CONFIGURACIÓN Y VALIDACIÓN DE FECHA ---
+     */
+    if (fechaInput) {
+        const hoy = new Date();
+        const haceTresDias = new Date();
+        haceTresDias.setDate(hoy.getDate() - 3);
 
-    // 2. VALIDACIÓN DE FECHA
-    inputFecha.addEventListener('blur', function () {
-        validarEstado(this, document.getElementById('fecha-error'));
-    });
+        // Función para formatear fecha a YYYY-MM-DD sin desfase horario
+        const formatDate = (date) => {
+            let d = date.getDate().toString().padStart(2, '0');
+            let m = (date.getMonth() + 1).toString().padStart(2, '0');
+            let y = date.getFullYear();
+            return `${y}-${m}-${d}`;
+        };
 
-    // 3. VALIDACIÓN PARA TODOS LOS CAMPOS (NUMÉRICOS Y OBSERVACIONES)
-    // --- BLOQUEO DE TECLAS, CARACTERES ESPECIALES Y LÍMITE DE 3 DÍGITOS ---
+        const fechaMinima = formatDate(haceTresDias);
+        const fechaMaxima = formatDate(hoy);
+
+        // Restricción visual en el calendario nativo
+        fechaInput.min = fechaMinima;
+        fechaInput.max = fechaMaxima;
+
+        fechaInput.addEventListener('change', function () {
+            if (!this.value) return;
+
+            // Comparación de strings (más segura que objetos Date en JS)
+            if (this.value < fechaMinima || this.value > fechaMaxima) {
+                fechaError.style.display = 'block';
+                this.classList.add('is-invalid');
+                this.classList.remove('is-valid');
+                this.value = ""; 
+            } else {
+                fechaError.style.display = 'none';
+                this.classList.remove('is-invalid');
+                this.classList.add('is-valid');
+            }
+        });
+    }
+
+    /**
+     * --- 2. VALIDACIÓN DE CAMPOS NUMÉRICOS ---
+     */
     const inputsNumericos = document.querySelectorAll('.input-numerico');
 
     inputsNumericos.forEach(input => {
+        // Bloqueo de teclas no numéricas
         input.addEventListener('keydown', function (e) {
-            // 1. Permitir teclas de control
             const teclasPermitidas = ['Backspace', 'Tab', 'Enter', 'Escape', 'ArrowLeft', 'ArrowRight', 'Delete'];
             if (teclasPermitidas.includes(e.key)) return;
 
-            // 2. Bloquear si no es un número (bloquea 'e', '.', ',', '-', '+')
             if (!/^[0-9]$/.test(e.key)) {
-                e.preventDefault();
-                return;
-            }
-
-            // 3. Limitar a 3 dígitos
-            // Si ya hay 3 caracteres y no se ha seleccionado texto para sobrescribir
-            if (this.value.length >= 3 && this.selectionStart === this.selectionEnd) {
                 e.preventDefault();
             }
         });
 
-        // 4. Validación extra al pegar o escribir (por si acaso)
+        // Limpieza de ceros a la izquierda y caracteres extraños
         input.addEventListener('input', function () {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            
+            if (this.value.length > 1 && this.value.startsWith('0')) {
+                this.value = this.value.replace(/^0+/, '');
+            }
+
             if (this.value.length > 3) {
                 this.value = this.value.slice(0, 3);
             }
         });
 
-        // 5. Evitar pegado de contenido no válido
-        input.addEventListener('paste', function (e) {
-            const data = e.clipboardData.getData('text');
-            // Si no es número o si el resultado final excedería los 3 dígitos
-            if (!/^\d+$/.test(data) || (this.value.length + data.length > 3)) {
-                e.preventDefault();
+        // Auto-relleno con cero y validación visual al salir
+        input.addEventListener('blur', function () {
+            const errorElement = this.parentElement.querySelector('.error-msg');
+            
+            if (this.value.trim() === "") {
+                this.value = "0";
+            }
+
+            const valorNumerico = parseInt(this.value, 10);
+            this.classList.remove('is-invalid', 'is-valid');
+
+            if (isNaN(valorNumerico) || valorNumerico < 0) {
+                this.classList.add('is-invalid');
+                if (errorElement) errorElement.style.display = 'block';
+            } else {
+                this.classList.add('is-valid');
+                if (errorElement) errorElement.style.display = 'none';
             }
         });
     });
 
-    // Función auxiliar para aplicar estilos de validación
-    function validarEstado(input, errorElement) {
-        let esValido = true;
+    /**
+     * --- 3. VALIDACIÓN DE OBSERVACIONES (Regex) ---
+     */
+    const obsInput = document.getElementById('observaciones');
+    const obsError = document.getElementById('obs-error');
 
-        // Validación especial para OBSERVACIONES (porque textarea no soporta pattern)
-        if (input.id === 'observaciones' && input.value !== "") {
-            // Esta es la expresión regular: Letras, números, acentos, eñes y espacios
-            const patron = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/;
-            esValido = patron.test(input.value);
-        } else {
-            // Validación estándar para el resto (fecha y números)
-            esValido = input.value === "" && !input.hasAttribute('required') ? true : input.checkValidity();
-        }
-
-        if (!esValido) {
-            input.classList.add('is-invalid');
-            input.classList.remove('is-valid');
-            if (errorElement) errorElement.style.display = 'block';
-        } else {
-            input.classList.remove('is-invalid');
-            // Solo añadir is-valid si no está vacío
-            if (input.value !== "") {
-                input.classList.add('is-valid');
+    if (obsInput) {
+        obsInput.addEventListener('input', function() {
+            // El regex permite letras, números, espacios y tildes
+            const regex = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]*$/;
+            if (!regex.test(this.value)) {
+                this.classList.add('is-invalid');
+                obsError.style.display = 'block';
+            } else {
+                this.classList.remove('is-invalid');
+                obsError.style.display = 'none';
             }
-            if (errorElement) errorElement.style.display = 'none';
-        }
+        });
+    }
+
+    /**
+     * --- 4. CONTROL DE ENVÍO (PREVENT SUBMIT) ---
+     */
+    if (formulario) {
+        formulario.addEventListener('submit', function (e) {
+            const camposInvalidos = formulario.querySelectorAll('.is-invalid');
+            const fechaVacia = fechaInput && !fechaInput.value;
+
+            if (camposInvalidos.length > 0 || fechaVacia) {
+                e.preventDefault(); // Detiene el envío
+                alert("Por favor, corrija los errores en el formulario antes de guardar.");
+                
+                if(fechaVacia) {
+                    fechaInput.classList.add('is-invalid');
+                    fechaError.style.display = 'block';
+                }
+            }
+        });
     }
 });

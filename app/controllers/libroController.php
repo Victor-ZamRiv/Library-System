@@ -3,33 +3,51 @@ namespace App\Controllers;
 
 use App\Core\BaseController;
 use App\Contracts\ILibroRepository;
+use App\Contracts\IAutorRepository;
 use App\Models\Services\LibroRegistrationService;
 use App\Models\Services\LibroSearchService;
 use App\Models\Services\libroDetailService;
 use App\Models\Entities\Libro;
+use App\Models\Entities\Autor;
 use App\Models\Services\LibroUpdateService;
 
 class LibroController extends BaseController {
     private ILibroRepository $repo;
+    private IAutorRepository $autorRepo;
     private LibroRegistrationService $libroRegistrationService;
     private LibroSearchService $libroSearchService;
     private libroDetailService $libroDetailsService;
     private LibroUpdateService $libroUpdateService;
 
     public function __construct(
-        ILibroRepository $repo, LibroRegistrationService $libroRegistrationService, 
+        ILibroRepository $repo, IAutorRepository $autorRepo, LibroRegistrationService $libroRegistrationService, 
         LibroSearchService $libroSearchService, libroDetailService $libroDetailsService, 
         LibroUpdateService $libroUpdateService)
         {
         $this->repo = $repo;
+        $this->autorRepo = $autorRepo;
         $this->libroRegistrationService = $libroRegistrationService;
         $this->libroSearchService = $libroSearchService;
         $this->libroDetailsService = $libroDetailsService;
         $this->libroUpdateService = $libroUpdateService;
+        $this->authenticate();
     }
 
     public function index(): string {
         $libros = $this->repo->all();
+        foreach ($libros as $libro) {
+            $autores = $this->autorRepo->getAutoresLibro($libro->getIdLibro());
+            $libro->setAutores($autores);
+        }
+        return $this->render('catalog/catalog', ['libros' => $libros]);
+    }
+
+    public function search(): string {        
+        $libros = $this->libroSearchService->buscar($_GET);
+        foreach ($libros as $libro) {
+            $autores = $this->autorRepo->getAutoresLibro($libro->getIdLibro());
+            $libro->setAutores($autores);
+        }
         return $this->render('catalog/catalog', ['libros' => $libros]);
     }
 
@@ -90,6 +108,22 @@ class LibroController extends BaseController {
             ]);
         }
     }
+
+    public function option(): string {
+        return $this->render('book/new-book', []);
+    }
+
+    public function newEdition(): string {
+        $cota = $this->input('cota-reg', '');
+        $libroExistente = $this->repo->findByCota($cota);
+        if (!$libroExistente) {
+            $_SESSION['error'] = "No se encontró un libro con la cota proporcionada.";
+            $this->redirect("/libros/opcion");
+        }
+        return $this->render('book/book', ['libro' => $libroExistente]);
+    }
+
+    
 
     public function edit(): string {
         $id = $this->input('id');

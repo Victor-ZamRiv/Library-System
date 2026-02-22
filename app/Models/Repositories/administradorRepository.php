@@ -77,15 +77,16 @@ class AdministradorRepository extends BaseRepository implements IAdministradorRe
             throw new \InvalidArgumentException("El Administrador ya tiene ID, no puede insertarse");
         }
 
-        $sql = "INSERT INTO administradores (ID_Persona, Nombre_Usuario, ContrasenaHash, Rol, Activo)
-                VALUES (:idPersona, :nombreUsuario, :contrasena, :rol, :activo)";
+        $sql = "INSERT INTO administradores (ID_Persona, Nombre_Usuario, ContrasenaHash, Rol, ID_Pregunta, RespuestaHash)
+                VALUES (:idPersona, :nombreUsuario, :contrasena, :rol, :idPregunta, :respuestaHash)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
             ':idPersona' => $Administrador->getIdPersona(),
             ':nombreUsuario' => $Administrador->getNombreUsuario(),
             ':contrasena' => $Administrador->getContrasenaHash(),
             ':rol' => $Administrador->getRol(),
-            ':activo' => $Administrador->isActivo() ? 1 : 0
+            ':idPregunta' => $Administrador->getIdPregunta(),
+            ':respuestaHash' => $Administrador->getRespuestaHash()
         ]);
 
         return (int)$this->pdo->lastInsertId();

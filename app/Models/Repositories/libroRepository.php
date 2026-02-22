@@ -33,6 +33,15 @@ class LibroRepository extends BaseRepository implements ILibroRepository {
         $row = $this->fetchById($id);
         return $row ? $this->mapToEntity($row) : null;
     }
+
+    public function findByCota(string $cota): ?Libro {
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE Cota = :cota AND Activo = 1");
+        $stmt->execute([':cota' => $cota]);
+        $row = $stmt->fetch();
+        return $row ? $this->mapToEntity($row) : null;
+    }
+
+    
     
     public function search(array $filtros): array {
         $sql = "
@@ -63,14 +72,14 @@ class LibroRepository extends BaseRepository implements ILibroRepository {
         }
 
         // Filtro por sala
-        if (!empty($filtros['sala'])) {
-            $sql .= " AND l.Sala = ?";
+        if (!empty($filtros['sala']) && $filtros['sala'] !== 'todas') {
+            $sql .= " AND l.ID_Sala = ?";
             $params[] = $filtros['sala'];
         }
 
         // Filtro por área de conocimiento
-        if (!empty($filtros['area'])) {
-            $sql .= " AND l.Area_Conocimiento = ?";
+        if (!empty($filtros['area']) && $filtros['area'] !== 'todas') {
+            $sql .= " AND l.ID_Area = ?";
             $params[] = $filtros['area'];
         }
 

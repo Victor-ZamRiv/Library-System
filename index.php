@@ -11,6 +11,9 @@ use App\Models\Repositories\AdministradorRepository;
 use App\Models\Repositories\LectorRepository;
 use App\Models\Repositories\ActividadRepository;
 use App\Models\Repositories\LogroRepository;
+use App\Models\Repositories\ConsultaRepository;
+use App\Models\Repositories\VisitanteRepository;
+use App\Models\Repositories\PreguntaRepository;
 use App\Contracts\ILibroRepository;
 use App\Contracts\IAutorRepository;
 use App\Contracts\IEditorialRepository;
@@ -20,6 +23,9 @@ use App\Contracts\IAdministradorRepository;
 use App\Contracts\ILectorRepository;
 use App\Contracts\IActividadRepository;
 use App\Contracts\ILogroRepository;
+use App\Contracts\IConsultaRepository;
+use App\Contracts\IVisitanteRepository;
+use App\Contracts\IPreguntaRepository;
 use App\Models\Services\AuthService;
 use App\Models\Services\LibroSearchService;
 use App\Models\Services\LibroRegistrationService;
@@ -29,6 +35,7 @@ use App\Models\Services\AdministradorRegistrationService;
 use App\Models\Services\LectorRegistrationService;
 use App\Models\Services\ListAdministradorService;
 use App\Models\Services\ListLectorService;
+use App\Models\Services\VisitanteService;
 
 $router = require __DIR__ . '/app/routes/web.php';
 
@@ -41,6 +48,10 @@ $administradorRepo = new AdministradorRepository($pdo);
 $lectorRepo = new LectorRepository($pdo);
 $actividadRepo = new ActividadRepository($pdo);
 $logroRepo = new LogroRepository($pdo);
+$consultaRepo = new ConsultaRepository($pdo);
+$visitanteRepo = new VisitanteRepository($pdo);
+$preguntaRepo = new PreguntaRepository($pdo);
+
 
 $container = [
     \PDO::class => $pdo,
@@ -53,6 +64,9 @@ $container = [
     ILectorRepository::class => $lectorRepo,
     IActividadRepository::class => $actividadRepo,
     ILogroRepository::class => $logroRepo,
+    IConsultaRepository::class => $consultaRepo,
+    IVisitanteRepository::class => $visitanteRepo,
+    IPreguntaRepository::class => $preguntaRepo,
     LibroSearchService::class => new LibroSearchService(
         $libroRepo, $autorRepo),
     LibroRegistrationService::class => new LibroRegistrationService(
@@ -94,6 +108,11 @@ $container = [
     ListLectorService::class => new ListLectorService(
         $lectorRepo,
         $personaRepo
+    ),
+    VisitanteService::class => new VisitanteService(
+        $visitanteRepo,
+        $consultaRepo,
+        $pdo
     ),
 ];
 

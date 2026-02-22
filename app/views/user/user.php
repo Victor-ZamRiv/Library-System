@@ -1,34 +1,20 @@
-<?php
-$old = $_SESSION['old_data'] ?? [];
-$error = $_SESSION['error'] ?? null;
-unset($_SESSION['old_data'], $_SESSION['error']);
-?>
 <!DOCTYPE html>
 <html lang="es">
 
-    <title>Nuevo Usuario</title>
-    <?php include VIEW_PATH . "/component/heat.php" ?>
+<title>Nuevo Usuario</title>
+<?php include VIEW_PATH . "/component/heat.php" ?>
 
 <body>
     <?php include VIEW_PATH . "/component/sidebar.php" ?>
 
     <section class="full-box dashboard-contentPage">
-        <?php include VIEW_PATH . "/component/navbar.php" ?>
-        
+        <?php include  VIEW_PATH . "/component/navbar.php" ?>
+
         <div class="container-fluid">
             <div class="page-header">
                 <h1 class="text-titles"> Usuarios <small>Nuevo Usuario</small></h1>
             </div>
         </div>
-
-        <?php if ($error !== null): ?>
-        <div class="container-fluid">
-            <div class="alert alert-danger" role="alert">
-                <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?>
-            </div>
-        </div>
-        <?php endif; ?>
-
         <?php include VIEW_PATH . "/component/userbar.php" ?>
 
         <div class="container-fluid">
@@ -37,10 +23,9 @@ unset($_SESSION['old_data'], $_SESSION['error']);
                     <h3 class="panel-title"> &nbsp; CREAR USUARIO</h3>
                 </div>
                 <div class="panel-body">
-                    <form action="<?= BASE_URL ?>/administradores/store" method="POST" id="form-registro-usuario">
+                    <form action="#" method="POST" id="form-registro-usuario">
                         <fieldset>
                             <legend> &nbsp; Información personal</legend>
-
                             <div class="container-fluid">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-6">
@@ -50,9 +35,8 @@ unset($_SESSION['old_data'], $_SESSION['error']);
                                                 pattern="[0-9]{6,12}"
                                                 class="form-control"
                                                 type="text"
-                                                name="cedula"
+                                                name="dni-reg"
                                                 id="dni-reg"
-                                                value="<?= htmlspecialchars($old['cedula'] ?? '') ?>"
                                                 required
                                                 maxlength="8"
                                                 aria-describedby="dni-error"
@@ -72,7 +56,6 @@ unset($_SESSION['old_data'], $_SESSION['error']);
                                                 type="text"
                                                 name="nombre-reg"
                                                 id="nombre-reg"
-                                                value="<?= htmlspecialchars($old['nombre-reg'] ?? '') ?>"
                                                 required
                                                 maxlength="30"
                                                 onblur="if (!this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('nombre-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('nombre-error').style.display = 'none'; }">
@@ -91,7 +74,6 @@ unset($_SESSION['old_data'], $_SESSION['error']);
                                                 type="text"
                                                 name="apellido-reg"
                                                 id="apellido-reg"
-                                                value="<?= htmlspecialchars($old['apellido-reg'] ?? '') ?>"
                                                 required
                                                 maxlength="30"
                                                 onblur="if (!this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('apellido-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('apellido-error').style.display = 'none'; }">
@@ -109,13 +91,12 @@ unset($_SESSION['old_data'], $_SESSION['error']);
                                                 class="form-control"
                                                 type="text"
                                                 name="telf-reg"
-                                                value="<?= htmlspecialchars($old['telf-reg'] ?? '') ?>"
                                                 id="telf-reg"
                                                 maxlength="11"
-												placeholder="XXXX-XXXXXXX"
+                                                placeholder="XXXX-XXXXXXX"
                                                 onblur="if (this.value !== '' && !this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('tel-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('tel-error').style.display = 'none'; }">
                                             <div class="invalid-feedback bg-danger text-danger rounded-pill" id="tel-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i>  Por favor, ingrese un Teléfono válido Ejem: 0424-5772539 (solo 11 dígitos).
+                                                <i class="fas fa-exclamation-circle"></i> Por favor, ingrese un Teléfono válido Ejem: 0424-5772539 (solo 11 dígitos).
 
                                             </div>
                                         </div>
@@ -139,7 +120,6 @@ unset($_SESSION['old_data'], $_SESSION['error']);
                                                 type="text"
                                                 name="usuario-reg"
                                                 id="usuario-reg"
-                                                value="<?= htmlspecialchars($old['usuario-reg'] ?? '') ?>"
                                                 required
                                                 maxlength="15"
                                                 onblur="if (!this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('user-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('user-error').style.display = 'none'; }">
@@ -182,6 +162,37 @@ unset($_SESSION['old_data'], $_SESSION['error']);
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="col-xs-12 col-sm-6">
+                                        <div class="form-group label-floating">
+                                            <label class="control-label"><span class="text-danger">*</span> Pregunta de seguridad </label>
+                                            <select class="form-control" name="pregunta-seguridad" id="pregunta-tipo-reg" required>
+                                                <option value="" disabled selected>Seleccione una opción</option>
+                                                <?php foreach ($preguntas as $pregunta): ?>
+                                                    <option value="<?= htmlspecialchars($pregunta->getIdPregunta()) ?>"><?= htmlspecialchars($pregunta->getPregunta()) ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-xs-12 col-sm-6">
+                                        <div class="form-group label-floating">
+                                            <label class="control-label"><span class="text-danger">*</span> Respuesta de seguridad </label>
+                                            <input
+                                                class="form-control"
+                                                type="text"
+                                                name="pregunta-secreta"
+                                                id="pregunta-resp-reg"
+                                                pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{2,50}"
+                                                required
+                                                maxlength="50"
+                                                onblur="validarTexto(this, 'resp-error')">
+
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="resp-error" style="display: none;">
+                                                <i class="fas fa-exclamation-circle"></i> La respuesta es inválida.
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </fieldset>
@@ -191,15 +202,15 @@ unset($_SESSION['old_data'], $_SESSION['error']);
                             <div class="container-fluid">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-6">
-                                        <p class="text-left"><span class="label label-success">Nivel 1</span> Director (Control total del sistema)</p>
-                                        <p class="text-left"><span class="label label-primary">Nivel 2</span> Jefe de sala (Permiso para registro y control estadístico) </p>
-                                        <p class="text-left"><span class="label label-info">Nivel 3</span> Bibliotecario (Permiso para Gestion de catálogo y circulación)</p>
+                                        <p class="text-left"><span class="label label-success">Nivel 1</span> Control total del sistema</p>
+                                        <p class="text-left"><span class="label label-primary">Nivel 2</span> Permiso para registro y actualización</p>
+                                        <p class="text-left"><span class="label label-info">Nivel 3</span> Permiso para registro</p>
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
                                         <label>Selecciona el Nivel de Privilegio:</label><br>
-                                        <label><input type="radio" name="rol" value="Director"> Nivel 1</label><br>
-                                        <label><input type="radio" name="rol" value="Jefe de sala"> Nivel 2</label><br>
-                                        <label><input type="radio" name="rol" value="Bibliotecario" checked> Nivel 3</label>
+                                        <label><input type="radio" name="optionsPrivilegio" value="Bibliotecario" checked> Nivel 1</label><br>
+                                        <label><input type="radio" name="optionsPrivilegio" value="Jefe de sala"> Nivel 2</label><br>
+                                        <label><input type="radio" name="optionsPrivilegio" value="Director"> Nivel 3</label>
                                     </div>
                                 </div>
                             </div>
@@ -214,7 +225,8 @@ unset($_SESSION['old_data'], $_SESSION['error']);
         </div>
     </section>
 
-    <?php include VIEW_PATH . "/component/scripts.php" ?>
-	<script src="<?= PUBLIC_PATH ?>/js/validations/user/createuser.js"></script>
+    <?php include  VIEW_PATH . "/component/scripts.php" ?>
+    <script src="<?= PUBLIC_PATH ?>/js/validations/user/createuser.js"></script>
 </body>
+
 </html>

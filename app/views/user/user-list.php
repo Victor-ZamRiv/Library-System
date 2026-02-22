@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <!-- head -->
- <title>Lista de Usuarios</title>
+<title>Lista de Usuarios</title>
 <?php include VIEW_PATH . "/component/heat.php" ?>
 
 <body>
@@ -41,8 +41,8 @@
 								<br>
 								<button type="submit" class="btn btn-info btn-raised btn-sm"><i class="zmdi zmdi-search"></i> Buscar</button>
 							</div>
-						</form>		
-                    </div>
+						</form>
+					</div>
 					<br>
 
 					<div class="table-responsive">
@@ -63,29 +63,39 @@
 									<?php if (empty($administradores)): ?>
 										<td colspan="7">No se encontraron administradores.</td>
 									<?php else: ?>
-									<?php foreach ($administradores as $admin): ?>
-									<td><?= htmlspecialchars($admin->getNombreUsuario()) ?></td>
-									<td><?= htmlspecialchars($admin->getPersona()->getCedula()) ?></td>
-									<td><?= htmlspecialchars($admin->getPersona()->getNombre()) ?></td>
-									<td><?= htmlspecialchars($admin->getPersona()->getApellido()) ?></td>
-									<td><?= htmlspecialchars($admin->getPersona()->getTelefono()) ?></td>
-									
-									<td>
-										<a href="#!" class="btn btn-success btn-raised btn-sm">
+										<?php foreach ($administradores as $admin): ?>
+											<td><?= htmlspecialchars($admin->getNombreUsuario()) ?></td>
+											<td><?= htmlspecialchars($admin->getPersona()->getCedula()) ?></td>
+											<td><?= htmlspecialchars($admin->getPersona()->getNombre()) ?></td>
+											<td><?= htmlspecialchars($admin->getPersona()->getApellido()) ?></td>
+											<td><?= htmlspecialchars($admin->getPersona()->getTelefono()) ?></td>
 
-											<i class="fa-solid fa-info"></i>
-										</a>
-									</td>
-									<td>
-										<a href="#!" class="btn btn-danger btn-raised btn-sm">
+											<td>
+												<a href="user-info.php" class="btn btn-success btn-raised btn-sm">
 
-											<i class="fa-solid fa-info"></i>
-										</a>
-									</td>
-									<?php endforeach; ?>
+													<i class="fa-solid fa-info"></i>
+												</a>
+											</td>
+											<td>
+												<a href="#!" class="btn btn-danger btn-raised btn-sm"
+													data-toggle="modal"
+													data-target="#confirmDeleteUserModal"
+
+
+
+
+													data-id="1"
+
+
+
+
+													data-nombre="<?= htmlspecialchars($admin->getNombreUsuario()) ?>"><i class="fa-solid fa-trash"></i>
+												</a>
+											</td>
+										<?php endforeach; ?>
 									<?php endif; ?>
 								</tr>
-								
+
 							</tbody>
 						</table>
 					</div>
@@ -107,9 +117,29 @@
 
 	</section>
 
+	<?php include VIEW_PATH . "/modal/confirmation-delete-user.php" ?>
+
 	<!--====== Scripts -->
 
 	<?php include VIEW_PATH . "/component/scripts.php" ?>
+
+
+	<script>
+		$(document).ready(function() {
+			$('#confirmDeleteUserModal').on('show.bs.modal', function(event) {
+				var button = $(event.relatedTarget); // Botón que activó el modal
+				var userId = button.data('id'); // Extraer info de atributos data-*
+				var userName = button.data('nombre');
+
+				var modal = $(this);
+				modal.find('#modalUserName').text(userName);
+
+				// Ajusta esta URL según tu sistema de rutas (ejemplo: administradores/delete/ID)
+				var deleteUrl = '<?= BASE_URL ?>/administradores/delete/' + userId;
+				modal.find('#confirmDeleteBtn').attr('href', deleteUrl);
+			});
+		});
+	</script>
 
 </body>
 

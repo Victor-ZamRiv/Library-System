@@ -1,101 +1,74 @@
-        const formRegistroLibro = document.getElementById('form-registro-libro');
-        const btnConfirmarEnvio = document.getElementById('btn-confirmar-envio');
-        const resumenDatosLibro = document.getElementById('resumen-datos-libro');
-        const portadaReg = document.getElementById('portada-reg');
-        const fileNameSpan = document.getElementById('file-name');
+const formRegistroLibro = document.getElementById('form-registro-libro');
+const btnConfirmarEnvio = document.getElementById('btn-confirmar-envio');
+const resumenDatosLibro = document.getElementById('resumen-datos-libro');
+const portadaReg = document.getElementById('portada-reg');
+const fileNameSpan = document.getElementById('file-name');
 
-        // 1. Detener el envío y mostrar el modal
-        formRegistroLibro.addEventListener('submit', function(event) {
-            // Detener el envío por defecto
-            event.preventDefault();
+formRegistroLibro.addEventListener('submit', function(event) {
+    // 1. Validar el formulario antes de mostrar el modal
+    if (!formRegistroLibro.checkValidity()) {
+        formRegistroLibro.classList.add('was-validated');
+        return; // Detener si hay campos inválidos
+    }
 
-            // Comprobar la validez del formulario completo
-            if (formRegistroLibro.checkValidity()) {
+    // 2. Bloquear envío automático para mostrar resumen
+    event.preventDefault();
 
-                // --- 2. Recopilar y Formatear los Datos ---
-                const sala = document.getElementById('salaSelect').value;
-                const area = document.getElementById('areaSelect').value;
-                const titulo = document.getElementById('titulo-reg').value;
-                const cota = document.getElementById('cota').value;
-                const autor = document.getElementById('autor-reg').value;
-                const ciudad = document.getElementById('ciudad-reg').value;
-                const edicion = document.getElementById('edicion-reg').value;
-                const anio = document.getElementById('year-reg').value;
-                const ejemplares = document.getElementById('ejemplares-reg').value;
-                const paginas = document.getElementById('paginas-reg').value;
-                const editorial = document.getElementById('editorial-reg').value;
-                const isbn = document.getElementById('isbn').value;
-                const observaciones = document.getElementById('observaciones-reg').value;
+    // 3. Captura de TODOS los valores (IDs mapeados según tu HTML)
+    const data = {
+        sala: document.getElementById('salaSelect').value,
+        area: document.getElementById('areaSelect').value,
+        titulo: document.getElementById('titulo-reg').value,
+        cota: document.getElementById('cota').value,
+        autor: document.getElementById('autor-reg').value,
+        ciudad: document.getElementById('ciudad').value,
+        edicion: document.getElementById('edicion').value,
+        anio: document.getElementById('year-reg').value,
+        ejemplares: document.getElementById('ejemplares-reg').value,
+        paginas: document.getElementById('paginas-reg').value,
+        editorial: document.getElementById('editorial-reg').value,
+        isbn: document.getElementById('isbn').value,
+        obs: document.getElementById('observaciones-reg').value
+    };
 
-                // Nombre del archivo de portada (si existe)
-                const nombrePortada = portadaReg.files.length > 0 ? portadaReg.files[0].name : 'No seleccionada';
+    const nombrePortada = portadaReg.files.length > 0 ? portadaReg.files[0].name : 'Sin archivo (se usará por defecto)';
 
-
-                // --- 3. Construir la Tabla de Resumen ---
-                let htmlResumen = `
-            <table class="table table-sm table-striped">
+    // 4. Construcción de la tabla de resumen
+    let htmlResumen = `
+        <div class="table-responsive">
+            <table class="table table-hover table-condensed table-bordered">
+                <thead>
+                    <tr class="info"><th colspan="2" class="text-center">RESUMEN DEL REGISTRO</th></tr>
+                </thead>
                 <tbody>
-                    <tr><th>Sala:</th><td>${sala}</td></tr>
-                    ${area ? `<tr><th>Área Infantil:</th><td>${area}</td></tr>` : ''}
-                    <tr><th>Título:</th><td><strong>${titulo}</strong></td></tr>
-                    <tr><th>Autor:</th><td>${autor}</td></tr>
-                    <tr><th>Cota:</th><td>${cota}</td></tr>
-                    <tr><th>Editorial:</th><td>${editorial}</td></tr>
-                    <tr><th>ISBN:</th><td>${isbn}</td></tr>
-                    <tr><th>Ciudad:</th><td>${ciudad}</td></tr>
-                    <tr><th>Edición:</th><td>${edicion}</td></tr>
-                    <tr><th>Año:</th><td>${anio}</td></tr>
-                    <tr><th>Ejemplares:</th><td>${ejemplares}</td></tr>
-                    <tr><th>Páginas:</th><td>${paginas}</td></tr>
-                    <tr><th>Observaciones:</th><td>${observaciones || 'Ninguna'}</td></tr>
-                    <tr><th>Portada:</th><td>${nombrePortada}</td></tr>
+                    <tr><td style="width: 30%;"><strong>Sala:</strong></td><td>${data.sala}</td></tr>
+                    ${data.area ? `<tr><td><strong>Área Infantil:</strong></td><td>${data.area}</td></tr>` : ''}
+                    <tr><td><strong>Título:</strong></td><td>${data.titulo}</td></tr>
+                    <tr><td><strong>Autor:</strong></td><td>${data.autor}</td></tr>
+                    <tr><td><strong>Cota:</strong></td><td>${data.cota}</td></tr>
+                    <tr><td><strong>Editorial:</strong></td><td>${data.editorial}</td></tr>
+                    <tr><td><strong>ISBN:</strong></td><td>${data.isbn}</td></tr>
+                    <tr><td><strong>Ubicación:</strong></td><td>${data.ciudad}, Edición: ${data.edicion}, Año: ${data.anio}</td></tr>
+                    <tr><td><strong>Físico:</strong></td><td>${data.ejemplares} Ejemplares, ${data.paginas} Páginas</td></tr>
+                    <tr><td><strong>Observaciones:</strong></td><td>${data.obs || '<em>Ninguna</em>'}</td></tr>
+                    <tr><td><strong>Portada:</strong></td><td><i class="fa-solid fa-image"></i> ${nombrePortada}</td></tr>
                 </tbody>
             </table>
-        `;
+        </div>
+    `;
 
-                // Insertar el resumen en el cuerpo del modal
-                resumenDatosLibro.innerHTML = htmlResumen;
+    // 5. Inyectar y mostrar
+    resumenDatosLibro.innerHTML = htmlResumen;
+    $('#modalConfirmacion').modal('show');
+});
 
-                // Mostrar el modal de confirmación
-                $('#modalConfirmacion').modal('show');
+// 6. Acción final al confirmar
+btnConfirmarEnvio.addEventListener('click', function() {
+    $('#modalConfirmacion').modal('hide');
+    formRegistroLibro.submit(); // Envía el formulario de forma nativa
+});
 
-            } else {
-                // Si la validación falla (ej. campos requeridos vacíos), forzamos la validación visual de Bootstrap
-                formRegistroLibro.classList.add('was-validated');
-            }
-        });
-
-
-        // 4. Manejar la acción de "Confirmar" dentro del modal
-        btnConfirmarEnvio.addEventListener('click', function() {
-            // Ocultar el modal
-            $('#modalConfirmacion').modal('hide');
-
-            // Quitar temporalmente el listener de submit para permitir el envío
-            // **Importante:** Necesitamos que el formulario se envíe con un método nativo
-            // para que también incluya el archivo de la portada (enctype="multipart/form-data").
-
-            // Crear un nuevo evento de submit sin propagación
-            const event = new Event('submit', {
-                cancelable: true
-            });
-
-            // Eliminar el listener temporalmente (para evitar bucle)
-            formRegistroLibro.removeEventListener('submit', arguments.callee);
-
-            // Enviar el formulario programáticamente
-            formRegistroLibro.submit();
-
-            // Nota: Si usaras AJAX (fetch o XHR) para enviar la data,
-            // NO usarías formRegistroLibro.submit();. En su lugar, ejecutarías aquí la lógica AJAX.
-        });
-
-
-        // Opcional: Script para mostrar el nombre del archivo seleccionado en el campo de Portada
-        portadaReg.addEventListener('change', function() {
-            if (this.files.length > 0) {
-                fileNameSpan.textContent = this.files[0].name;
-            } else {
-                fileNameSpan.textContent = 'No se ha seleccionado archivo';
-            }
-        });
+// Actualizar nombre del archivo visualmente
+portadaReg.addEventListener('change', function() {
+    fileNameSpan.textContent = this.files.length > 0 ? this.files[0].name : 'No se ha seleccionado archivo';
+});

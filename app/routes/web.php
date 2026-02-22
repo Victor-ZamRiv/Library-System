@@ -7,8 +7,18 @@ $router = new Router();
 $router->get('/dashboard', 'DashboardController@index');
 $router->get('/', 'DashboardController@index');
 
+// Rutas para configuración
+$router->get('/configuracion', 'ConfiguracionController@index');
+$router->get('/configuracion/sala', 'ConfiguracionController@salaConfiguration');
+$router->get('/configuracion/area', 'ConfiguracionController@areaConfiguration');
+$router->get('/history', 'ConfiguracionController@historial');
+$router->get('/configuracion/indicator', 'ConfiguracionController@indicatorConfiguration');
+
 // Rutas para libros
 $router->get('/libros', 'LibroController@index');
+$router->get('/libros/search', 'LibroController@search');
+$router->get('/libros/opcion', 'LibroController@option');
+$router->post('/libros/nueva-edicion', 'LibroController@newEdition');
 $router->get('/libros/create', 'LibroController@create');
 $router->post('/libros', 'LibroController@store');
 $router->get('/libros/show', 'LibroController@show');
@@ -19,6 +29,7 @@ $router->post('/libros/update', 'LibroController@update');
 $router->get('/login', 'AuthController@loginForm');
 $router->post('/login', 'AuthController@login');
 $router->get('/logout', 'AuthController@logout');
+$router->get('/password-recovery', 'AuthController@passwordRecoveryForm');
 
 // Rutas para administradores
 $router->get('/administradores', 'AdministradorController@list');
@@ -47,6 +58,14 @@ $router->post('/actividad/store', 'ActividadController@store');
 //Rutas logros
 $router->get('/logro/create', 'LogroController@create');
 $router->post('/logro/store', 'LogroController@store');
+
+// Rutas visitantes y consultas
+$router->get('/visitantes', 'VisitantesController@index');
+$router->get('/visitantes/registro', 'VisitantesController@create');
+$router->post('/visitantes/store', 'VisitantesController@store');
+
+
+
 
 
 return $router;

@@ -33,7 +33,7 @@ class Router {
             $method = strtoupper($_POST['_method']);
         }
 
-        $handler = $this->routes[$method][$uri] ?? null;
+        $handler = $this->routes[$method][$uri] ?? null; 
 
         if (!$handler) {
             http_response_code(404);
