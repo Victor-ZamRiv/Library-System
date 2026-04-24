@@ -15,6 +15,8 @@ class ActividadController extends BaseController {
     public function __construct(IActividadRepository $repo, ILogroRepository $logroRepo) {
         $this->repo = $repo;
         $this->logroRepo = $logroRepo;
+        $this->authenticate();
+        $this->middlewareRol(['Jefe de sala', 'Director'], 'Actividades');
     }
 
     // Listar todas las actividades

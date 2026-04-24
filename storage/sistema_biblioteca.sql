@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-11-2025 a las 02:07:53
+-- Tiempo de generación: 24-04-2026 a las 07:48:56
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -30,13 +30,22 @@ SET time_zone = "+00:00";
 CREATE TABLE `actividades` (
   `ID_Actividad` int(11) NOT NULL,
   `ID_Admin` int(11) DEFAULT NULL,
+  `Organizador` varchar(50) NOT NULL,
   `Categoria` varchar(50) DEFAULT NULL,
   `Descripcion` text NOT NULL,
   `Asistentes` int(11) DEFAULT NULL,
   `Estado` varchar(50) DEFAULT NULL,
   `Fecha` date NOT NULL,
-  `Fecha_Registro` date DEFAULT NULL
+  `Fecha_Registro` timestamp NULL DEFAULT current_timestamp(),
+  `Activo` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Volcado de datos para la tabla `actividades`
+--
+
+INSERT INTO `actividades` (`ID_Actividad`, `ID_Admin`, `Organizador`, `Categoria`, `Descripcion`, `Asistentes`, `Estado`, `Fecha`, `Fecha_Registro`, `Activo`) VALUES
+(4, 1, 'División de cultura', 'Educativa', 'Se realizó una actividad educativa con niños de la comunidad', 23, 'Completado', '2026-01-21', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -48,10 +57,19 @@ CREATE TABLE `administradores` (
   `ID_Admin` int(11) NOT NULL,
   `ID_Persona` int(11) NOT NULL,
   `Nombre_Usuario` varchar(50) NOT NULL,
-  `Contrasena` varchar(255) NOT NULL,
+  `ContrasenaHash` varchar(255) NOT NULL,
   `Rol` varchar(30) NOT NULL,
-  `Activo` tinyint(1) NOT NULL DEFAULT 1
+  `Activo` tinyint(1) NOT NULL DEFAULT 1,
+  `ID_Pregunta` int(11) DEFAULT NULL,
+  `RespuestaHash` varchar(250) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Volcado de datos para la tabla `administradores`
+--
+
+INSERT INTO `administradores` (`ID_Admin`, `ID_Persona`, `Nombre_Usuario`, `ContrasenaHash`, `Rol`, `Activo`, `ID_Pregunta`, `RespuestaHash`) VALUES
+(1, 1, 'VictorZR', '$2y$10$Hk2E9b3D1CJvJwwG8xusOeXSWln23qTsCArlLB/87J4npLqlYSvg6', 'Director', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -64,6 +82,14 @@ CREATE TABLE `areas_de_conocimiento` (
   `Nombre_Area` varchar(150) NOT NULL,
   `ID_Clasificacion` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Volcado de datos para la tabla `areas_de_conocimiento`
+--
+
+INSERT INTO `areas_de_conocimiento` (`ID_Area`, `Nombre_Area`, `ID_Clasificacion`) VALUES
+('N', 'Novela', 1),
+('NV', 'Novela Venezolana', 1);
 
 -- --------------------------------------------------------
 
@@ -88,6 +114,14 @@ CREATE TABLE `autores` (
   `ID_Autor` int(11) NOT NULL,
   `Nombre` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Volcado de datos para la tabla `autores`
+--
+
+INSERT INTO `autores` (`ID_Autor`, `Nombre`) VALUES
+(1, 'Gabriel García Márquez'),
+(2, 'Kishimoto');
 
 -- --------------------------------------------------------
 
@@ -125,7 +159,8 @@ CREATE TABLE `consultas_area_diarias` (
   `ID_Area` varchar(5) NOT NULL,
   `Fecha` date NOT NULL,
   `Cantidad_Consultada` int(11) NOT NULL,
-  `ID_Admin` int(11) NOT NULL
+  `ID_Admin` int(11) NOT NULL,
+  `Activo` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
@@ -144,7 +179,9 @@ CREATE TABLE `conteo_diario_visitantes` (
   `Adolescentes_Mujeres` int(11) NOT NULL DEFAULT 0,
   `Adultos_Hombres` int(11) NOT NULL DEFAULT 0,
   `Adultos_Mujeres` int(11) NOT NULL DEFAULT 0,
-  `ID_Admin` int(11) NOT NULL
+  `Turno` varchar(7) NOT NULL,
+  `ID_Admin` int(11) NOT NULL,
+  `Activo` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
@@ -158,6 +195,15 @@ CREATE TABLE `editoriales` (
   `Nombre` varchar(150) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
+--
+-- Volcado de datos para la tabla `editoriales`
+--
+
+INSERT INTO `editoriales` (`ID_Editorial`, `Nombre`) VALUES
+(7, ''),
+(8, 'Monte Avila'),
+(2, 'Planeta');
+
 -- --------------------------------------------------------
 
 --
@@ -168,9 +214,42 @@ CREATE TABLE `ejemplares` (
   `ID_Ejemplar` int(11) NOT NULL,
   `ID_Libro` int(11) NOT NULL,
   `Numero_Ejemplar` int(11) NOT NULL,
-  `Estado` enum('Disponible','Prestado','Descatalogado','En Reparacion') NOT NULL,
+  `Estado` enum('Disponible','Prestado','Descatalogado','En Reparación','Dañado') NOT NULL,
   `Activo` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Volcado de datos para la tabla `ejemplares`
+--
+
+INSERT INTO `ejemplares` (`ID_Ejemplar`, `ID_Libro`, `Numero_Ejemplar`, `Estado`, `Activo`) VALUES
+(17, 25, 1, 'Disponible', 1),
+(18, 25, 2, 'Disponible', 1),
+(19, 27, 1, 'Disponible', 1),
+(20, 27, 2, 'Disponible', 1),
+(21, 28, 1, 'Disponible', 1),
+(22, 28, 2, 'Disponible', 1),
+(23, 29, 1, 'Disponible', 1),
+(24, 29, 2, 'Disponible', 1),
+(25, 30, 1, 'Disponible', 1),
+(26, 30, 2, 'Disponible', 1),
+(27, 31, 1, 'Disponible', 1),
+(28, 31, 2, 'Disponible', 1),
+(29, 37, 1, 'Disponible', 1),
+(30, 37, 2, 'Disponible', 1),
+(31, 38, 1, 'Disponible', 1),
+(32, 38, 2, 'Disponible', 1),
+(33, 39, 1, 'Disponible', 1),
+(34, 39, 2, 'En Reparación', 1),
+(35, 40, 1, 'Disponible', 1),
+(36, 42, 1, 'Disponible', 1),
+(37, 43, 1, 'Disponible', 1),
+(38, 44, 1, 'Disponible', 1),
+(39, 45, 1, 'Disponible', 1),
+(40, 48, 1, 'Disponible', 1),
+(41, 39, 3, 'En Reparación', 0),
+(42, 51, 1, 'Disponible', 1),
+(43, 51, 2, 'Disponible', 1);
 
 -- --------------------------------------------------------
 
@@ -299,21 +378,31 @@ CREATE TABLE `historial_prestamo` (
 
 CREATE TABLE `lectores` (
   `ID_Lector` int(11) NOT NULL,
+  `ID_Persona` int(11) NOT NULL,
   `Carnet` varchar(50) DEFAULT NULL,
   `Sexo` char(1) DEFAULT NULL,
   `Direccion` varchar(150) DEFAULT NULL,
-  `Ocupacion` varchar(100) DEFAULT NULL,
-  `Telefono_Ocupacion` varchar(20) DEFAULT NULL,
-  `Direccion_Ocupacion` varchar(150) DEFAULT NULL,
+  `Profesion` varchar(100) DEFAULT NULL,
+  `Telefono_Profesion` varchar(20) DEFAULT NULL,
+  `Direccion_Profesion` varchar(150) DEFAULT NULL,
   `Ref_Personal` varchar(100) DEFAULT NULL,
   `Ref_Personal_Tel` varchar(20) DEFAULT NULL,
-  `Ref_Laboral` varchar(100) DEFAULT NULL,
-  `Ref_Laboral_Tel` varchar(20) DEFAULT NULL,
+  `Ref_Legal` varchar(100) DEFAULT NULL,
+  `Ref_Legal_Tel` varchar(20) DEFAULT NULL,
   `Vencimiento_Carnet` date DEFAULT NULL,
   `Fecha_Registro` timestamp NOT NULL DEFAULT current_timestamp(),
   `Estado` enum('Activo','Inactivo','Inhabilitado') NOT NULL,
   `Activo` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Volcado de datos para la tabla `lectores`
+--
+
+INSERT INTO `lectores` (`ID_Lector`, `ID_Persona`, `Carnet`, `Sexo`, `Direccion`, `Profesion`, `Telefono_Profesion`, `Direccion_Profesion`, `Ref_Personal`, `Ref_Personal_Tel`, `Ref_Legal`, `Ref_Legal_Tel`, `Vencimiento_Carnet`, `Fecha_Registro`, `Estado`, `Activo`) VALUES
+(1, 7, '1234567890', 'M', 'Caiguire, calle El Cementerio', 'Panadero', '02934318929', 'Avenida Gran Mariscal', NULL, NULL, NULL, NULL, NULL, '2026-01-22 22:13:10', 'Activo', 1),
+(2, 9, '1234567898', 'M', 'Caiguire, calle El Cementerio', 'Peluquero', '02934318929', 'Avenida Gran Mariscal', '', '', 'Jesús Pérez', '04123216549', NULL, '2026-01-22 23:19:16', 'Activo', 1),
+(3, 11, '1334567898', 'F', 'Caiguire, calle El Cementerio', 'Peluquera', '02934318929', 'A.V Gran Mariscal', '', '', 'Jesús Pérez  ', '04123216549', NULL, '2026-01-23 01:48:47', 'Activo', 1);
 
 -- --------------------------------------------------------
 
@@ -332,12 +421,34 @@ CREATE TABLE `libros` (
   `Ciudad` varchar(50) NOT NULL,
   `ISBN` varchar(20) DEFAULT NULL,
   `Paginas` int(11) DEFAULT NULL,
-  `volumen` varchar(6) NOT NULL,
+  `volumen` varchar(6) DEFAULT NULL,
   `Observaciones` text DEFAULT NULL,
   `Anio_Publicacion` year(4) DEFAULT NULL,
   `Fecha_registro` timestamp NOT NULL DEFAULT current_timestamp(),
   `Activo` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Volcado de datos para la tabla `libros`
+--
+
+INSERT INTO `libros` (`ID_Libro`, `Titulo`, `ID_Editorial`, `ID_Area`, `ID_Sala`, `Cota`, `Edicion`, `Ciudad`, `ISBN`, `Paginas`, `volumen`, `Observaciones`, `Anio_Publicacion`, `Fecha_registro`, `Activo`) VALUES
+(25, 'Cien años de soledad', 2, 'N', 'R', 'N G455', 0, '', '123-5435-42-X', 354, NULL, '', '2008', '2025-12-29 06:08:29', 1),
+(27, 'Cien años de soledad', 2, 'N', 'R', 'N G452', 0, '', '123-5435-42-9', 354, NULL, '', '2008', '2025-12-29 06:10:08', 1),
+(28, 'Cien años de soledad', 2, 'N', 'R', 'N G466', 0, '', '123-5435-42-5', 354, NULL, '', '2008', '2026-01-05 07:05:00', 1),
+(29, 'Cien años de soledad', 2, 'N', 'R', 'N G465', 0, '', '123-5435-42-2', 354, NULL, '', '2008', '2026-01-05 07:33:12', 1),
+(30, 'Cien años de soledad', 2, 'N', 'G', 'N M465', 0, '', '123-5435-42-1', 354, NULL, '', '2008', '2026-01-06 19:59:13', 1),
+(31, 'Cien años de soledad', 2, 'N', 'SE', 'N M365', 0, '', '123-5435-46-1', 354, NULL, '', '2008', '2026-01-11 05:55:57', 1),
+(37, 'Cien años de soledad', 2, 'N', 'SE', 'N M165', 0, '', '122-5435-46-1', 354, NULL, '', '2008', '2026-01-11 06:22:29', 1),
+(38, 'Cien años de soledad', 2, 'N', 'SE', 'N M125', 6, 'Bogota', '122-5435-49-1', 354, NULL, '', '2008', '2026-01-11 06:34:13', 1),
+(39, 'Cien años de soledad', 8, 'N', 'G', 'N M025', 3, 'Bogota', '122-5405-49-1', 354, '', '', '2009', '2026-01-12 02:46:25', 1),
+(40, 'Cien años de soledad', 2, 'N', 'R', 'N G025', 6, 'Bogota', '222-5405-49-1', 354, NULL, '', '2008', '2026-01-12 06:14:34', 1),
+(42, 'Cien años de soledad', 2, 'N', 'R', 'N M035', 6, 'Bogota', '232-5405-49-1', 354, NULL, '', '2008', '2026-01-12 06:22:09', 1),
+(43, 'Cien años de soledad', 2, 'N', 'R', 'N M036', 6, 'Bogota', '232-5405-49-X', 354, NULL, '', '2008', '2026-01-12 06:26:08', 1),
+(44, 'Cien años de soledad', 2, 'N', 'R', 'N G021', 6, 'Bogota', '222-5405-49-4', 354, NULL, '', '2008', '2026-01-12 06:31:48', 1),
+(45, 'Cien años de soledad', 2, 'N', 'G', 'N G543', 6, 'Bogota', '222-5405-49-6', 354, NULL, '', '2008', '2026-01-16 04:40:25', 1),
+(48, 'Cien años de soledad', 7, 'N', 'R', '', 0, '', NULL, 0, NULL, NULL, NULL, '2026-01-21 23:34:37', 1),
+(51, 'NARUTO', 2, 'N', 'G', 'N M542', 6, 'Tokio', '123-5435-22-9', 354, NULL, '', '2008', '2026-02-13 09:50:32', 1);
 
 -- --------------------------------------------------------
 
@@ -351,6 +462,27 @@ CREATE TABLE `libros_autores` (
   `ID_Autor` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
+--
+-- Volcado de datos para la tabla `libros_autores`
+--
+
+INSERT INTO `libros_autores` (`ID_Libro_Autor`, `ID_Libro`, `ID_Autor`) VALUES
+(9, 25, 1),
+(10, 27, 1),
+(11, 28, 1),
+(12, 29, 1),
+(13, 30, 1),
+(14, 31, 1),
+(15, 37, 1),
+(16, 38, 1),
+(74, 39, 1),
+(18, 40, 1),
+(19, 42, 1),
+(20, 43, 1),
+(21, 44, 1),
+(22, 45, 1),
+(75, 51, 2);
+
 -- --------------------------------------------------------
 
 --
@@ -362,8 +494,16 @@ CREATE TABLE `logros` (
   `ID_Admin` int(11) DEFAULT NULL,
   `Descripcion` text NOT NULL,
   `Involucrados` text DEFAULT NULL,
-  `Fecha` date NOT NULL
+  `Fecha` date NOT NULL,
+  `Activo` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Volcado de datos para la tabla `logros`
+--
+
+INSERT INTO `logros` (`ID_Logro`, `ID_Admin`, `Descripcion`, `Involucrados`, `Fecha`, `Activo`) VALUES
+(1, NULL, 'Se recuperó un aire acondicionado para la sala general', 'Equipo de mantenimiento', '2026-01-22', 1);
 
 -- --------------------------------------------------------
 
@@ -377,7 +517,8 @@ CREATE TABLE `multas` (
   `ID_Admin` int(11) NOT NULL,
   `Monto` decimal(10,2) NOT NULL,
   `Fecha_Cancelacion` date DEFAULT NULL,
-  `Estado` enum('Pendiente','Pagada','Cancelada') NOT NULL
+  `Estado` enum('Pendiente','Pagada','Cancelada') NOT NULL,
+  `Fecha_Generacion` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
@@ -391,8 +532,41 @@ CREATE TABLE `persona` (
   `Cedula` varchar(20) NOT NULL,
   `Nombre` varchar(100) NOT NULL,
   `Apellido` varchar(100) NOT NULL,
-  `Telefono` varchar(20) DEFAULT NULL
+  `Telefono` varchar(20) DEFAULT NULL,
+  `Activo` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Volcado de datos para la tabla `persona`
+--
+
+INSERT INTO `persona` (`ID_Persona`, `Cedula`, `Nombre`, `Apellido`, `Telefono`, `Activo`) VALUES
+(1, '27458925', 'Victor Alfredo', 'Zambrano Rivero', NULL, 1),
+(7, '27458926', 'José Manuel', 'Perez Brito', '04127896543', 1),
+(9, '26458922', 'José Luis', 'Perez Brito', '04127896543', 1),
+(11, '25458922', 'Maria Alejandra', 'Rodríguez Brito', '04127896543', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `preguntas_seguridad`
+--
+
+CREATE TABLE `preguntas_seguridad` (
+  `ID_Pregunta` int(11) NOT NULL,
+  `Pregunta` varchar(150) DEFAULT NULL,
+  `Activo` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Volcado de datos para la tabla `preguntas_seguridad`
+--
+
+INSERT INTO `preguntas_seguridad` (`ID_Pregunta`, `Pregunta`, `Activo`) VALUES
+(1, '¿Cuál es el nombre de tu primera mascota?', 1),
+(2, '¿Cuál era el título de tu libro favorito?', 1),
+(3, '¿En qué ciudad viven tus padres?', 1),
+(4, '¿Qué ciudad es tu viaje soñado?', 1);
 
 -- --------------------------------------------------------
 
@@ -419,8 +593,20 @@ CREATE TABLE `prestamos` (
 
 CREATE TABLE `salas` (
   `ID_Sala` varchar(3) NOT NULL,
-  `Nombre` varchar(40) NOT NULL
+  `Nombre` varchar(40) NOT NULL,
+  `Capacidad` int(11) NOT NULL DEFAULT 20,
+  `Disponible` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Volcado de datos para la tabla `salas`
+--
+
+INSERT INTO `salas` (`ID_Sala`, `Nombre`, `Capacidad`, `Disponible`) VALUES
+('G', 'Sala General', 20, 1),
+('R', 'Sala de Referencia', 20, 0),
+('SE', 'Sala Estatal', 20, 0),
+('X', 'Sala Infantil', 20, 0);
 
 -- --------------------------------------------------------
 
@@ -432,6 +618,15 @@ CREATE TABLE `tipos_de_clasificacion` (
   `ID_Clasificacion` int(11) NOT NULL,
   `Nombre_Clasificacion` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Volcado de datos para la tabla `tipos_de_clasificacion`
+--
+
+INSERT INTO `tipos_de_clasificacion` (`ID_Clasificacion`, `Nombre_Clasificacion`) VALUES
+(3, 'Areas infantiles'),
+(2, 'Decimal de Dewey'),
+(1, 'Sistema Nacional');
 
 -- --------------------------------------------------------
 
@@ -462,7 +657,8 @@ ALTER TABLE `actividades`
 ALTER TABLE `administradores`
   ADD PRIMARY KEY (`ID_Admin`),
   ADD UNIQUE KEY `ID_Persona` (`ID_Persona`),
-  ADD UNIQUE KEY `Nombre_Usuario` (`Nombre_Usuario`);
+  ADD UNIQUE KEY `Nombre_Usuario` (`Nombre_Usuario`),
+  ADD KEY `fk_pregunta_seguridad` (`ID_Pregunta`);
 
 --
 -- Indices de la tabla `areas_de_conocimiento`
@@ -602,7 +798,8 @@ ALTER TABLE `historial_prestamo`
 --
 ALTER TABLE `lectores`
   ADD PRIMARY KEY (`ID_Lector`),
-  ADD UNIQUE KEY `Carnet` (`Carnet`);
+  ADD UNIQUE KEY `Carnet` (`Carnet`),
+  ADD KEY `lectores_ibfk_1` (`ID_Persona`);
 
 --
 -- Indices de la tabla `libros`
@@ -646,6 +843,12 @@ ALTER TABLE `persona`
   ADD UNIQUE KEY `Cedula` (`Cedula`);
 
 --
+-- Indices de la tabla `preguntas_seguridad`
+--
+ALTER TABLE `preguntas_seguridad`
+  ADD PRIMARY KEY (`ID_Pregunta`);
+
+--
 -- Indices de la tabla `prestamos`
 --
 ALTER TABLE `prestamos`
@@ -682,13 +885,13 @@ ALTER TABLE `tipos_de_daño`
 -- AUTO_INCREMENT de la tabla `actividades`
 --
 ALTER TABLE `actividades`
-  MODIFY `ID_Actividad` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Actividad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `administradores`
 --
 ALTER TABLE `administradores`
-  MODIFY `ID_Admin` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Admin` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `area_color`
@@ -700,7 +903,7 @@ ALTER TABLE `area_color`
 -- AUTO_INCREMENT de la tabla `autores`
 --
 ALTER TABLE `autores`
-  MODIFY `ID_Autor` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Autor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `colores`
@@ -730,13 +933,13 @@ ALTER TABLE `conteo_diario_visitantes`
 -- AUTO_INCREMENT de la tabla `editoriales`
 --
 ALTER TABLE `editoriales`
-  MODIFY `ID_Editorial` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Editorial` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `ejemplares`
 --
 ALTER TABLE `ejemplares`
-  MODIFY `ID_Ejemplar` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Ejemplar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT de la tabla `ejemplar_prestamo`
@@ -787,22 +990,28 @@ ALTER TABLE `historial_prestamo`
   MODIFY `ID_Historial_Prestamo` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `lectores`
+--
+ALTER TABLE `lectores`
+  MODIFY `ID_Lector` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT de la tabla `libros`
 --
 ALTER TABLE `libros`
-  MODIFY `ID_Libro` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Libro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- AUTO_INCREMENT de la tabla `libros_autores`
 --
 ALTER TABLE `libros_autores`
-  MODIFY `ID_Libro_Autor` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Libro_Autor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
 
 --
 -- AUTO_INCREMENT de la tabla `logros`
 --
 ALTER TABLE `logros`
-  MODIFY `ID_Logro` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Logro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `multas`
@@ -814,7 +1023,13 @@ ALTER TABLE `multas`
 -- AUTO_INCREMENT de la tabla `persona`
 --
 ALTER TABLE `persona`
-  MODIFY `ID_Persona` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Persona` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT de la tabla `preguntas_seguridad`
+--
+ALTER TABLE `preguntas_seguridad`
+  MODIFY `ID_Pregunta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `prestamos`
@@ -826,7 +1041,7 @@ ALTER TABLE `prestamos`
 -- AUTO_INCREMENT de la tabla `tipos_de_clasificacion`
 --
 ALTER TABLE `tipos_de_clasificacion`
-  MODIFY `ID_Clasificacion` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Clasificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `tipos_de_daño`
@@ -848,7 +1063,8 @@ ALTER TABLE `actividades`
 -- Filtros para la tabla `administradores`
 --
 ALTER TABLE `administradores`
-  ADD CONSTRAINT `administradores_ibfk_1` FOREIGN KEY (`ID_Persona`) REFERENCES `persona` (`ID_Persona`);
+  ADD CONSTRAINT `administradores_ibfk_1` FOREIGN KEY (`ID_Persona`) REFERENCES `persona` (`ID_Persona`),
+  ADD CONSTRAINT `fk_pregunta_seguridad` FOREIGN KEY (`ID_Pregunta`) REFERENCES `preguntas_seguridad` (`ID_Pregunta`);
 
 --
 -- Filtros para la tabla `areas_de_conocimiento`
@@ -945,7 +1161,7 @@ ALTER TABLE `historial_prestamo`
 -- Filtros para la tabla `lectores`
 --
 ALTER TABLE `lectores`
-  ADD CONSTRAINT `lectores_ibfk_1` FOREIGN KEY (`ID_Lector`) REFERENCES `persona` (`ID_Persona`);
+  ADD CONSTRAINT `lectores_ibfk_1` FOREIGN KEY (`ID_Persona`) REFERENCES `persona` (`ID_Persona`);
 
 --
 -- Filtros para la tabla `libros`

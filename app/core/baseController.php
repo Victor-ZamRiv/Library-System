@@ -9,6 +9,20 @@ class BaseController {
         return ob_get_clean();
     }
 
+    protected function middlewareRol(array $rolesPermitidos, string $modulo) {
+        if (!isset($_SESSION['administrador']['rol']) || !in_array($_SESSION['administrador']['rol'], $rolesPermitidos)) {
+            $_SESSION['error'] = "No tienes permisos para acceder al modulo $modulo.";
+            $this->redirect("/dashboard");
+        }
+    }
+    protected function authenticate() {
+        if (!isset($_SESSION['administrador'])) {
+            // Guardamos un mensaje para que el usuario sepa por qué fue rebotado
+            $_SESSION['error'] = "Debes iniciar sesión para acceder a esta sección.";
+            $this->redirect("/login");
+            exit(); // Detenemos la ejecución
+        }
+    }
 
     protected function redirect(string $url): void {
         $path = (strpos($url, BASE_URL) === 0) ? $url : BASE_URL . $url;

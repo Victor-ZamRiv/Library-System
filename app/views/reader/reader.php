@@ -1,26 +1,29 @@
-<?php 
-$old = $_SESSION['old_data'] ?? [];
-$error = $_SESSION['error'] ?? null;
-unset($_SESSION['old_data'], $_SESSION['error']);
-?>
-
 <!DOCTYPE html>
 <html lang="es">
-
-<title>Lectores</title>
-<!-- head -->
-<?php include VIEW_PATH . "/component/heat.php" ?>
+<head>
+    <title>Lectores</title>
+    <?php include VIEW_PATH . "/component/heat.php" ?>
+    <style>
+        /* Alineación de teléfonos en una sola línea */
+        .phone-group {
+            display: flex;
+            align-items: center;
+        }
+        .phone-group .select-prefix {
+            width: 35% !important;
+            margin-right: 5px;
+        }
+        .phone-group .input-number-main {
+            width: 65% !important;
+        }
+    </style>
+</head>
 
 <body>
-    <!-- SideBar -->
     <?php include VIEW_PATH . "/component/sidebar.php" ?>
 
-
-    <!-- Content page-->
     <section class="full-box dashboard-contentPage">
-        <!-- NavBar -->
         <?php include VIEW_PATH . "/component/navbar.php" ?>
-        <!-- Content page -->
 
         <div class="container-fluid">
             <div class="page-header">
@@ -29,146 +32,79 @@ unset($_SESSION['old_data'], $_SESSION['error']);
         </div>
         <?php include VIEW_PATH . "/component/readerbar.php" ?>
 
-        <!-- Panel nuevo lector -->
         <div class="container-fluid">
             <div class="panel panel-info">
                 <div class="panel-heading">
                     <h3 class="panel-title"> REGISTRAR LECTOR</h3>
                 </div>
                 <div class="panel-body">
-                    <form action="<?= BASE_URL?>/lectores/store" method="POST" enctype="application/x-www-form-urlencoded" id="form-registro-lector">
+                    <form action="<?= BASE_URL ?>/lectores/store" method="POST" id="form-registro-lector">
+                        
                         <fieldset>
                             <legend> &nbsp; Información personal</legend>
                             <div class="container-fluid">
                                 <div class="row">
                                     <div class="col-xs-6">
                                         <div class="form-group label-floating">
-                                            <label class="control-label" for="carnet-reg"><span class="text-danger">*</span> N° de Carnet </label>
-                                            <input
-                                                pattern="[0-9X/-]{1,30}"
-                                                class="form-control"
-                                                type="text"
-                                                name="carnet-reg"
-                                                id="carnet-reg"
-                                                value="<?= htmlspecialchars($old['carnet-reg'] ?? '') ?>"
-                                                required
-                                                minlength="10"
-                                                maxlength="10"
-                                                placeholder="XXXXXXXX/XX"
-                                                title="N° de Carnet: 10 dígitos en formato XXXXXXXX/XX"
-                                                aria-describedby="carnet-error"
-                                                onblur="if (!this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('carnet-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('carnet-error').style.display = 'none'; }">
-                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="carnet-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Por favor, ingrese un N° de Carnet válido de 10 dígitos.
-                                            </div>
+                                            <label class="control-label" for="carnet-reg"><span class="text-danger">*</span> N° de Carnet</label>
+                                            <input class="form-control" type="text" name="carnet-reg" id="carnet-reg" value="<?= htmlspecialchars($old['carnet-reg'] ?? '') ?>" required>
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="carnet-error"></div>
                                         </div>
                                     </div>
                                     <div class="col-xs-6">
                                         <div class="form-group label-floating">
                                             <label class="control-label" for="cedula-reg"><span class="text-danger">*</span> Cédula </label>
-                                            <input
-                                                pattern="[0-9-]{1,30}"
-                                                class="form-control"
-                                                type="text"
-                                                name="cedula"
-                                                id="cedula-reg"
-                                                value="<?= htmlspecialchars($old['cedula'] ?? '') ?>"
-                                                required
-                                                maxlength="8"
-                                                minlength="6"
-                                                title="Solo números y guiones (máximo 30 caracteres)"
-                                                aria-describedby="cedula-error"
-                                                onblur="if (!this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('cedula-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('cedula-error').style.display = 'none'; }">
-                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="cedula-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Por favor, ingrese una Cédula válida (solo números, entre 6 y 8 dígitos).
-                                            </div>
+                                            <input class="form-control" type="text" name="cedula" id="cedula-reg" value="<?= htmlspecialchars($old['cedula'] ?? '') ?>" required maxlength="8">
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="cedula-error"></div>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
                                             <label class="control-label" for="nombre-reg"><span class="text-danger">*</span> Nombres </label>
-                                            <input
-                                                pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{1,30}"
-                                                class="form-control"
-                                                type="text"
-                                                name="nombre-reg"
-                                                id="nombre-reg"
-                                                value="<?= htmlspecialchars($old['nombre-reg'] ?? '') ?>"
-                                                required
-                                                maxlength="30"
-                                                title="Solo letras y espacios (máximo 30 caracteres)"
-                                                aria-describedby="nombre-error"
-                                                onblur="if (!this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('nombre-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('nombre-error').style.display = 'none'; }">
-                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="nombre-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Por favor, ingrese Nombres válidos (solo letras y espacios, máximo 30 caracteres).
-                                            </div>
+                                            <input class="form-control" type="text" name="nombre-reg" id="nombre-reg" value="<?= htmlspecialchars($old['nombre-reg'] ?? '') ?>" required>
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="nombre-error"></div>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
                                             <label class="control-label" for="apellido-reg"><span class="text-danger">*</span> Apellidos </label>
-                                            <input
-                                                pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{1,30}"
-                                                class="form-control"
-                                                type="text"
-                                                name="apellido-reg"
-                                                id="apellido-reg"
-                                                value="<?= htmlspecialchars($old['apellido-reg'] ?? '') ?>"
-                                                required
-                                                maxlength="30"
-                                                title="Solo letras y espacios (máximo 30 caracteres)"
-                                                aria-describedby="apellido-error"
-                                                onblur="if (!this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('apellido-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('apellido-error').style.display = 'none'; }">
-                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="apellido-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Por favor, ingrese Apellidos válidos (solo letras y espacios, máximo 30 caracteres).
-                                            </div>
+                                            <input class="form-control" type="text" name="apellido-reg" id="apellido-reg" value="<?= htmlspecialchars($old['apellido-reg'] ?? '') ?>" required>
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="apellido-error"></div>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
-                                        <div class="form-group label-floating">
+                                        <div class="form-group">
                                             <label class="control-label" for="sexo-reg"><span class="text-danger">*</span> Sexo</label>
                                             <select class="form-control" name="sexo-reg" id="sexo-reg" required>
-                                                <option value="" disabled <?php if (isset($old['sexo-reg']) && $old['sexo-reg'] == '') echo 'selected'; ?>>Seleccione el sexo</option>
+                                                <option value="" disabled <?php if (!isset($old['sexo-reg'])) echo 'selected'; ?>>Seleccione el sexo</option>
                                                 <option value="M" <?php if (isset($old['sexo-reg']) && $old['sexo-reg'] == 'M') echo 'selected'; ?>>Masculino</option>
                                                 <option value="F" <?php if (isset($old['sexo-reg']) && $old['sexo-reg'] == 'F') echo 'selected'; ?>>Femenino</option>
                                             </select>
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="sexo-error"></div>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
                                             <label class="control-label" for="direccion-reg"><span class="text-danger">*</span> Dirección </label>
-                                            <input
-                                                class="form-control"
-                                                type="text"
-                                                name="direccion-reg"
-                                                id="direccion-reg"
-                                                value="<?= htmlspecialchars($old['direccion-reg'] ?? '') ?>"
-                                                required
-                                                maxlength="100"
-                                                title="Dirección (máximo 100 caracteres)"
-                                                aria-describedby="direccion-error"
-                                                onblur="if (!this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('direccion-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('direccion-error').style.display = 'none'; }">
-                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="direccion-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Por favor, ingrese una Dirección (máximo 100 caracteres).
-                                            </div>
+                                            <input class="form-control" type="text" name="direccion-reg" id="direccion-reg" value="<?= htmlspecialchars($old['direccion-reg'] ?? '') ?>" required>
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pillbg-danger text-danger rounded-pill" id="direccion-error"></div>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
-                                        <div class="form-group label-floating">
-                                            <label class="control-label" for="telefono-reg">Teléfono</label>
-                                            <input
-                                                pattern="[0-9]{11}"
-                                                class="form-control"
-                                                type="text"
-                                                name="telefono-reg"
-                                                id="telefono-reg"
-                                                value="<?= htmlspecialchars($old['telefono-reg'] ?? '') ?>"
-                                                maxlength="11" placeholder="XXXXXXXXXXX" title="Solo números (11 caracteres)"
-                                                aria-describedby="telefono-error"
-                                                onblur="if (this.value !== '' && !this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('telefono-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('telefono-error').style.display = 'none'; }">
-                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="telefono-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Por favor, ingrese un Teléfono válido Ejem: 0424-5772539 (solo 11 dígitos).
+                                        <div class="form-group">
+                                            <label class="control-label"><span class="text-danger">*</span> Teléfono Personal</label>
+                                            <div class="phone-group">
+                                                <select class="form-control select-prefix" id="pref-reg">
+                                                    <option value="0414">0414</option>
+                                                    <option value="0424">0424</option>
+                                                    <option value="0412">0412</option>
+                                                    <option value="0416">0416</option>
+                                                    <option value="0426">0426</option>
+                                                </select>
+                                                <input type="text" class="form-control input-number-main" id="num-reg" maxlength="7" placeholder="1234567" required>
                                             </div>
+                                            <input type="hidden" name="telefono-reg" id="telefono-reg">
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="telefono-error"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -178,64 +114,38 @@ unset($_SESSION['old_data'], $_SESSION['error']);
                         <br>
 
                         <fieldset>
-                            <legend> &nbsp; Información Laboral</legend>
+                            <legend> &nbsp; Información Laboral (Opcional)</legend>
                             <div class="container-fluid">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
-                                            <label class="control-label" for="profesion-reg">Profesión </label>
-                                            <input
-                                                pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{1,50}"
-                                                class="form-control"
-                                                type="text"
-                                                name="profesion-reg"
-                                                id="profesion-reg"
-                                                value="<?= htmlspecialchars($old['profesion-reg'] ?? '') ?>"
-                                                maxlength="50"
-                                                title="Solo letras y espacios (máximo 50 caracteres)"
-                                                aria-describedby="profesion-error"
-                                                onblur="if (this.value !== '' && !this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('profesion-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('profesion-error').style.display = 'none'; }">
-                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="profesion-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Por favor, ingrese una Profesión válida (solo letras y espacios, máximo 50 caracteres).
-                                            </div>
+                                            <label class="control-label" for="profesion-reg">Profesión</label>
+                                            <input class="form-control" type="text" name="profesion-reg" id="profesion-reg">
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="profesion-error"></div>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
-                                            <label class="control-label" for="direccion-profesion-reg">Dirección Profesión</label>
-                                            <input
-                                                class="form-control"
-                                                type="text"
-                                                name="direccion-profesion-reg"
-                                                id="direccion-profesion-reg"
-                                                value="<?= htmlspecialchars($old['direccion-profesion-reg'] ?? '') ?>"
-                                                maxlength="100"
-                                                title="Dirección de la Profesión (máximo 100 caracteres)"
-                                                aria-describedby="direccion-profesion-error"
-                                                onblur="if (this.value !== '' && !this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('direccion-profesion-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('direccion-profesion-error').style.display = 'none'; }">
-                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="direccion-profesion-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Por favor, ingrese una Dirección de Profesión válida (máximo 100 caracteres).
-                                            </div>
+                                            <label class="control-label" for="direccion-profesion-reg">Dirección Laboral</label>
+                                            <input class="form-control" type="text" name="direccion-profesion-reg" id="direccion-profesion-reg">
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="direccion-profesion-error"></div>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
-                                        <div class="form-group label-floating">
-                                            <label class="control-label" for="telefono-profesion-reg">Teléfono Profesión</label>
-                                            <input
-                                                pattern="[0-9-]{1,15}"
-                                                class="form-control"
-                                                type="text"
-                                                name="telefono-profesion-reg"
-                                                id="telefono-profesion-reg"
-                                                value="<?= htmlspecialchars($old['telefono-profesion-reg'] ?? '') ?>"
-                                                maxlength="11"
-                                                placeholder="XXXX-XXXXXXX"
-                                                title="Solo números (11 dígitos)"
-                                                aria-describedby="telefono-profesion-error"
-                                                onblur="if (this.value !== '' && !this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('telefono-profesion-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('telefono-profesion-error').style.display = 'none'; }">
-                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="telefono-profesion-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Por favor, ingrese un Teléfono de Profesión válido Ejem: 0424-5772539 (solo 11 dígitos).
+                                        <div class="form-group">
+                                            <label class="control-label">Teléfono Profesión</label>
+                                            <div class="phone-group">
+                                                <select class="form-control select-prefix" id="pref-prof">
+                                                    <option value="0414">0414</option>
+                                                    <option value="0424">0424</option>
+                                                    <option value="0412">0412</option>
+                                                    <option value="0416">0416</option>
+                                                    <option value="0426">0426</option>
+                                                </select>
+                                                <input type="text" class="form-control input-number-main" id="num-prof" maxlength="7">
                                             </div>
+                                            <input type="hidden" name="telefono-profesion-reg" id="telefono-profesion-reg">
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="telefono-profesion-error"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -245,85 +155,55 @@ unset($_SESSION['old_data'], $_SESSION['error']);
                         <br>
 
                         <fieldset>
-                            <legend> &nbsp; Referencias</legend>
+                            <legend> &nbsp; Referencias (Opcional)</legend>
                             <div class="container-fluid">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
-                                            <label class="control-label" for="referencia-legal-personal-reg">Referencia Legal o Personal</label>
-                                            <input
-                                                pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{1,100}"
-                                                class="form-control"
-                                                type="text"
-                                                name="ref-legal-reg"
-                                                id="referencia-legal-personal-reg"
-                                                value="<?= htmlspecialchars($old['ref-legal-reg'] ?? '') ?>"
-                                                maxlength="100"
-                                                title="Solo letras y espacios (máximo 100 caracteres)"
-                                                aria-describedby="referencia-legal-personal-error"
-                                                onblur="if (this.value !== '' && !this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('referencia-legal-personal-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('referencia-legal-personal-error').style.display = 'none'; }">
-                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="referencia-legal-personal-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Por favor, ingrese una Referencia Legal válida (solo nombres y apellidos, máximo 100 caracteres).
-                                            </div>
+                                            <label class="control-label" for="referencia-legal-personal-reg">Referencia Legal</label>
+                                            <input class="form-control" type="text" name="ref-legal-reg" id="referencia-legal-personal-reg">
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="referencia-legal-personal-error"></div>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
                                             <label class="control-label" for="referencia-personal-reg">Referencia Personal</label>
-                                            <input
-                                                pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{1,100}"
-                                                class="form-control"
-                                                type="text"
-                                                name="ref-personal-reg"
-                                                id="referencia-personal-reg"
-                                                value="<?= htmlspecialchars($error['ref-personal-reg'] ?? '') ?>"
-                                                maxlength="100"
-                                                title="Solo letras y espacios (máximo 100 caracteres)"
-                                                aria-describedby="referencia-personal-error"
-                                                onblur="if (this.value !== '' && !this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('referencia-personal-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('referencia-personal-error').style.display = 'none'; }">
-                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="referencia-personal-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Por favor, ingrese una Referencia Personal válida (solo nombres y apellidos, máximo 100 caracteres).
-                                            </div>
+                                            <input class="form-control" type="text" name="ref-personal-reg" id="referencia-personal-reg">
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="referencia-personal-error"></div>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
-                                        <div class="form-group label-floating">
-                                            <label class="control-label" for="telefono-referencia-legal-reg">Teléfono Referencia Legal:</label>
-                                            <input
-                                                pattern="[0-9-]{1,15}"
-                                                class="form-control"
-                                                type="text"
-                                                name="telefono-ref-legal-reg"
-                                                id="telefono-referencia-legal-reg"
-                                                value="<?= htmlspecialchars($old['telefono-ref-legal-reg'] ?? '') ?>"
-                                                maxlength="11"
-                                                placeholder="XXXX-XXXXXXX"
-                                                title="Solo números (11 dígitos)"
-                                                aria-describedby="telefono-referencia-legal-error"
-                                                onblur="if (this.value !== '' && !this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('telefono-referencia-legal-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('telefono-referencia-legal-error').style.display = 'none'; }">
-                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="telefono-referencia-legal-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Por favor, ingrese un Teléfono de Referencia Legal válido Ejem: 0424-5772539 (solo 11 dígitos).
+                                        <div class="form-group">
+                                            <label class="control-label">Teléfono Ref. Legal</label>
+                                            <div class="phone-group">
+                                                <select class="form-control select-prefix" id="pref-ref-l">
+                                                    <option value="0414">0414</option>
+                                                    <option value="0424">0424</option>
+                                                    <option value="0412">0412</option>
+                                                    <option value="0416">0416</option>
+                                                    <option value="0426">0426</option>
+                                                </select>
+                                                <input type="text" class="form-control input-number-main" id="num-ref-l" maxlength="7">
                                             </div>
+                                            <input type="hidden" name="telefono-ref-legal-reg" id="telefono-referencia-legal-reg">
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="telefono-referencia-legal-error"></div>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
-                                        <div class="form-group label-floating">
-                                            <label class="control-label" for="telefono-referencia-personal-reg">Teléfono Referencia Personal:</label>
-                                            <input
-                                                pattern="[0-9-]{1,15}"
-                                                class="form-control"
-                                                type="text"
-                                                name="telefono-ref-personal-reg"
-                                                id="telefono-referencia-personal-reg"
-                                                value="<?= htmlspecialchars($old['telefono-ref-personal-reg'] ?? '') ?>"
-                                                maxlength="11"
-                                                placeholder="XXXX-XXXXXXX"
-                                                title="Solo números(11 dígitos)"
-                                                aria-describedby="telefono-referencia-personal-error"
-                                                onblur="if (this.value !== '' && !this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('telefono-referencia-personal-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('telefono-referencia-personal-error').style.display = 'none'; }">
-                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="telefono-referencia-personal-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Por favor, ingrese un Teléfono de Referencia Personal válido Ejem: 0424-5749084 (salo 11 dígitos).
+                                        <div class="form-group">
+                                            <label class="control-label">Teléfono Ref. Personal</label>
+                                            <div class="phone-group">
+                                                <select class="form-control select-prefix" id="pref-ref-p">
+                                                    <option value="0414">0414</option>
+                                                    <option value="0424">0424</option>
+                                                    <option value="0412">0412</option>
+                                                    <option value="0416">0416</option>
+                                                    <option value="0426">0426</option>
+                                                </select>
+                                                <input type="text" class="form-control input-number-main" id="num-ref-p" maxlength="7">
                                             </div>
+                                            <input type="hidden" name="telefono-ref-personal-reg" id="telefono-referencia-personal-reg">
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="telefono-referencia-personal-error"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -337,12 +217,9 @@ unset($_SESSION['old_data'], $_SESSION['error']);
                 </div>
             </div>
         </div>
-
     </section>
 
-    <!--====== Scripts -->
     <?php include VIEW_PATH . "/component/scripts.php" ?>
     <script src="<?= PUBLIC_PATH ?>/js/validations/reader/createvalidation.js"></script>
 </body>
-
 </html>

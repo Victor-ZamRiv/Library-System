@@ -8,6 +8,7 @@
 
 <body>
     <?php include VIEW_PATH . "/component/sidebar.php" ?>
+    
 
     <section class="full-box dashboard-contentPage">
         <?php include VIEW_PATH . "/component/navbar.php" ?>
@@ -101,10 +102,10 @@
                     </fieldset>
 
                     <p class="text-center" style="margin-top: 20px;">
-                        <a href="<?= BASE_URL ?>/lectores/list" class="btn btn-info btn-raised">
-                            <i class="fa-solid fa-arrow-left"></i> Volver al listado
+                        <a href="<?= BASE_URL ?>/lectores" class="btn btn-secondary btn-raised">
+                            <i class="fa-solid fa-arrow-left"></i> Volver
                         </a>
-                        <button onclick="window.print();" class="btn btn-default btn-raised">
+                        <button onclick="window.print();" class="btn btn-info btn-raised">
                             <i class="fa-solid fa-print"></i> Imprimir Ficha
                         </button>
                     </p>

@@ -1,91 +1,53 @@
-// 1. Función para limpiar caracteres no numéricos en tiempo real
+/**
+ * SCRIPT DE VALIDACIÓN PARA CREACIÓN DE USUARIOS
+ */
+
+// 1. Limpiar caracteres no numéricos en tiempo real
 const forzarNumeros = (input) => {
-    // Reemplaza cualquier cosa que NO sea un número [0-9] con un string vacío
     input.value = input.value.replace(/[^0-9]/g, '');
 };
 
-// 2. Función para detectar valores lógicamente imposibles
+// 2. Detectar valores lógicamente imposibles (ej. "000000")
 const esPatronInvalido = (valor) => {
     return /^0+$/.test(valor);
 };
 
-// 3. Validación de Cédula
-const validarCedula = (input) => {
-    // Primero nos aseguramos de que solo haya números
-    forzarNumeros(input);
-
-    const regexCedula = /^[0-9]{6,8}$/;
-    const errorElement = document.getElementById("dni-error");
-    const valor = input.value;
-
-    if (!regexCedula.test(valor) || esPatronInvalido(valor)) {
-        input.classList.remove("is-valid");
-        input.classList.add("is-invalid");
-        if (errorElement) {
-            errorElement.innerHTML = '<i class="fas fa-exclamation-circle"></i> La Cédula es inválida, Ingrese una Cédula válida (6-8 dígitos).';
-            errorElement.style.display = "block";
-        }
-        return false;
-    } else {
-        input.classList.remove("is-invalid");
-        input.classList.add("is-valid");
-        if (errorElement) errorElement.style.display = "none";
-        return true;
-    }
-};
-
-// 4. Validación de Teléfono (Optimizada)
-const validarTelefono = (input) => {
-    forzarNumeros(input);
-
-    // Regex para 11 dígitos exactos
-    const regexTelf = /^[0-9]{11}$/;
-    const errorElement = document.getElementById("telf-error");
-    const valor = input.value;
-
-    // Reiniciamos estados visuales
-    input.classList.remove("is-valid", "is-invalid");
-
-    if (valor === "") {
-        if (errorElement) errorElement.style.display = "none";
-        return false;
-    }
-
-    if (!regexTelf.test(valor) || esPatronInvalido(valor)) {
-        input.classList.add("is-invalid");
-        if (errorElement) {
-            errorElement.innerHTML = '<i class="fas fa-exclamation-circle"></i> Ingrese un número de 11 dígitos.';
-            errorElement.style.display = "block";
-        }
-        return false;
-    } else {
-        input.classList.add("is-valid");
-        if (errorElement) errorElement.style.display = "none";
-        return true;
-    }
-};
-
-// 5. Función para poner en mayúscula la primera letra de cada palabra
+// 3. Función para poner en mayúscula la primera letra de cada palabra
 const capitalizarFrase = (input) => {
     let valor = input.value;
-
-    // Convertimos todo a minúsculas primero y luego transformamos
-    // La regex busca la primera letra de la frase y cualquier letra después de un espacio
     input.value = valor.toLowerCase().replace(/^(.)|\s+(.)/g, (match) => {
         return match.toUpperCase();
     });
 };
 
-// 6. Validación de Nombres/Apellidos
-const validarTexto = (input, errorId) => {
-    // Aplicamos el formato de mayúsculas automáticamente
-    capitalizarFrase(input);
+/**
+ * 4. Lógica de Vocal y Consonante
+ */
+function tieneVocalYConsonante(texto) {
+    if (!texto.trim()) return true;
 
-    const errorElement = document.getElementById(errorId);
+    const palabras = texto.trim().split(/\s+/);
+    const vocalRegex = /[aeiouáéíóúüAEIOUÁÉÍÓÚÜ]/;
+    const consonanteRegex = /[bcdfghjklmnñpqrstvwxyzBCDFGHJKLMNÑPQRSTVWXYZ]/;
 
-    // checkValidity() usa el pattern que ya tienes en tu HTML
-    if (!input.checkValidity()) {
+    return palabras.every(palabra => {
+        const palabraLimpia = palabra.replace(/[.,;:]/g, "");
+        if (/^(y|o|e|u)$/i.test(palabraLimpia)) return true;
+        if (!/[a-zA-ZáéíóúÁÉÍÓÚñÑ]/.test(palabraLimpia)) return true;
+        return vocalRegex.test(palabraLimpia) && consonanteRegex.test(palabraLimpia);
+    });
+}
+
+// 5. Validación de Cédula (Se mantiene con validación en tiempo real)
+const validarCedula = (input) => {
+    forzarNumeros(input);
+    const regexCedula = /^[0-9]{6,8}$/;
+    const errorElement = document.getElementById("dni-error");
+    const valor = input.value;
+
+    if (!regexCedula.test(valor) || esPatronInvalido(valor)) {
         input.classList.add("is-invalid");
+        input.classList.remove("is-valid");
         if (errorElement) errorElement.style.display = "block";
         return false;
     } else {
@@ -96,33 +58,67 @@ const validarTexto = (input, errorId) => {
     }
 };
 
-// 7. Vincular Eventos
-const inputDni = document.getElementById("dni-reg");
-const inputTelf = document.getElementById("telf-reg"); // ID de tu campo de teléfono
+// 6. Validación de Teléfono
+const validarTelefono = (input) => {
+    forzarNumeros(input);
+    const regexTelf = /^[0-9]{11}$/;
+    const errorElement = document.getElementById("tel-error");
+    const valor = input.value;
 
-if (inputDni) {
-    // Usamos 'input' porque detecta cambios inmediatos, incluso pegar texto
-    inputDni.addEventListener("input", () => validarCedula(inputDni));
-    inputDni.addEventListener("blur", () => validarCedula(inputDni));
-}
+    if (valor === "") {
+        input.classList.remove("is-invalid", "is-valid");
+        if (errorElement) errorElement.style.display = "none";
+        return false;
+    }
 
-if (inputTelf) {
-    inputTelf.addEventListener("input", () => validarTelefono(inputTelf));
-    inputTelf.addEventListener("blur", () => validarTelefono(inputTelf));
-}
+    if (!regexTelf.test(valor) || esPatronInvalido(valor)) {
+        input.classList.add("is-invalid");
+        input.classList.remove("is-valid");
+        if (errorElement) errorElement.style.display = "block";
+        return false;
+    } else {
+        input.classList.remove("is-invalid");
+        input.classList.add("is-valid");
+        if (errorElement) errorElement.style.display = "none";
+        return true;
+    }
+};
 
-const inputNombre = document.getElementById("nombre-reg");
-const inputApellido = document.getElementById("apellido-reg");
+// 7. Validación de Texto General (Mantiene el error hasta corrección)
+const validarTexto = (input, errorId, esUsuario = false) => {
+    if (!esUsuario) capitalizarFrase(input);
 
-if (inputNombre) {
-    inputNombre.addEventListener("input", () => validarTexto(inputNombre, "nombre-error"));
-}
+    const errorElement = document.getElementById(errorId);
+    const valor = input.value;
 
-if (inputApellido) {
-    inputApellido.addEventListener("input", () => validarTexto(inputApellido, "apellido-error"));
-}
+    const cumpleReglasLogicas = tieneVocalYConsonante(valor);
+    const cumplePattern = input.checkValidity();
 
-// 8. Función específica para comparar contraseñas siguiendo tu nueva lógica
+    // Si el valor está vacío y es requerido, o no cumple las reglas
+    if (valor === "" || !cumplePattern || !cumpleReglasLogicas) {
+        input.classList.add("is-invalid");
+        input.classList.remove("is-valid");
+
+        if (errorElement) {
+            errorElement.style.display = "block";
+            // Si la falla es por vocal/consonante, sobreescribimos el mensaje
+            if (!cumpleReglasLogicas && valor !== "") {
+                errorElement.innerHTML = '<i class="fas fa-exclamation-circle"></i> Cada palabra debe tener vocal y consonante.';
+            } else if (valor === "") {
+                errorElement.innerHTML = '<i class="fas fa-exclamation-circle"></i> Este campo es obligatorio.';
+            }
+        }
+        return false;
+    } else {
+        // Solo aquí se oculta el error y se marca como válido
+        input.classList.remove("is-invalid");
+        input.classList.add("is-valid");
+        if (errorElement) errorElement.style.display = "none";
+        return true;
+    }
+};
+
+// 8. Comparación de Contraseñas
 function validarPasswordsUnificadas(inputConfirm) {
     const pass1 = document.getElementById('password1-reg').value;
     const errorDiv = document.getElementById('pass2-error');
@@ -130,11 +126,34 @@ function validarPasswordsUnificadas(inputConfirm) {
     if (inputConfirm.value !== pass1 || inputConfirm.value === "") {
         inputConfirm.classList.add('is-invalid');
         inputConfirm.classList.remove('is-valid');
-        errorDiv.style.display = 'block';
+        if (errorDiv) errorDiv.style.display = 'block';
     } else {
         inputConfirm.classList.remove('is-invalid');
         inputConfirm.classList.add('is-valid');
-        errorDiv.style.display = 'none';
+        if (errorDiv) errorDiv.style.display = 'none';
     }
 }
 
+/**
+ * 9. Vinculación de Eventos
+ */
+document.addEventListener("DOMContentLoaded", () => {
+    const inputs = {
+        "dni-reg": (e) => validarCedula(e.target),
+        "telf-reg": (e) => validarTelefono(e.target),
+        "nombre-reg": (e) => validarTexto(e.target, "nombre-error"),
+        "apellido-reg": (e) => validarTexto(e.target, "apellido-error"),
+        "usuario-reg": (e) => validarTexto(e.target, "user-error", true),
+        "pregunta-resp-reg": (e) => validarTexto(e.target, "resp-error"),
+        "password2-reg": (e) => validarPasswordsUnificadas(e.target)
+    };
+
+    // Aplicar eventos de input y blur para persistencia
+    Object.keys(inputs).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener("input", inputs[id]);
+            el.addEventListener("blur", inputs[id]);
+        }
+    });
+});

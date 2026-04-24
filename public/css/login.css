@@ -1,76 +1,56 @@
-
+/* =========================================
+   ESTILOS GENERALES
+   ========================================= */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Estilos generales del cuerpo */
 body {
-    
     font-family: 'Roboto', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     background-color: #f0f2f5;
-    /* La imagen de fondo*/
     background-image: url('../img/img-login/2.jpeg');
-    /* Reemplaza con la ruta a tu imagen */
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    /* Asegura que la imagen cubra todo el fondo */
     position: relative;
-    padding: 20px; /* Añade padding para evitar que el contenido toque los bordes en móviles */
+    padding: 20px;
 }
 
-/* estilo para el cuadro de eslogan */
+/* =========================================
+   ESLOGAN Y LOGO (SUPERIOR DERECHA)
+   ========================================= */
 .header-slogan {
-        
-    overflow: hidden;
     display: flex;
-    /* Alinea el contenido en una columna */
-    flex-direction: column; 
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     position: fixed;
-    /* Mantiene la posición fija aunque la página se desplace */
     top: 10px;
-    /* Distancia desde la parte superior */
     right: 10px;
-    /* Distancia desde la derecha */
-    background-color: rgba(255, 255, 255, 0);
-/* Fondo blanco semitransparente */
+
+
     padding: 10px;
-    /* Relleno interior */
-    height: 25%;
-    width: 15%;
+    height: auto;
+    width: 180px;
     border-radius: 5px 5px 5px 30px;
-    /* Bordes redondeados */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    /* Sombra para profundidad */
-    z-index: 10; /* Asegura que esté por encima de otros elementos */
+
+    z-index: 10;
     text-align: center;
 }
 
-
-.slogan-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
-
 .header-slogan img {
-    /* Mantiene la imagen responsive dentro del contenedor */
     width: 100%;
-    max-width: 150px;
+    max-width: 120px;
     height: auto;
-    border-radius: 35px; 
-    filter: drop-shadow(1px 1px 5px rgba(0, 105, 48, 0.682));
-    margin-top: 10px; /* Espacio entre el texto y la imagen */
+    border-radius: 35px;
+
+    margin-top: 10px;
 }
 
 .header-slogan p {
@@ -78,135 +58,258 @@ body {
     font-weight: bold;
     color: #ebebeb;
     font-size: 14px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
-/* Contenedor principal del login */
+/* =========================================
+   CONTENEDOR DE LOGIN
+   ========================================= */
 .login-container {
     display: flex;
-    margin-right: 40%;
     width: 500px;
-    height: 550px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    border-radius: 150px 15px 150px 15px;
+    height: 620px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    border-radius: 75px 75px 75px 75px;
     overflow: hidden;
     position: relative;
     z-index: 1;
 }
 
-/* Sección del formulario (lado izquierdo) */
 .form-section {
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 20px;
-    width: 100%;
-    height: 100%;
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 40px;
 }
 
-/* Caja del formulario */
 .login-box {
     width: 100%;
     max-width: 350px;
     text-align: center;
 }
 
-/* Título del formulario */
 .login-box h2 {
     margin-bottom: 30px;
-    color: #333;
-    font-size: 38px;
+    color: #222;
+    font-size: 34px;
     font-weight: 700;
 }
 
-/* Grupo de campos de entrada */
+/* =========================================
+   CAMPOS DE ENTRADA (MODIFICADO)
+   ========================================= */
 .input-group {
     margin-bottom: 20px;
+    position: relative;
 }
 
-/* Estilo para los campos de entrada */
-.input-group input {
+/* Contenedor para que el input y el botón se peguen */
+.password-container {
+    display: flex;
+    align-items: stretch;
+    /* Asegura que tengan la misma altura */
+}
+
+.input-group input,
+.input-group select {
     width: 100%;
-    padding: 15px 20px;
-    border: none;
-    border-radius: 8px;
-    background-color: #f7f7f7;
+    padding: 16px 20px;
+    border: 2px solid #d1d8e0;
+    border-radius: 10px;
+    background-color: #ffffff;
     font-size: 16px;
+    color: #333;
     outline: none;
     transition: all 0.3s ease;
 }
 
-/* Efecto de foco para los campos de entrada */
-.input-group input:focus {
-    background-color: #ebebeb;
-    box-shadow: 0 0 0 2px #4cadaf;
+/* Ajuste específico para el input de password para que se una al cuadrado */
+.password-container input {
+    flex: 1;
+    /* Toma todo el espacio disponible */
+    border-radius: 10px 0 0 10px;
+    /* Redondeado solo a la izquierda */
+    border-right: none;
+    /* Elimina la línea divisoria central */
 }
 
-/* Estilo del botón de acceso */
-button {
+/* Estilo del botón transformado en CUADRADO */
+.toggle-btn {
+    position: static;
+    /* Quitamos el absolute */
+    transform: none;
+    /* Quitamos el centrado manual */
+    width: 55px;
+    /* Ancho fijo para que sea cuadrado */
+    background: #ffffff;
+    border: 2px solid #d1d8e0;
+    border-radius: 0 10px 10px 0;
+    /* Redondeado solo a la derecha */
+    cursor: pointer;
+    color: #666;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    /* Evita que el botón se encoja */
+}
+
+/* Efecto Focus sincronizado */
+.password-container:focus-within input {
+    border-color: #4c99af;
+}
+
+.password-container:focus-within .toggle-btn {
+    border-color: #4c99af;
+    color: #4c99af;
+}
+
+.toggle-btn:hover {
+    background-color: #f8f9fa;
+    color: #4c99af;
+}
+
+/* =========================================
+   BOTONES
+   ========================================= */
+button,
+.btn-forgot {
     width: 100%;
     padding: 15px;
-    border: none;
-    border-radius: 8px;
-    background-color: #4c99af;
-    color: white;
-    font-size: 18px;
+    border-radius: 10px;
+    font-size: 16px;
     font-weight: 700;
     cursor: pointer;
-    
-    transition: .5s, color .10s;
-        -webkit-transition: .5s, color .10s;
-        -moz-transition: .5s, color .10s;
-          
+    transition: all 0.3s ease;
+    display: block;
+    text-decoration: none;
+    box-sizing: border-box;
 }
 
-/* Efecto de hover en el botón */
-button:hover {
-    background-color: #2b8ca8;
-    transform: scale(2, 0.5);
-        -webkit-transform: scale(1, 1.2);
-        -moz-transform: scale(1, 1.2);
-          
+/* Botón ACCEDER */
+.btn-access {
+    background-color: transparent;
+    color: #4c99af;
+    border: 2px solid #4c99af;
+    margin-top: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
+.btn-access:hover {
+    background-color: #4c99af;
+    color: white;
+    box-shadow: 0 6px 12px rgba(76, 153, 175, 0.3);
+    transform: translateY(-2px);
+}
 
+/* Botón RECUPERAR */
+.forgot-password-container {
+    margin-top: 15px;
+}
 
-/* Estilos para móviles y dispositivos con pantallas de hasta 768px de ancho */
+.btn-forgot {
+    background-color: transparent;
+    color: #666;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.btn-forgot:hover {
+    background-color: #f8f9fa;
+    border-color: #999;
+    color: #333;
+    transform: translateY(-1px);
+}
+
+/* Pie de página dentro de la caja */
+.footer-text {
+    margin-top: 30px;
+    font-size: 13px;
+    color: #777;
+    line-height: 1.5;
+}
+
+/* =========================================
+   RESPONSIVE (MÓVILES)
+   ========================================= */
 @media (max-width: 768px) {
-    body {
-        
-        flex-direction: column;
-        justify-content: flex-start;
-        padding: 10px;
-    }
-
-    
-    
     .header-slogan {
         position: static;
-        
-        width: 80%;
-        height: auto;
-        margin: 20px auto;
-        border-radius: 5px;
+        width: 100%;
+        margin-bottom: 20px;
+        background-color: rgba(0, 0, 0, 0.3);
     }
-    
-    
 
     .login-container {
-        width: 90%;
+        width: 95%;
         height: auto;
-        margin: 0 auto;
-        border-radius: 15px;
+        border-radius: 30px;
     }
 
     .form-section {
-        padding: 20px;
-    }
-
-    .login-box h2 {
-        font-size: 30px;
+        padding: 40px 20px;
     }
 }
 
+/* Configuración del contenedor para 3D */
+.login-container {
+    perspective: 1000px;
+    /* Necesario para el efecto de profundidad */
+    background: transparent;
+    /* El fondo lo darán las caras */
+}
+
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+}
+
+/* Clase que activaremos con JS */
+.is-flipped {
+    transform: rotateY(180deg);
+}
+
+.login-face,
+.recovery-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    /* Safari */
+    backface-visibility: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* La cara trasera empieza girada */
+.recovery-face {
+    transform: rotateY(180deg);
+}
+
+/* Ajuste de botones para que parezcan links si lo prefieres */
+.btn-forgot {
+    border: none;
+    background: none;
+    text-decoration: underline;
+    color: #4c99af;
+    cursor: pointer;
+    font-size: 14px;
+}
+#step-1, #step-2 {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

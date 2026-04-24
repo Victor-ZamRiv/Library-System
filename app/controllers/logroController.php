@@ -12,6 +12,8 @@ class LogroController extends BaseController {
 
     public function __construct(ILogroRepository $repo) {
         $this->repo = $repo;
+        $this->authenticate();
+        $this->middlewareRol(['Jefe de sala', 'Director'], 'Logros');
     }
 
     // Listar todos los logros
@@ -93,6 +95,7 @@ class LogroController extends BaseController {
         if ($this->repo->update($logro)) {
             $_SESSION['success'] = "Logro actualizado correctamente.";
         } else {
+            $_SESSION['old'] = $_POST;
             $_SESSION['error'] = "No se pudo actualizar el logro.";
         }
 

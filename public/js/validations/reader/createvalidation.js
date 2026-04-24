@@ -1,263 +1,220 @@
 // --- CONSTANTES ---
 const CAMPO_CARNET_ID = 'carnet-reg';
-const CAMPO_CEDULA_ID = 'cedula-reg'; 
+const CAMPO_CEDULA_ID = 'cedula-reg';
 const CAMPO_SEXO_ID = 'sexo-reg';
 
-const CAMPO_TELEFONO_REG_ID = 'telefono-reg';
-const CAMPO_TELEFONO_PROFESION_ID = 'telefono-profesion-reg'; 
-const CAMPO_TELEFONO_LEGAL_ID = 'telefono-referencia-legal-reg';
-const CAMPO_TELEFONO_PERSONAL_ID = 'telefono-referencia-personal-reg';
+const IDS_INPUT_NUM_TEL = ['num-reg', 'num-prof', 'num-ref-l', 'num-ref-p'];
 
-const CAMPOS_TELEFONO = [
-    CAMPO_TELEFONO_REG_ID, CAMPO_TELEFONO_PROFESION_ID, 
-    CAMPO_TELEFONO_LEGAL_ID, CAMPO_TELEFONO_PERSONAL_ID
-];
-
-const CAMPO_DIRECCION_REG_ID = 'direccion-reg';
-const CAMPO_DIRECCION_PROFESION_ID = 'direccion-profesion-reg'; 
-
-// USAR SPREAD (...) PARA EVITAR ARRAYS ANIDADOS
-const CAMPOS_SOLO_NUMEROS = [
+const CAMPOS_REQUERIDOS = [
     CAMPO_CARNET_ID, 
     CAMPO_CEDULA_ID, 
-    ...CAMPOS_TELEFONO, 
+    'nombre-reg', 
+    'apellido-reg', 
+    'direccion-reg', 
+    CAMPO_SEXO_ID,
+    'num-reg' 
 ];
 
-const CAMPOS_CAPITALIZACION = [
-    'nombre-reg', 'apellido-reg' 
+const CAMPOS_SOLO_NUMEROS = [CAMPO_CARNET_ID, CAMPO_CEDULA_ID, ...IDS_INPUT_NUM_TEL];
+const CAMPOS_TEXTO_ESTRICTO = [
+    'direccion-reg', 'direccion-profesion-reg', 'profesion-reg', 
+    'referencia-legal-personal-reg', 'referencia-personal-reg',
+    'nombre-reg', 'apellido-reg'
 ];
 
-const CAMPOS_INPUT_VALIDACION = [
-    ...CAMPOS_SOLO_NUMEROS, 
-    CAMPO_DIRECCION_REG_ID, 
-    CAMPO_DIRECCION_PROFESION_ID, 
-    'profesion-reg', 
-    'referencia-legal-personal-reg', 
-    'referencia-personal-reg',
-    ...CAMPOS_CAPITALIZACION
-];
+const CAMPOS_INPUT_VALIDACION = [...new Set([...CAMPOS_SOLO_NUMEROS, ...CAMPOS_TEXTO_ESTRICTO])];
 
-// --- FUNCIONES DE RESTRICCIÓN Y LIMPIEZA ---
+// --- FUNCIONES AUXILIARES ---
 
-function isNumberKey(evt) {
-    const charCode = (evt.which) ? evt.which : evt.keyCode;
-    const isNumber = charCode >= 48 && charCode <= 57;
-    const isControlKey = charCode === 8 || charCode === 9 || charCode === 13 || 
-                         charCode === 37 || charCode === 39 || charCode === 46;
-
-    if (isNumber || isControlKey) return true; 
-
-    evt.preventDefault();
-    return false;
+function validarEstructuraPalabra(texto) {
+    const valor = texto.trim();
+    if (valor === "") return true;
+    const palabras = valor.split(/\s+/);
+    const conectores = ['y', 'e', 'o', 'u'];
+    return palabras.every(palabra => {
+        if (conectores.includes(palabra.toLowerCase())) return true;
+        return /[aeiouáéíóúü]/i.test(palabra) && /[bcdfghjklmnñpqrstvwxyz]/i.test(palabra);
+    });
 }
 
-// Limpia caracteres no numéricos en tiempo real
-const forzarNumeros = (input) => {
-    input.value = input.value.replace(/[^0-9]/g, '');
-};
-
-// --- FUNCIONES AUXILIARES DE FEEDBACK ---
-
-function manejarFeedback(inputElement, esValido) {
-    const errorId = inputElement.id.endsWith('-reg') 
-        ? inputElement.id.replace('-reg', '-error') 
-        : inputElement.id + '-error'; 
-        
-    const errorDiv = document.getElementById(errorId);
-    
-    const valorVacio = inputElement.value.trim() === '';
-    if (!inputElement.required && valorVacio) {
-         inputElement.classList.remove('is-invalid', 'is-valid');
-         if (errorDiv) errorDiv.style.display = 'none';
-         return true;
+function manejarFeedback(inputElement, esValido, mensajeManual = "") {
+    let errorId = inputElement.id.replace('-reg', '-error');
+    if (inputElement.id.startsWith('num-')) {
+        errorId = inputElement.id.replace('num-', 'telefono-') + '-error';
     }
+    
+    const errorDiv = document.getElementById(errorId);
+    if (!errorDiv) return;
 
     if (esValido) {
         inputElement.classList.remove('is-invalid');
         inputElement.classList.add('is-valid');
-        if (errorDiv) errorDiv.style.display = 'none';
+        errorDiv.style.display = 'none';
     } else {
         inputElement.classList.add('is-invalid');
         inputElement.classList.remove('is-valid');
-        if (errorDiv) errorDiv.style.display = 'block'; 
+        errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${mensajeManual}`;
+        errorDiv.style.display = 'block';
     }
 }
 
-// --- VALIDACIONES ESPECÍFICAS ---
+// --- LÓGICA DE VALIDACIÓN POR CAMPO ---
 
-// Detecta valores imposibles: Solo ceros o menores a 800,000
-const esPatronInvalido = (valor) => {
-    if (valor === "") return false;
-    const soloCeros = /^0+$/.test(valor);
-    const valorNumerico = parseInt(valor, 10);
-    const esMenorAlMinimo = valorNumerico < 800000;
-    
-    return soloCeros || esMenorAlMinimo;
-};
+function ejecutarValidacion(inputElement) {
+    const id = inputElement.id;
+    const valor = inputElement.value.trim();
+    const esRequerido = CAMPOS_REQUERIDOS.includes(id);
 
-// Validación de Cédula Unificada
-function validarCedula(inputElement) {
-    forzarNumeros(inputElement);
-
-    const valor = inputElement.value;
-    const regexCedula = /^[0-9]{6,8}$/;
-    
-    // Busca "dni-error" o el ID dinámico basado en el input
-    const errorDiv = document.getElementById("dni-error") || 
-                     document.getElementById(inputElement.id.replace('-reg', '-error'));
-
-    const cumpleRegex = regexCedula.test(valor);
-    const patronInvalido = esPatronInvalido(valor);
-    const esValido = cumpleRegex && !patronInvalido;
-
-    if (!esValido && valor !== "") {
-        inputElement.classList.remove("is-valid");
-        inputElement.classList.add("is-invalid");
-        if (errorDiv) {
-            // Mensaje específico si es menor a 800.000
-            if (cumpleRegex && patronInvalido) {
-                errorDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> La Cédula es inválida, Ingrese una Cédula válida (6-8 dígitos).';
-            } else {
-                errorDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> La Cédula es inválida, Ingrese una Cédula válida (6-8 dígitos).';
-            }
-            errorDiv.style.display = "block";
-        }
-        inputElement.setCustomValidity("Cédula inválida");
-        return false;
-    } else {
-        // Si está vacío y es requerido, lo maneja manejarFeedback
-        if (valor === "") {
-            const ok = !inputElement.required;
-            manejarFeedback(inputElement, ok);
-            return ok;
-        }
-        // Caso exitoso
-        inputElement.classList.remove("is-invalid");
-        inputElement.classList.add("is-valid");
-        if (errorDiv) errorDiv.style.display = "none";
-        inputElement.setCustomValidity("");
-        return true;
-    }
-}
-
-function validarCarnet(inputElement) {
-    const valorPuro = inputElement.value.trim();
-    const longitudRequerida = 10;
-    const esValido = valorPuro.length === longitudRequerida;
-    
-    inputElement.setCustomValidity(esValido ? '' : "Error de longitud del Carnet.");
-    manejarFeedback(inputElement, esValido);
-    return esValido;
-}
-
-function validarTelefono(inputElement) {
-    const valorPuro = inputElement.value.trim();
-    const longitudRequerida = 11;
-
-    if (valorPuro === '') {
-        return manejarFeedback(inputElement, !inputElement.required);
-    }
-    
-    const esValido = valorPuro.length === longitudRequerida;
-    inputElement.setCustomValidity(esValido ? '' : "Error de longitud de Teléfono.");
-    manejarFeedback(inputElement, esValido);
-    return esValido;
-}
-
-// --- VALIDACIONES GENÉRICAS Y EVENTOS ---
-
-function validarCampoInput(inputElement) {
-    if (inputElement.required && inputElement.value.trim() === '') {
-        inputElement.setCustomValidity("Este campo es obligatorio."); 
-    } else {
-        inputElement.setCustomValidity(''); 
-        if (!inputElement.required && inputElement.value.trim() === '') {
-            return manejarFeedback(inputElement, true);
-        }
+    if (valor === "" && esRequerido) {
+        manejarFeedback(inputElement, false, "Este campo es obligatorio");
+        return;
     }
 
-    const esValido = inputElement.checkValidity(); 
-    manejarFeedback(inputElement, esValido);
-    return esValido;
-}
-
-function capitalizarNombre(inputElement) {
-    let value = inputElement.value.trim();
-    if (value.length > 0) {
-        value = value.toLowerCase().split(' ').map(word => 
-            word.charAt(0).toUpperCase() + word.slice(1)
-        ).join(' ');
-        inputElement.value = value;
+    if (valor === "" && !esRequerido) {
+        inputElement.classList.remove('is-invalid', 'is-valid');
+        let errorIdBase = id.replace('-reg', '-error');
+        if (id.startsWith('num-')) errorIdBase = id.replace('num-', 'telefono-') + '-error';
+        const errDiv = document.getElementById(errorIdBase);
+        if (errDiv) errDiv.style.display = 'none';
+        return;
     }
-}
 
-function validarSelect(selectElement) {
-    const esValido = selectElement.value !== '' && selectElement.value !== null; 
-    manejarFeedback(selectElement, esValido); 
-    return esValido;
-}
-
-function manejarEnvioFormulario(evt) {
-    let formularioValido = true;
-    
-    CAMPOS_INPUT_VALIDACION.forEach(id => {
-        const inputElement = document.getElementById(id);
-        if (!inputElement) return;
-
-        let esCampoValido = false;
-        if (id === CAMPO_CEDULA_ID) {
-            esCampoValido = validarCedula(inputElement);
-        } else if (id === CAMPO_CARNET_ID) {
-            esCampoValido = validarCarnet(inputElement);
-        } else if (CAMPOS_TELEFONO.includes(id)) {
-            esCampoValido = validarTelefono(inputElement);
-        } else {
-            esCampoValido = validarCampoInput(inputElement);
-        }
+    // --- Lógica Específica ---
+    if (id === CAMPO_CEDULA_ID) {
+        const esValido = /^[0-9]{6,8}$/.test(valor);
+        manejarFeedback(inputElement, esValido, "Debe tener entre 6 y 8 números");
+    } 
+    else if (IDS_INPUT_NUM_TEL.includes(id)) {
+        const esValido = valor.length === 7;
+        manejarFeedback(inputElement, esValido, "Debe tener 7 dígitos");
+    }
+    else if (id === CAMPO_CARNET_ID) {
+        // VALIDACIÓN AVANZADA DE CARNET
+        const regexCarnet = /^[0-9]{8}\/([0-9]{2})$/;
+        const match = valor.match(regexCarnet);
         
-        if (!esCampoValido) formularioValido = false;
-    });
-
-    const selectSexo = document.getElementById(CAMPO_SEXO_ID);
-    if (selectSexo && !validarSelect(selectSexo)) formularioValido = false;
-
-    if (!formularioValido) {
-        evt.preventDefault();
-        alert('Por favor, corrige los campos marcados antes de enviar.');
-        document.querySelector('.is-invalid')?.focus();
+        if (!match) {
+            manejarFeedback(inputElement, false, "Formato: 00000000/00");
+        } else {
+            const anioIngresado = parseInt(match[1], 10);
+            const anioActual = parseInt(new Date().getFullYear().toString().slice(-2), 10);
+            if (anioIngresado > anioActual) {
+                manejarFeedback(inputElement, false, `El año no puede ser mayor a ${anioActual}`);
+            } else {
+                manejarFeedback(inputElement, true);
+            }
+        }
+    }
+    else if (CAMPOS_TEXTO_ESTRICTO.includes(id)) {
+        const esValido = validarEstructuraPalabra(valor);
+        manejarFeedback(inputElement, esValido, "Formato de texto no válido (mezcla letras)");
     }
 }
+
+// --- INICIALIZACIÓN ---
 
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('form-registro-lector'); 
+    const form = document.getElementById('form-registro-lector');
     if (!form) return;
 
     CAMPOS_INPUT_VALIDACION.forEach(id => {
         const inputElement = document.getElementById(id);
         if (!inputElement) return;
 
-        if (CAMPOS_SOLO_NUMEROS.includes(id)) {
-            inputElement.addEventListener('keypress', isNumberKey); 
+        // 1. EVENTO KEYPRESS: Bloqueo de teclas
+        inputElement.addEventListener('keypress', (evt) => {
+            const charCode = (evt.which) ? evt.which : evt.keyCode;
+            if ([8, 9, 13, 37, 39, 46].includes(charCode)) return true;
+
+            if (CAMPOS_SOLO_NUMEROS.includes(id)) {
+                // En el carnet solo permitimos números (la barra se pone sola al salir)
+                if (charCode < 48 || charCode > 57) evt.preventDefault();
+            }
+            if (CAMPOS_TEXTO_ESTRICTO.includes(id)) {
+                if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]$/.test(evt.key)) evt.preventDefault();
+            }
+        });
+
+        // 2. EVENTO FOCUS: Especial para Carnet
+        if (id === CAMPO_CARNET_ID) {
+            inputElement.addEventListener('focus', () => {
+                inputElement.value = inputElement.value.replace('/', '');
+                inputElement.maxLength = 10; 
+            });
         }
 
-        const handler = () => {
-            if (id === CAMPO_CEDULA_ID) validarCedula(inputElement);
-            else if (id === CAMPO_CARNET_ID) validarCarnet(inputElement);
-            else if (CAMPOS_TELEFONO.includes(id)) validarTelefono(inputElement);
-            else validarCampoInput(inputElement);
-        };
-
-        inputElement.addEventListener('input', handler);
+        // 3. EVENTO BLUR: Formateo y Validación
         inputElement.addEventListener('blur', () => {
-            handler();
-            if (CAMPOS_CAPITALIZACION.includes(id)) capitalizarNombre(inputElement);
+            // Caso Carnet: Poner barra
+            if (id === CAMPO_CARNET_ID) {
+                let v = inputElement.value.replace(/[^0-9]/g, '');
+                if (v.length === 10) {
+                    inputElement.maxLength = 11;
+                    inputElement.value = v.substring(0, 8) + '/' + v.substring(8, 10);
+                }
+            }
+            
+            // Caso Nombres: Capitalización
+            if (['nombre-reg', 'apellido-reg'].includes(id) && inputElement.value !== "") {
+                inputElement.value = inputElement.value.trim().toLowerCase()
+                    .split(' ').filter(w => w !== "").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            }
+
+            ejecutarValidacion(inputElement);
+        });
+
+        // 4. EVENTO INPUT: Re-validar si ya tenía error
+        inputElement.addEventListener('input', () => {
+            if (inputElement.classList.contains('is-invalid')) {
+                ejecutarValidacion(inputElement);
+            }
         });
     });
 
+    // Eventos para el select de Sexo
     const selectSexo = document.getElementById(CAMPO_SEXO_ID);
-    if (selectSexo) {
-        selectSexo.addEventListener('change', () => validarSelect(selectSexo));
+    if(selectSexo) {
+        selectSexo.addEventListener('change', () => ejecutarValidacion(selectSexo));
+        selectSexo.addEventListener('blur', () => ejecutarValidacion(selectSexo));
     }
 
-    form.addEventListener('submit', manejarEnvioFormulario);
+    // --- SUBMIT FINAL ---
+    form.addEventListener('submit', (evt) => {
+        let formularioValido = true;
+
+        CAMPOS_INPUT_VALIDACION.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                ejecutarValidacion(el);
+                if (el.classList.contains('is-invalid')) formularioValido = false;
+            }
+        });
+        
+        if(selectSexo) {
+            ejecutarValidacion(selectSexo);
+            if (selectSexo.classList.contains('is-invalid')) formularioValido = false;
+        }
+
+        // Mapeo de teléfonos ocultos
+        const mapeo = [
+            { n: 'num-reg', p: 'pref-reg', h: 'telefono-reg' },
+            { n: 'num-prof', p: 'pref-prof', h: 'telefono-profesion-reg' },
+            { n: 'num-ref-l', p: 'pref-ref-l', h: 'telefono-referencia-legal-reg' },
+            { n: 'num-ref-p', p: 'pref-ref-p', h: 'telefono-referencia-personal-reg' }
+        ];
+
+        mapeo.forEach(t => {
+            const nEl = document.getElementById(t.n);
+            const pEl = document.getElementById(t.p);
+            const hEl = document.getElementById(t.h);
+            if(nEl && pEl && hEl) {
+                hEl.value = (nEl.value.length === 7) ? pEl.value + nEl.value : "";
+            }
+        });
+
+        if (!formularioValido) {
+            evt.preventDefault();
+            swal({ title: "¡Atención!", text: "Corrija los campos marcados en rojo antes de continuar.", type: "error" });
+        }
+    });
 });

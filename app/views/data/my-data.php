@@ -49,7 +49,7 @@ include VIEW_PATH . "/component/heat.php";
 								<hr class="mt-0 mb-3">
 							</div>
 							<div class="d-flex justify-content-between mb-3">
-								<p class="mb-0"><strong class="mr-2">Nombre de Usuario:</strong> Admin</p>
+								<p class="mb-0"><strong class="mr-2">Nombre de Usuario:</strong> <?= htmlspecialchars($administrador->getNombreUsuario()) ?></p>
 								<!-- <p class="mb-0"><strong class="mr-2">Contraseña:</strong> Admin*2025</p> -->
 								<p class="text-left">
 								<div class="label label-success">Nivel</div>: <?= htmlspecialchars($administrador->getRol()) ?>

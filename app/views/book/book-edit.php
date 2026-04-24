@@ -42,30 +42,58 @@
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
-                                            <label class="control-label"><span class="text-danger">*</span> Sala</label>
-                                            <select required name="sala-reg" id="salaSelect" class="form-control">
-                                                <option value="" disabled selected>Seleccione la Sala</option>
-                                                <option value="G">Sala General</option>
-                                                <option value="R">Sala de Referencia</option>
-                                                <option value="SE">Sala Estatal</option>
-                                                <option value="X">Sala Infantil</option>
-                                            </select>
+                                            <label class="control-label"><span class="text-danger">*</span> Sala <i class="fa-solid fa-angle-down"></i></label>
+                                            <div class="dropdown">
+                                                <input type="text" id="sala-display" class="form-control" readonly data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer; background-color: transparent;">
+                                                <ul class="dropdown-menu" id="dropdown-sala" style="width: 100%;">
+                                                    <li><a href="#!" data-value="Sala General">Sala General</a></li>
+                                                    <li><a href="#!" data-value="Sala de Referencia">Sala de Referencia</a></li>
+                                                    <li><a href="#!" data-value="Sala Estatal">Sala Estatal</a></li>
+                                                    <li><a href="#!" data-value="Sala Infantil">Sala Infantil</a></li>
+                                                </ul>
+                                            </div>
+                                            <input type="hidden" name="sala-reg" id="salaSelect" required>
                                         </div>
                                     </div>
 
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
-                                            <label class="control-label">Area infantil</label>
-                                            <select name="area-reg" id="areaSelect" class="form-control" disabled>
-                                                <option value="" disabled selected>Seleccione el Área <i class="fa-solid fa-arrow-down"></i></option>
-                                                <option class="" value="Cuento infantil">Cuento infantil</option>
-                                                <option class="" value="Educativo">Educativo</option>
-                                                <option class="" value="Ficción juvenil">Ficción juvenil</option>
-                                            </select>
+                                            <label class="control-label" id="label-area">Área infantil</label>
+                                            <div class="dropdown">
+                                                <div id="area-display-container" class="form-control" data-toggle="dropdown"
+                                                    style="cursor: pointer; height: 34px; padding-top: 7px;">
+                                                    <span id="area-text-content"></span>
+                                                </div>
+
+                                                <ul class="dropdown-menu " id="dropdown-area">
+                                                    <li>
+                                                        <a href="#!" data-value="Cuento infantil">
+                                                            <span style="height: 10px; width: 10px; background-color: #e91e63; display: inline-block; border-radius: 50%; margin-right: 4px;"></span>
+                                                            <span style="height: 10px; width: 10px; background-color: #9c27b0; display: inline-block; border-radius: 50%; margin-right: 8px;"></span>
+                                                            Cuento infantil
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#!" data-value="Educativo">
+                                                            <span style="height: 10px; width: 10px; background-color: #00bcd4; display: inline-block; border-radius: 50%; margin-right: 4px;"></span>
+                                                            <span style="height: 10px; width: 10px; background-color: #4caf50; display: inline-block; border-radius: 50%; margin-right: 8px;"></span>
+                                                            Educativo
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#!" data-value="Ficción juvenil">
+                                                            <span style="height: 10px; width: 10px; background-color: #ff9800; display: inline-block; border-radius: 50%; margin-right: 4px;"></span>
+                                                            <span style="height: 10px; width: 10px; background-color: #ff5722; display: inline-block; border-radius: 50%; margin-right: 8px;"></span>
+                                                            Ficción juvenil
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <input type="hidden" name="area-reg" id="areaSelect">
                                         </div>
                                     </div>
 
-                                    <div class="col-xs-12 col-sm-6">
+                                    <div class="col-xs-12 col-sm-8">
                                         <div class="form-group label-floating">
                                             <label class="control-label" for="titulo-reg"><span class="text-danger">*</span> Título:</label>
                                             <input class="form-control mdl-textfield__input" type="text" name="titulo-reg" id="titulo-reg" maxlength="50"
@@ -81,7 +109,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-xs-12 col-sm-6">
+                                    <div class="col-xs-12 col-sm-4">
                                         <div class="form-group label-floating">
                                             <label class="control-label" for="cota"><span class="text-danger">*</span> Cota:</label>
                                             <input

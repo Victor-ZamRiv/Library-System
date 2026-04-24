@@ -3,17 +3,17 @@
 
 	<title>Categorias</title>
 <!-- head -->
- <?php include "../component/heat.php" ?>
+ <?php include VIEW_PATH .  "/component/heat.php" ?>
 <body>
 <!-- sidebar -->
 	<?php
-	include "../component/sidebar.php";
+	include VIEW_PATH .  "/component/sidebar.php";
 	?> 
 
 	<!-- Content page-->
 	<section class="full-box dashboard-contentPage">
 		<!-- NavBar -->
-		<?php include "../component/navbar.php" ?> 
+		<?php include VIEW_PATH .  "/component/navbar.php" ?> 
 		<!-- Content page -->
 		<div class="container-fluid">
 			<div class="page-header">
@@ -21,7 +21,7 @@
 			</div>
 		</div>
 
-		<?php include '../component/categorybar.php'; ?>
+		<?php include VIEW_PATH .  '/component/categorybar.php'; ?>
 
 		<!-- Panel listado de categorias -->
 		<div class="container-fluid">
@@ -82,7 +82,7 @@
 
 	<!--====== Scripts -->
 	<?php
-	include "../component/scripts.php";
+	include VIEW_PATH .  "/component/scripts.php";
 	?>
 </body>
 </html>

@@ -12,15 +12,13 @@ class LectorRepository extends BaseRepository implements ILectorRepository {
         parent::__construct($pdo, 'lectores', 'ID_Lector');
     }
 
-    /**
-     * Buscar lector por ID
-     */
+    //métodos de lectura
+
     public function find(int $id): ?Lector {
         $row = $this->fetchById($id);
         return $row ? Lector::fromArray($row) : null;
     }
 
-    //Buscar lector por carnet
     public function findByCarnet(string $carnet): ?Lector {
         $stmt = $this->pdo->prepare("SELECT * FROM lectores WHERE Carnet = :carnet AND Activo = 1");
         $stmt->execute([':carnet' => $carnet]);
@@ -51,7 +49,7 @@ class LectorRepository extends BaseRepository implements ILectorRepository {
         return array_map(fn($row) => $this->mapToEntity($row), $rows);
     }
 
-    // Insertar lector (requiere ID_Persona ya existente)
+    // Insertar lector (Persona ya existente)
     public function insert(Lector $lector): int {
         if ($lector->getIdLector() !== null) {
             throw new \InvalidArgumentException("El lector ya tiene ID, no puede insertarse");
@@ -119,6 +117,8 @@ class LectorRepository extends BaseRepository implements ILectorRepository {
             ':id' => $lector->getIdLector()
         ]);
     }
+
+    //eliminación lógica
 
     public function deactivate(int $idLector): void {
         $sql = "UPDATE lectores SET Activo = 0 WHERE ID_Lector = :id";

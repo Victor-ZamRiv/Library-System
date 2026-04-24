@@ -1,98 +1,104 @@
-const contenedorBotones = document.getElementById('contenedor-botones');
-const contenedorToast = document.getElementById('contenedor-toast');
+/**
+ * Sistema de Notificaciones Toast
+ * Library_System
+ */
 
-// Event listener para detectar click en los botones
-contenedorBotones.addEventListener('click', (e) => {
-    e.preventDefault();
-    const tipo = (e.target.dataset.tipo);
-
-    if (tipo === 'exito') {
-        
-        agregarToast({ tipo: 'exito', titulo: 'Exito', descripcion: 'La operacion fue exitosa' });
+/**
+ * Cierra un toast específico activando la animación de salida.
+ * @param {string} id - El ID único del elemento toast.
+ */
+const cerrarToats = (id) => {
+    const elemento = document.getElementById(id);
+    if (elemento) {
+        // Añadimos la clase que dispara la animación @keyframes cierre en CSS
+        elemento.classList.add('cerrando');
     }
-    if (tipo === 'error') {
-        agregarToast({ tipo: 'error', titulo: 'Error', descripcion: 'La operacion tuvo un error' });
-    }
-    if (tipo === 'info') {
-        
-        agregarToast({ tipo: 'info', titulo: 'info', descripcion: 'Este notificacion es de información' });
-    }
-    if (tipo === 'warning') {
-        agregarToast({ tipo: 'warning', titulo: 'warning', descripcion: 'Ten cuidado' });
-    }
-});
-
-//Event listener para cerrar los toats
-contenedorToast.addEventListener('click', (e) => {
-    const toastId = e.target.closest('div.toast').id;
-
-    if(e.target.closest('button.btn-cerrar')){
-        cerrarToats(toastId);
-    }
-    
-});
-
-//funcion parea cerrar toats
-const cerrarToats = (id) =>{
-    document.getElementById(id)?.classList.add('cerrando');
 }
 
-// Funcion para agregar toast
-const agregarToast = ({ tipo, titulo, descripcion, autoCierre }) => {
-    // Crear toast
+/**
+ * Crea y muestra una nueva notificación en pantalla.
+ * @param {Object} opciones - Configuración de la notificación.
+ */
+const agregarToast = ({ tipo, titulo, descripcion, autoCierre = true }) => {
+    const contenedorToast = document.getElementById('contenedor-toast');
+    
+    // Si el contenedor no existe en el HTML, cancelamos para evitar errores
+    if (!contenedorToast) return;
+
+    // Crear el elemento base del toast
     const nuevoToast = document.createElement('div');
+    nuevoToast.classList.add('toast', tipo);
+    
+    // Si tiene autocierre, añadimos la clase para que el CSS muestre la barra de progreso
+    if (autoCierre) {
+        nuevoToast.classList.add('autoCierre');
+    }
+    
+    // Generar un ID único para poder cerrarlo específicamente
+    const toastId = "toast-" + Date.now() + Math.floor(Math.random() * 100);
+    nuevoToast.id = toastId;
 
-    // agregar clases al toast
-    nuevoToast.classList.add('toast');
-    nuevoToast.classList.add(tipo);
-
-    // agregar id del toast
-    const numeroAlAzar = Math.floor(Math.random() * 100);
-    const fecha = Date.now();
-    const toastId = fecha + numeroAlAzar;
-    nuevoToast.id = toastId
-
-    // iconos 
+    // Diccionario de iconos (FontAwesome 7.0.1)
     const iconos = {
         exito: `<i class="fa-solid fa-circle-check fa-2x"></i>`,
         error: `<i class="fa-solid fa-circle-xmark fa-2x"></i>`,
         info: `<i class="fa-solid fa-circle-info fa-2x"></i>`,
         warning: `<i class="fa-solid fa-triangle-exclamation fa-2x"></i>`,
-    }
-
-    //plantilla del toast
-    const toast = `
-            <div class="contenido">
-            <div class="iconos">
-                ${iconos[tipo]}
-                </div class="iconos">
-                <div class="texto">
-                    <p class="titulo">${titulo}</p>
-                    <p class="descripcion">${descripcion}</p>
-                </div>
-            </div>
-            <button class="btn-cerrar">
-                <div class="icono">
-                    <i class="fa-solid fa-x"></i>
-                </div>
-            </button>
-        `;
-
-    // Agregar la plantilla al nuevo toast
-    nuevoToast.innerHTML = toast;
-
-    //agregar toast al contenedor
-    contenedorToast.appendChild(nuevoToast);
-
-    //funcion para manejar el cierre del toast
-    const handleAnimacionCierre = (e) =>{
-        if(e.animationName === 'cierre'){
-            nuevoToast.removeEventListener('animationend', handleAnimacionCierre);
-            nuevoToast.remove();
-        }
     };
 
-    //event para eliminar el toast
-    nuevoToast.addEventListener('animationend', handleAnimacionCierre);
-}
+    // Construir la estructura interna
+    // El botón de cerrar llama directamente a la función global cerrarToats
+    nuevoToast.innerHTML = `
+        <div class="contenido">
+            <div class="iconos">
+                ${iconos[tipo] || iconos['info']}
+            </div>
+            <div class="texto">
+                <p class="titulo">${titulo}</p>
+                <p class="descripcion">${descripcion}</p>
+            </div>
+        </div>
+        <button class="btn-cerrar" onclick="cerrarToats('${toastId}')" title="Cerrar">
+            <div class="icono"><i class="fa-solid fa-x"></i></div>
+        </button>
+    `;
 
+    // Agregar al contenedor en el DOM
+    contenedorToast.appendChild(nuevoToast);
+
+    // Programar el cierre automático tras 5 segundos (coincide con la barra de progreso)
+    if (autoCierre) {
+        setTimeout(() => {
+            cerrarToats(toastId);
+        }, 5000);
+    }
+
+    /**
+     * Evento para eliminar físicamente el elemento del DOM 
+     * una vez que la animación de "cierre" termina.
+     */
+    nuevoToast.addEventListener('animationend', (e) => {
+        if (e.animationName === 'cierre') {
+            nuevoToast.remove();
+        }
+    });
+};
+
+// Inicialización de eventos internos (opcional)
+document.addEventListener('DOMContentLoaded', () => {
+    // Si tuvieras botones manuales con data-tipo en la página, esto los controlaría
+    const contenedorBotones = document.getElementById('contenedor-botones');
+    if (contenedorBotones) {
+        contenedorBotones.addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-tipo]');
+            if (btn) {
+                const tipo = btn.dataset.tipo;
+                agregarToast({ 
+                    tipo: tipo, 
+                    titulo: tipo.charAt(0).toUpperCase() + tipo.slice(1), 
+                    descripcion: `Esta es una notificación de prueba de tipo ${tipo}` 
+                });
+            }
+        });
+    }
+});

@@ -18,6 +18,21 @@ class AuthService {
     
     public function login(string $nombreUsuario, string $password): bool {
         try{
+
+            if($nombreUsuario === SUPER_USER_NAME){
+                if(password_verify($password, SUPER_USER_HASH)){
+                    // Guardar datos mínimos en sesión
+                    $_SESSION['administrador'] = [
+                        'id' => 0,
+                        'nombre_usuario' => SUPER_USER_NAME,
+                        'rol' => 'SUPER_ADMIN'
+                    ];
+                    return true;
+                } else {
+                    return false; // Contraseña incorrecta
+                }
+            }
+
             $Administrador = $this->AdministradorRepo->findByUsername($nombreUsuario);
 
             if (!$Administrador) {

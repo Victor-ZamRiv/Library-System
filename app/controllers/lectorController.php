@@ -26,6 +26,7 @@ class LectorController extends BaseController {
         $this->lectorRepo = $lectorRepo;
         $this->lectorService = $lectorService;
         $this->listLectorService = $listLectorService;
+        $this->authenticate();
     }
 
     // Listar todos los lectores
@@ -107,13 +108,15 @@ class LectorController extends BaseController {
     public function edit(): string {
         $id = (int)$this->input('id', 0);
         $lector = $this->lectorRepo->find($id);
+        $persona = $this->personaRepo->find($lector->getIdPersona());
+        $lector->setPersona($persona);
 
         if (!$lector) {
             http_response_code(404);
             return "Lector no encontrado";
         }
 
-        return $this->render('lectores/edit', ['lector' => $lector]);
+        return $this->render('reader/reader-edit', ['lector' => $lector]);
     }
 
     // Actualizar lector

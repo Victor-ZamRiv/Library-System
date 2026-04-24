@@ -6,6 +6,7 @@ use App\Models\Services\AdministradorRegistrationService;
 use App\Models\Services\ListAdministradorService;
 use App\Contracts\IAdministradorRepository;
 use App\Contracts\IPersonaRepository;
+use App\Contracts\IPreguntaRepository;
 use App\Models\Entities\Persona;
 use App\Models\Entities\Administrador;
 use RuntimeException;
@@ -16,12 +17,17 @@ class AdministradorController extends BaseController {
     private ListAdministradorService $listAdminService;
     private IAdministradorRepository $adminRepo;
     private IPersonaRepository $personaRepo;
+    private IPreguntaRepository $preguntaRepo;
 
-    public function __construct(AdministradorRegistrationService $registrationService, ListAdministradorService $listAdminService, IAdministradorRepository $adminRepo, IPersonaRepository $personaRepo) {
+    public function __construct(AdministradorRegistrationService $registrationService, ListAdministradorService $listAdminService, 
+                                IAdministradorRepository $adminRepo, IPersonaRepository $personaRepo, IPreguntaRepository $preguntaRepo) {
         $this->registrationService = $registrationService;
         $this->listAdminService = $listAdminService;
         $this->adminRepo = $adminRepo;
         $this->personaRepo = $personaRepo;
+        $this->preguntaRepo = $preguntaRepo;
+        $this->authenticate();
+        //$this->middlewareRol(['Director','SUPER_ADMIN'], 'Administradores');
     }
 
     public function list(): string {
@@ -49,7 +55,13 @@ class AdministradorController extends BaseController {
     }
 
     public function create(): string {
-        return $this->render('user/user');
+        $preguntas = $this->preguntaRepo->all();
+        //var_dump($preguntas);
+        return $this->render('user/user', ['preguntas' => $preguntas]);
+    }
+
+    public function passwordRecoveryForm(): string {
+        return $this->render('login/password-recovery', );
     }
     
     public function store() {
