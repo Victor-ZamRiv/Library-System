@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 24-04-2026 a las 07:48:56
+-- Tiempo de generación: 27-04-2026 a las 01:42:50
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -142,9 +142,11 @@ CREATE TABLE `colores` (
 
 CREATE TABLE `configuraciones_sistema` (
   `ID_Configuracion` int(11) NOT NULL,
-  `Nombre_Parametro` varchar(100) NOT NULL,
-  `Valor` int(11) DEFAULT NULL,
-  `Descripcion` varchar(255) DEFAULT NULL
+  `dias_prestamo` int(11) NOT NULL DEFAULT 3,
+  `Dias_Prestamo_Novelas` int(1) NOT NULL DEFAULT 7,
+  `monto_multa_dia` decimal(10,2) NOT NULL DEFAULT 0.50,
+  `limite_prestamos_simultaneos` int(11) NOT NULL DEFAULT 3,
+  `max_renovaciones` int(11) NOT NULL DEFAULT 2
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
@@ -694,8 +696,7 @@ ALTER TABLE `colores`
 -- Indices de la tabla `configuraciones_sistema`
 --
 ALTER TABLE `configuraciones_sistema`
-  ADD PRIMARY KEY (`ID_Configuracion`),
-  ADD UNIQUE KEY `Nombre_Parametro` (`Nombre_Parametro`);
+  ADD PRIMARY KEY (`ID_Configuracion`);
 
 --
 -- Indices de la tabla `consultas_area_diarias`

@@ -1,0 +1,239 @@
+<?php
+
+namespace App\Controllers;
+
+use App\Core\BaseController;
+use App\Contracts\IPrestamoRepository;
+use App\Contracts\IEjemplarPrestamoRepository;
+use App\Contracts\ILectorRepository;
+use App\Contracts\IEjemplarRepository;
+use App\Contracts\IMultaRepository;
+use App\Contracts\ILibroRepository;
+use App\Contracts\IConfiguracionService;
+use App\Models\Services\PrestamoRegistrationService;
+use App\Models\Entities\Prestamo;
+
+class PrestamoController extends BaseController
+{
+    private IPrestamoRepository $prestamoRepo;
+    private IEjemplarPrestamoRepository $ejemplarPrestamoRepo;
+    private ILectorRepository $lectorRepo;
+    private IEjemplarRepository $ejemplarRepo;
+    private IMultaRepository $multaRepo;
+    private ILibroRepository $libroRepo;
+    private IConfiguracionService $configService;
+    private PrestamoRegistrationService $prestamoRegistrationService;
+
+    public function __construct(
+        IPrestamoRepository $prestamoRepo,
+        IEjemplarPrestamoRepository $ejemplarPrestamoRepo,
+        ILectorRepository $lectorRepo,
+        IEjemplarRepository $ejemplarRepo,
+        IMultaRepository $multaRepo,
+        ILibroRepository $libroRepo,
+        IConfiguracionService $configService,
+        PrestamoRegistrationService $prestamoRegistrationService
+    ) {
+        $this->prestamoRepo = $prestamoRepo;
+        $this->ejemplarPrestamoRepo = $ejemplarPrestamoRepo;
+        $this->lectorRepo = $lectorRepo;
+        $this->ejemplarRepo = $ejemplarRepo;
+        $this->multaRepo = $multaRepo;
+        $this->libroRepo = $libroRepo;
+        $this->configService = $configService;
+        $this->prestamoRegistrationService = $prestamoRegistrationService;
+
+        // Proteger todas las acciones (requiere autenticación)
+        $this->authenticate();
+        // Solo bibliotecarios y superiores pueden gestionar préstamos
+        $this->middlewareRol(['Bibliotecario', 'Jefe_Sala', 'Director'], 'préstamos');
+    }
+
+    /**
+     * Muestra el formulario paso a paso (vista principal)
+     */
+    public function create(): string
+    {
+        return $this->render('prestamos/create');
+    }
+
+    /**
+     * Endpoint AJAX: valida el carnet del lector
+     */
+    public function checkLector(): void
+    {
+        header('Content-Type: application/json');
+        $carnet = $this->input('carnet');
+
+        if (!$carnet) {
+            echo json_encode(['success' => false, 'message' => 'Carnet requerido']);
+            return;
+        }
+
+        $lector = $this->lectorRepo->findByCarnet($carnet);
+        if (!$lector) {
+            echo json_encode(['success' => false, 'message' => 'Lector no encontrado']);
+            return;
+        }
+
+        // Validar estado activo
+        if ($lector->getEstado() !== 'Activo') {
+            echo json_encode(['success' => false, 'message' => 'El lector no está activo']);
+            return;
+        }
+
+        // Verificar multas pendientes
+        $multasPendientes = $this->multaRepo->findPendientesByLector($lector->getIdLector());
+        if (!empty($multasPendientes)) {
+            $total = array_sum(array_map(fn($m) => $m->getMonto(), $multasPendientes));
+            echo json_encode([
+                'success' => false,
+                'message' => "El lector tiene multas pendientes (Total: $" . number_format($total, 2) . ")",
+                'multas' => true
+            ]);
+            return;
+        }
+
+        // Verificar límite de préstamos activos
+        $prestamosActivos = $this->prestamoRepo->findPrestamosActivosByLector($lector->getIdLector());
+        $limite = $this->configService->get('limite_prestamos_simultaneos', 3);
+        if (count($prestamosActivos) >= $limite) {
+            echo json_encode([
+                'success' => false,
+                'message' => "El lector ya tiene {$limite} préstamos activos (máximo permitido)"
+            ]);
+            return;
+        }
+
+        // Éxito
+        echo json_encode([
+            'success' => true,
+            'idLector' => $lector->getIdLector(),
+            'nombreCompleto' => $lector->getNombre() . ' ' . $lector->getApellido(),
+            'prestamosActivos' => count($prestamosActivos),
+            'limite' => $limite
+        ]);
+    }
+
+    /**
+     * Endpoint AJAX: valida la cota del libro y devuelve ejemplares disponibles
+     */
+    public function checkLibro(): void
+    {
+        header('Content-Type: application/json');
+        $cota = $this->input('cota');
+
+        if (!$cota) {
+            echo json_encode(['success' => false, 'message' => 'Cota requerida']);
+            return;
+        }
+
+        $libro = $this->libroRepo->findByCota($cota);
+        if (!$libro) {
+            echo json_encode(['success' => false, 'message' => 'Libro no encontrado']);
+            return;
+        }
+
+        // Obtener ejemplares disponibles
+        $ejemplares = $this->ejemplarRepo->findByLibro($libro->getIdLibro());
+        $disponibles = array_filter($ejemplares, fn($e) => $e->getEstado() === 'Disponible');
+
+        if (empty($disponibles)) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'No hay ejemplares disponibles de este libro'
+            ]);
+            return;
+        }
+
+        // Preparar lista para el selector
+        $opciones = [];
+        foreach ($disponibles as $ej) {
+            $opciones[] = [
+                'id' => $ej->getIdEjemplar(),
+                'numero' => $ej->getNumeroEjemplar()
+            ];
+        }
+
+        echo json_encode([
+            'success' => true,
+            'idLibro' => $libro->getIdLibro(),
+            'titulo' => $libro->getTitulo(),
+            'ejemplares' => $opciones
+        ]);
+    }
+
+    /**
+     * Endpoint final (AJAX o POST normal): registra el préstamo
+     */
+    public function store(): void
+    {
+        // Si se espera respuesta JSON (para llamada AJAX)
+        $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+                  strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+        
+        try {
+            $idLector = (int) $this->input('idLector');
+            $idEjemplar = (int) $this->input('idEjemplar');
+            $idAdmin = $_SESSION['administrador']['id'] ?? 0;
+
+            if (!$idLector || !$idEjemplar || !$idAdmin) {
+                throw new \Exception('Datos incompletos para registrar el préstamo.');
+            }
+
+            // Usar el servicio de registro (que ya contiene validaciones y transacción)
+            $prestamo = $this->prestamoRegistrationService->registrar($idLector, $idEjemplar, $idAdmin);
+
+            if ($isAjax) {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Préstamo registrado con éxito',
+                    'idPrestamo' => $prestamo->getIdPrestamo()
+                ]);
+            } else {
+                $_SESSION['success'] = 'Préstamo registrado con éxito';
+                $this->redirect('/prestamos');
+            }
+        } catch (\Exception $e) {
+            if ($isAjax) {
+                echo json_encode([
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ]);
+            } else {
+                $_SESSION['error'] = $e->getMessage();
+                $this->redirect('/prestamos/create');
+            }
+        }
+    }
+
+    /**
+     * Opcional: listado de préstamos (para administración)
+     */
+    public function index(): string
+    {
+        $prestamos = $this->prestamoRepo->all();
+        // Aquí podrías cargar datos adicionales (lector, ejemplar, etc.) si lo necesitas
+        return $this->render('prestamos/index', ['prestamos' => $prestamos]);
+    }
+
+    /**
+     * Opcional: mostrar detalles de un préstamo
+     */
+    public function show(): string
+    {
+        $id = (int) $this->input('id');
+        $prestamo = $this->prestamoRepo->find($id);
+        if (!$prestamo) {
+            http_response_code(404);
+            return "Préstamo no encontrado";
+        }
+        // Obtener ejemplar asociado
+        $ejemplaresIds = $this->ejemplarPrestamoRepo->findByPrestamo($id);
+        $ejemplar = !empty($ejemplaresIds) ? $this->ejemplarRepo->find($ejemplaresIds[0]) : null;
+        return $this->render('prestamos/show', [
+            'prestamo' => $prestamo,
+            'ejemplar' => $ejemplar
+        ]);
+    }
+}
