@@ -227,12 +227,15 @@ class PrestamoController extends BaseController
             http_response_code(404);
             return "Préstamo no encontrado";
         }
-        // Obtener ejemplar asociado
+        // Obtener ejemplares asociados
         $ejemplaresIds = $this->ejemplarPrestamoRepo->findByPrestamo($id);
-        $ejemplar = !empty($ejemplaresIds) ? $this->ejemplarRepo->find($ejemplaresIds[0]) : null;
+        $ejemplares = [];
+        foreach ($ejemplaresIds as $ejemplarId) {
+            $ejemplares[] = $this->ejemplarRepo->find($ejemplarId);
+        }
         return $this->render('prestamos/show', [
             'prestamo' => $prestamo,
-            'ejemplar' => $ejemplar
+            'ejemplares' => $ejemplares
         ]);
     }
 }

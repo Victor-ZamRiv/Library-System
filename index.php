@@ -45,6 +45,7 @@ use App\Models\Services\ListAdministradorService;
 use App\Models\Services\ListLectorService;
 use App\Models\Services\PrestamoRegistrationService;
 use App\Models\Services\VisitanteService;
+use App\Models\Services\DevolucionService;
 
 $router = require __DIR__ . '/app/routes/web.php';
 
@@ -137,9 +138,17 @@ $container = [
         $ejemplarPrestamoRepo,
         $lectorRepo,
         $ejemplarRepo,
-        $configService,
+        $configuracionRepo,
         $multaRepo,
         $pdo
+    ),
+    DevolucionService::class => new DevolucionService(
+        $pdo,
+        $prestamoRepo,
+        $ejemplarPrestamoRepo,
+        $ejemplarRepo,
+        $multaRepo,
+        $configuracionRepo
     )
 ];
 

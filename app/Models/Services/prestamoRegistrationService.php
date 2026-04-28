@@ -76,13 +76,6 @@ class PrestamoRegistrationService
             throw new \Exception("El lector ha alcanzado el límite de préstamos simultáneos ({$limite}).");
         }
 
-        // 4. Validar ejemplar
-        $prestamosActivos = $this->prestamoRepo->findPrestamosActivosByLector($idLector);
-        $limite = $configuracion->getMaximoPrestamos();
-        if (count($prestamosActivos) >= $limite) {
-            throw new \Exception("El lector ya tiene {$limite} préstamos activos.");
-        }
-
         // Validar cada ejemplar: debe existir, estar disponible y no estar ya en otro préstamo activo
         foreach ($idsEjemplares as $idEjemplar) {
             $ejemplar = $this->ejemplarRepo->find($idEjemplar);
