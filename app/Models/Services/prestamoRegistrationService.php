@@ -22,33 +22,33 @@ class PrestamoRegistrationService
     private IMultaRepository $multaRepo;
 
     public function __construct(
-        PDO $pdo,
         IPrestamoRepository $prestamoRepo,
         IEjemplarPrestamoRepository $ejemplarPrestamoRepo,
         ILectorRepository $lectorRepo,
         IEjemplarRepository $ejemplarRepo,
         IConfiguracionRepository $configRepo,
-        IMultaRepository $multaRepo
+        IMultaRepository $multaRepo,
+        PDO $pdo,
     ) {
-        $this->pdo = $pdo;
         $this->prestamoRepo = $prestamoRepo;
         $this->ejemplarPrestamoRepo = $ejemplarPrestamoRepo;
         $this->lectorRepo = $lectorRepo;
         $this->ejemplarRepo = $ejemplarRepo;
         $this->configRepo = $configRepo;
         $this->multaRepo = $multaRepo;
+        $this->pdo = $pdo;
     }
 
     /**
      * Registra un nuevo préstamo.
      *
      * @param int $idLector
-     * @param int $idEjemplar
+     * @param array $idEjemplar
      * @param int $idAdmin
      * @return Prestamo
      * @throws \Exception Si alguna validación falla o hay error en BD.
      */
-    public function registrar(int $idLector, int $idEjemplar, int $idAdmin): Prestamo
+    public function registrar(int $idLector, array $idsEjemplares, int $idAdmin): Prestamo
     {
         $configuracion = $this->configRepo->getConfiguracion();
         if (!$configuracion) {
@@ -77,21 +77,23 @@ class PrestamoRegistrationService
         }
 
         // 4. Validar ejemplar
-        $ejemplar = $this->ejemplarRepo->find($idEjemplar);
-        if (!$ejemplar) {
-            throw new \Exception("El ejemplar no existe.");
-        }
-        if (!$ejemplar->isActivo()) {
-            throw new \Exception("El ejemplar no está activo.");
-        }
-        if ($ejemplar->getEstado() !== 'Disponible') {
-            throw new \Exception("El ejemplar no está disponible para préstamo.");
+        $prestamosActivos = $this->prestamoRepo->findPrestamosActivosByLector($idLector);
+        $limite = $configuracion->getMaximoPrestamos();
+        if (count($prestamosActivos) >= $limite) {
+            throw new \Exception("El lector ya tiene {$limite} préstamos activos.");
         }
 
-        // 5. Verificar que el ejemplar no esté ya en un préstamo activo (doble chequeo)
-        $prestamoExistente = $this->ejemplarPrestamoRepo->findByEjemplar($idEjemplar);
-        if ($prestamoExistente !== null) {
-            throw new \Exception("El ejemplar ya se encuentra prestado actualmente.");
+        // Validar cada ejemplar: debe existir, estar disponible y no estar ya en otro préstamo activo
+        foreach ($idsEjemplares as $idEjemplar) {
+            $ejemplar = $this->ejemplarRepo->find($idEjemplar);
+            if (!$ejemplar || $ejemplar->getEstado() !== 'Disponible') {
+                throw new \Exception("El ejemplar ID $idEjemplar no está disponible.");
+            }
+            // Verificar que no esté ya en un préstamo activo (por si acaso)
+            $prestamoExistente = $this->prestamoRepo->findPrestamosActivosByEjemplar($idEjemplar);
+            if ($prestamoExistente) {
+                throw new \Exception("El ejemplar ID $idEjemplar ya está prestado actualmente.");
+            }
         }
 
         // 6. Calcular fechas
@@ -113,16 +115,22 @@ class PrestamoRegistrationService
         // 8. Transacción para guardar todo
         $this->pdo->beginTransaction();
         try {
-            $ejemplar = $this->ejemplarRepo->find($idEjemplar);
-            if (!$ejemplar) {
-                throw new \Exception("El ejemplar no existe.");
-            }
-             if (!$ejemplar->isActivo()) {
-                throw new \Exception("El ejemplar no está activo.");
+            foreach ($idsEjemplares as $idEjemplar) {
+                $ejemplar = $this->ejemplarRepo->find($idEjemplar);
+                if (!$ejemplar) {
+                    throw new \Exception("El ejemplar no existe.");
+                }
+                if (!$ejemplar->isActivo()) {
+                    throw new \Exception("El ejemplar no está activo.");
+                }
             }
             $idPrestamo = $this->prestamoRepo->insert($prestamo);
-            $this->ejemplarPrestamoRepo->associate($idPrestamo, $idEjemplar);
-            $this->ejemplarRepo->updateEstado($ejemplar, 'Prestado');
+            foreach ($idsEjemplares as $idEjemplar) {
+                $this->ejemplarPrestamoRepo->associate($idPrestamo, $idEjemplar);
+            }
+            foreach ($idsEjemplares as $idEjemplar) {
+                $this->ejemplarRepo->updateEstado($idEjemplar, 'Prestado');
+            }
             $this->pdo->commit();
 
             return $this->prestamoRepo->find($idPrestamo);

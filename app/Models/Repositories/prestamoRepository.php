@@ -102,7 +102,7 @@ class PrestamoRepository extends BaseRepository implements IPrestamoRepository
 
     /*Obtiene el préstamo activo asociado a un ejemplar (si existe)*/
 
-    public function findPrestamosByEjemplar(int $idEjemplar): ?Prestamo
+    public function findPrestamosActivosByEjemplar(int $idEjemplar): ?Prestamo
     {
         $sql = "SELECT p.* 
                 FROM {$this->table} p

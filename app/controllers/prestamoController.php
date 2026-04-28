@@ -9,7 +9,7 @@ use App\Contracts\ILectorRepository;
 use App\Contracts\IEjemplarRepository;
 use App\Contracts\IMultaRepository;
 use App\Contracts\ILibroRepository;
-use App\Contracts\IConfiguracionService;
+use App\Contracts\IConfiguracionRepository;
 use App\Models\Services\PrestamoRegistrationService;
 use App\Models\Entities\Prestamo;
 
@@ -21,7 +21,7 @@ class PrestamoController extends BaseController
     private IEjemplarRepository $ejemplarRepo;
     private IMultaRepository $multaRepo;
     private ILibroRepository $libroRepo;
-    private IConfiguracionService $configService;
+    private IConfiguracionRepository $configRepository;
     private PrestamoRegistrationService $prestamoRegistrationService;
 
     public function __construct(
@@ -31,7 +31,7 @@ class PrestamoController extends BaseController
         IEjemplarRepository $ejemplarRepo,
         IMultaRepository $multaRepo,
         ILibroRepository $libroRepo,
-        IConfiguracionService $configService,
+        IConfiguracionRepository $configRepository,
         PrestamoRegistrationService $prestamoRegistrationService
     ) {
         $this->prestamoRepo = $prestamoRepo;
@@ -40,7 +40,7 @@ class PrestamoController extends BaseController
         $this->ejemplarRepo = $ejemplarRepo;
         $this->multaRepo = $multaRepo;
         $this->libroRepo = $libroRepo;
-        $this->configService = $configService;
+        $this->configRepository = $configRepository;
         $this->prestamoRegistrationService = $prestamoRegistrationService;
 
         // Proteger todas las acciones (requiere autenticación)
@@ -49,16 +49,14 @@ class PrestamoController extends BaseController
         $this->middlewareRol(['Bibliotecario', 'Jefe_Sala', 'Director'], 'préstamos');
     }
 
-    /**
-     * Muestra el formulario paso a paso (vista principal)
-     */
+    
     public function create(): string
     {
         return $this->render('prestamos/create');
     }
 
     /**
-     * Endpoint AJAX: valida el carnet del lector
+     * Endpoint AJAX: Verificar lector y ver si puede realizar un préstamo
      */
     public function checkLector(): void
     {
@@ -96,7 +94,7 @@ class PrestamoController extends BaseController
 
         // Verificar límite de préstamos activos
         $prestamosActivos = $this->prestamoRepo->findPrestamosActivosByLector($lector->getIdLector());
-        $limite = $this->configService->get('limite_prestamos_simultaneos', 3);
+        $limite = $this->configRepository->getConfiguracion()->getMaximoPrestamos();
         if (count($prestamosActivos) >= $limite) {
             echo json_encode([
                 'success' => false,
@@ -174,15 +172,18 @@ class PrestamoController extends BaseController
         
         try {
             $idLector = (int) $this->input('idLector');
-            $idEjemplar = (int) $this->input('idEjemplar');
+            $idsEjemplares = $this->input('ids_ejemplares'); // debe ser un array
+                if (!is_array($idsEjemplares) || count($idsEjemplares) < 1 || count($idsEjemplares) > 3) {
+                    throw new \Exception("Seleccione entre 1 y 3 ejemplares.");
+            }
             $idAdmin = $_SESSION['administrador']['id'] ?? 0;
 
-            if (!$idLector || !$idEjemplar || !$idAdmin) {
+            if (!$idLector || !$idsEjemplares || !$idAdmin) {
                 throw new \Exception('Datos incompletos para registrar el préstamo.');
             }
 
             // Usar el servicio de registro (que ya contiene validaciones y transacción)
-            $prestamo = $this->prestamoRegistrationService->registrar($idLector, $idEjemplar, $idAdmin);
+            $prestamo = $this->prestamoRegistrationService->registrar($idLector, $idsEjemplares, $idAdmin);
 
             if ($isAjax) {
                 echo json_encode([
@@ -207,9 +208,7 @@ class PrestamoController extends BaseController
         }
     }
 
-    /**
-     * Opcional: listado de préstamos (para administración)
-     */
+    
     public function index(): string
     {
         $prestamos = $this->prestamoRepo->all();

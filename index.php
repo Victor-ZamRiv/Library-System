@@ -14,6 +14,10 @@ use App\Models\Repositories\LogroRepository;
 use App\Models\Repositories\ConsultaRepository;
 use App\Models\Repositories\VisitanteRepository;
 use App\Models\Repositories\PreguntaRepository;
+use App\Models\Repositories\PrestamoRepository;
+use App\Models\Repositories\EjemplarPrestamoRepository;
+use App\Models\Repositories\MultaRepository;
+use App\Models\Repositories\ConfiguracionRepository;
 use App\Contracts\ILibroRepository;
 use App\Contracts\IAutorRepository;
 use App\Contracts\IEditorialRepository;
@@ -26,6 +30,10 @@ use App\Contracts\ILogroRepository;
 use App\Contracts\IConsultaRepository;
 use App\Contracts\IVisitanteRepository;
 use App\Contracts\IPreguntaRepository;
+use App\Contracts\IPrestamoRepository;
+use App\Contracts\IEjemplarPrestamoRepository;
+use App\Contracts\IMultaRepository;
+use App\Contracts\IConfiguracionRepository;
 use App\Models\Services\AuthService;
 use App\Models\Services\LibroSearchService;
 use App\Models\Services\LibroRegistrationService;
@@ -35,6 +43,7 @@ use App\Models\Services\AdministradorRegistrationService;
 use App\Models\Services\LectorRegistrationService;
 use App\Models\Services\ListAdministradorService;
 use App\Models\Services\ListLectorService;
+use App\Models\Services\PrestamoRegistrationService;
 use App\Models\Services\VisitanteService;
 
 $router = require __DIR__ . '/app/routes/web.php';
@@ -51,7 +60,10 @@ $logroRepo = new LogroRepository($pdo);
 $consultaRepo = new ConsultaRepository($pdo);
 $visitanteRepo = new VisitanteRepository($pdo);
 $preguntaRepo = new PreguntaRepository($pdo);
-
+$prestamoRepo = new PrestamoRepository($pdo);
+$ejemplarPrestamoRepo = new EjemplarPrestamoRepository($pdo);
+$multaRepo = new MultaRepository($pdo);
+$configuracionRepo = new ConfiguracionRepository($pdo);
 
 $container = [
     \PDO::class => $pdo,
@@ -67,6 +79,12 @@ $container = [
     IConsultaRepository::class => $consultaRepo,
     IVisitanteRepository::class => $visitanteRepo,
     IPreguntaRepository::class => $preguntaRepo,
+    IPrestamoRepository::class => $prestamoRepo,
+    IEjemplarPrestamoRepository::class => $ejemplarPrestamoRepo,
+    IMultaRepository::class => $multaRepo,
+    IConfiguracionRepository::class => $configuracionRepo,
+
+
     LibroSearchService::class => new LibroSearchService(
         $libroRepo, $autorRepo),
     LibroRegistrationService::class => new LibroRegistrationService(
@@ -114,6 +132,15 @@ $container = [
         $consultaRepo,
         $pdo
     ),
+    PrestamoRegistrationService::class => new PrestamoRegistrationService(
+        $prestamoRepo,
+        $ejemplarPrestamoRepo,
+        $lectorRepo,
+        $ejemplarRepo,
+        $configService,
+        $multaRepo,
+        $pdo
+    )
 ];
 
 $uri = str_ireplace(BASE_URL, '', $_SERVER['REQUEST_URI']);

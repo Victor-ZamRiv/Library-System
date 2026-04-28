@@ -64,6 +64,21 @@ $router->get('/visitantes', 'VisitantesController@index');
 $router->get('/visitantes/registro', 'VisitantesController@create');
 $router->post('/visitantes/store', 'VisitantesController@store');
 
+//Rutas para préstamos
+$router->get('/prestamos', 'PrestamoController@index');
+$router->get('/prestamos/create', 'PrestamoController@create');
+$router->post('/prestamos/check-lector', 'PrestamoController@checkLector');
+$router->post('/prestamos/check-libro', 'PrestamoController@checkLibro');
+$router->post('/prestamos', 'PrestamoController@store');
+$router->get('/prestamos/show', 'PrestamoController@show');
+
+//Rutas multas
+$router->get('/multas', 'MultaController@index');
+
+// Rutas configuracion prestamos
+$router->get('/configuracion/prestamos', 'ConfiguracionPrestamoController@index');
+$router->post('/configuracion/prestamos/update', 'ConfiguracionPrestamoController@update');
+
 
 
 
