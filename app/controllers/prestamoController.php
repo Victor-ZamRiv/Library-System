@@ -11,6 +11,7 @@ use App\Contracts\IMultaRepository;
 use App\Contracts\ILibroRepository;
 use App\Contracts\IConfiguracionRepository;
 use App\Models\Services\PrestamoRegistrationService;
+use App\Models\Services\DevolucionService;
 use App\Models\Entities\Prestamo;
 
 class PrestamoController extends BaseController
@@ -23,6 +24,7 @@ class PrestamoController extends BaseController
     private ILibroRepository $libroRepo;
     private IConfiguracionRepository $configRepository;
     private PrestamoRegistrationService $prestamoRegistrationService;
+    private DevolucionService $devolucionService;
 
     public function __construct(
         IPrestamoRepository $prestamoRepo,
@@ -32,7 +34,8 @@ class PrestamoController extends BaseController
         IMultaRepository $multaRepo,
         ILibroRepository $libroRepo,
         IConfiguracionRepository $configRepository,
-        PrestamoRegistrationService $prestamoRegistrationService
+        PrestamoRegistrationService $prestamoRegistrationService,
+        DevolucionService $devolucionService
     ) {
         $this->prestamoRepo = $prestamoRepo;
         $this->ejemplarPrestamoRepo = $ejemplarPrestamoRepo;
@@ -42,6 +45,7 @@ class PrestamoController extends BaseController
         $this->libroRepo = $libroRepo;
         $this->configRepository = $configRepository;
         $this->prestamoRegistrationService = $prestamoRegistrationService;
+        $this->devolucionService = $devolucionService;
 
         // Proteger todas las acciones (requiere autenticación)
         $this->authenticate();
@@ -204,6 +208,47 @@ class PrestamoController extends BaseController
             } else {
                 $_SESSION['error'] = $e->getMessage();
                 $this->redirect('/prestamos/create');
+            }
+        }
+    }
+
+        /**
+     * Procesa la devolución completa de un préstamo.
+     * Se espera recibir por POST el id del préstamo y opcionalmente un flag de daño.
+     */
+    public function devolver(): void
+    {
+        $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+                strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+
+        try {
+            $idPrestamo = (int) $this->input('id');
+            $danado     = (bool) $this->input('danado', false);
+            $idAdmin    = $_SESSION['administrador']['id'] ?? 0;
+
+            if (!$idPrestamo || !$idAdmin) {
+                throw new \Exception("Datos incompletos para procesar la devolución.");
+            }
+
+            // Llamar al servicio de devolución
+            $resultado = $this->devolucionService->devolverPrestamoCompleto($idPrestamo, $idAdmin, $danado);
+
+            if ($isAjax) {
+                echo json_encode($resultado);
+            } else {
+                if ($resultado['success']) {
+                    $_SESSION['success'] = $resultado['message'];
+                } else {
+                    $_SESSION['error'] = $resultado['message'];
+                }
+                $this->redirect("/prestamos/show?id=" . $idPrestamo);
+            }
+        } catch (\Exception $e) {
+            if ($isAjax) {
+                echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            } else {
+                $_SESSION['error'] = $e->getMessage();
+                $this->redirect("/prestamos/show?id=" . ($idPrestamo ?? 0));
             }
         }
     }
