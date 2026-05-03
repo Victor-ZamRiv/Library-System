@@ -6,6 +6,7 @@ use App\Models\Entities\Multa;
 
 interface IMultaRepository
 {
+    public function all(): array;
     public function insert(Multa $multa): int;
     public function update(Multa $multa): bool;
     public function find(int $id): ?Multa;

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <title>Nuevo Libro</title>
+<?php include VIEW_PATH . '/component/heat.php'; ?>
 <body>
 
     <?php include VIEW_PATH . '/component/sidebar.php'; ?>
@@ -19,11 +20,7 @@
         </div>
 
         <div class="container-fluid">
-            <?php if ($error): ?>
-                <div class="alert alert-danger" role="alert">
-                    <strong>Error:</strong> <?= htmlspecialchars($error) ?>
-                </div>
-            <?php endif; ?>
+            
             <div class="panel panel-info">
                 <div class="panel-heading">
                     <h3 class="panel-title">&nbsp; REGISTRAR NUEVO LIBRO</h3>
@@ -38,7 +35,7 @@
                                         <div class="form-group label-floating">
                                             <label class="control-label"><span class="text-danger">*</span> Sala <i class="fa-solid fa-angle-down"></i></label>
                                             <div class="dropdown">
-                                                <input type="text" id="sala-display" class="form-control" readonly data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer; background-color: transparent;" required>
+                                                <input type="text" id="sala-display" class="form-control" readonly data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer; background-color: transparent;">
                                                 <ul class="dropdown-menu" id="dropdown-sala" style="width: 100%;">
                                                     <li><a href="#!" data-value="G">Sala General</a></li>
                                                     <li><a href="#!" data-value="R">Sala de Referencia</a></li>
@@ -374,9 +371,9 @@
 
 
     <!--====== Scripts -->
-
-    <?php include VIEW_PATH . '/component/scripts.php' ?>
-    <script src= "<?= PUBLIC_PATH ?> /js/validations/book/createvalidation.js"></script>
+    
+    <?php include VIEW_PATH . "/component/scripts.php"; ?>
+    <script src="<?php echo PUBLIC_PATH; ?>/js/validations/book/createvalidation.js"></script>
     <script src=" <?= PUBLIC_PATH ?> /js/modal/confirmation-new-book.js"></script>
 
 

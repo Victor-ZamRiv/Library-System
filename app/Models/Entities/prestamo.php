@@ -4,14 +4,34 @@ namespace App\Models\Entities;
 use App\Core\baseEntity;
 
 class prestamo extends baseEntity{
-    private ?int $idPrestamo;
-    private int $idLector;
-    private int $idAdmin;
-    private string $fechaEntregado;      // fecha en que se prestó
-    private string $fechaRecepcionEstipulada;
-    private ?string $fechaRecepcionReal;
-    private string $estadoEntrega;       // 'Pendiente', 'Devuelto', 'Vencido', 'Perdido'
-    private bool $activo;
+    private ?int $idPrestamo = null;
+    private int $idLector = 0;
+    private int $idAdmin = 0;
+    private string $fechaEntregado = '';
+    private string $fechaRecepcionEstipulada = '';
+    private ?string $fechaRecepcionReal = null;
+    private string $estadoEntrega = 'Pendiente';
+    private bool $activo = true;
+
+    public function __construct(
+        ?int $idPrestamo = null,
+        int $idLector = 0,
+        int $idAdmin = 0,
+        string $fechaEntregado = '',
+        string $fechaRecepcionEstipulada = '',
+        ?string $fechaRecepcionReal = null,
+        string $estadoEntrega = 'Pendiente',
+        bool $activo = true
+    ) {
+        $this->idPrestamo = $idPrestamo;
+        $this->idLector = $idLector;
+        $this->idAdmin = $idAdmin;
+        $this->fechaEntregado = $fechaEntregado;
+        $this->fechaRecepcionEstipulada = $fechaRecepcionEstipulada;
+        $this->fechaRecepcionReal = $fechaRecepcionReal;
+        $this->estadoEntrega = $estadoEntrega;
+        $this->activo = $activo;
+    }
 
     //Getters
     public function getIdPrestamo(): ?int { return $this->idPrestamo; }

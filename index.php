@@ -145,8 +145,8 @@ $container = [
     DevolucionService::class => new DevolucionService(
         $pdo,
         $prestamoRepo,
-        $ejemplarPrestamoRepo,
         $ejemplarRepo,
+        $ejemplarPrestamoRepo,
         $multaRepo,
         $configuracionRepo
     )

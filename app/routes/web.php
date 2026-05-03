@@ -13,6 +13,8 @@ $router->get('/configuracion/sala', 'ConfiguracionController@salaConfiguration')
 $router->get('/configuracion/area', 'ConfiguracionController@areaConfiguration');
 $router->get('/history', 'ConfiguracionController@historial');
 $router->get('/configuracion/indicator', 'ConfiguracionController@indicatorConfiguration');
+$router->get('/configuracion/prestamos', 'ConfiguracionController@prestamoConfiguration');
+$router->post('/configuracion/prestamos/update', 'ConfiguracionController@prestamoUpdate');
 
 // Rutas para libros
 $router->get('/libros', 'LibroController@index');
@@ -69,16 +71,16 @@ $router->get('/prestamos', 'PrestamoController@index');
 $router->get('/prestamos/create', 'PrestamoController@create');
 $router->post('/prestamos/check-lector', 'PrestamoController@checkLector');
 $router->post('/prestamos/check-libro', 'PrestamoController@checkLibro');
-$router->post('/prestamos', 'PrestamoController@store');
+$router->post('/prestamos/store', 'PrestamoController@store');
 $router->get('/prestamos/show', 'PrestamoController@show');
+$router->get('/prestamos/previsualizar-devolucion', 'PrestamoController@previsualizarDevolucion');
 $router->post('/prestamos/devolver', 'PrestamoController@devolver');
 
 //Rutas multas
 $router->get('/multas', 'MultaController@index');
 
 // Rutas configuracion prestamos
-$router->get('/configuracion/prestamos', 'ConfiguracionPrestamoController@index');
-$router->post('/configuracion/prestamos/update', 'ConfiguracionPrestamoController@update');
+
 
 
 

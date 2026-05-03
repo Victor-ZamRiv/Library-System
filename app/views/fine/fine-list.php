@@ -3,14 +3,14 @@
 
 <head>
     <title>Gestión de Multas - Listado</title>
-    <?php include "../component/heat.php" ?>
+    <?php include VIEW_PATH . "/component/heat.php" ?>
 </head>
 
 <body>
-    <?php include "../component/sidebar.php" ?>
+    <?php include VIEW_PATH . "/component/sidebar.php" ?>
 
     <section class="full-box dashboard-contentPage">
-        <?php include "../component/navbar.php" ?>
+        <?php include VIEW_PATH . "/component/navbar.php" ?>
 
         <div class="container-fluid">
             <div class="page-header">
@@ -18,7 +18,7 @@
             </div>
         </div>
 
-        <?php include "../component/finebar.php" ?>
+        <?php include VIEW_PATH . "/component/finebar.php" ?>
 
         <div class="container-fluid">
             <div class="panel panel-success">
@@ -98,7 +98,7 @@
         </div>
     </section>
 
-    <?php include "../component/scripts.php" ?>
+    <?php include VIEW_PATH . "/component/scripts.php" ?>
     </body>
 
 </html>

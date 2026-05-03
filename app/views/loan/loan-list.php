@@ -1,19 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
+    <title>Préstamo</title>
 
-<?php
-include "../component/heat.php";
-?>
+<?php include  VIEW_PATH . "/component/heat.php"; ?>
 
 <body>
 
-    <?php
-    include "../component/sidebar.php";
-    ?>
+        <?php include VIEW_PATH . "/component/sidebar.php"; ?>
+
     <section class="full-box dashboard-contentPage">
-        <?php
-        include "../component/navbar.php";
-        ?>
+                <?php include VIEW_PATH . "/component/navbar.php"; ?>
+
         <div class="container-fluid ">
             <div class="page-header">
                 <h1 class="text-titles"> </h1>
@@ -136,9 +133,8 @@ include "../component/heat.php";
 
     </section>
 
-    <?php
-    include "../component/scripts.php";
-    ?>
+        <?php include  VIEW_PATH . "/component/scripts.php"; ?>
+
 </body>
 
 </html>

@@ -71,7 +71,7 @@ class PrestamoRegistrationService
 
         // 3. Verificar límite de préstamos activos
         $prestamosActivos = $this->prestamoRepo->findPrestamosActivosByLector($idLector);
-        $limite = (int) $configuracion->getMaximoPrestamos();
+        $limite = (int) $configuracion->getLimitePrestamosSimultaneos();
         if (count($prestamosActivos) >= $limite) {
             throw new \Exception("El lector ha alcanzado el límite de préstamos simultáneos ({$limite}).");
         }
@@ -122,7 +122,12 @@ class PrestamoRegistrationService
                 $this->ejemplarPrestamoRepo->associate($idPrestamo, $idEjemplar);
             }
             foreach ($idsEjemplares as $idEjemplar) {
-                $this->ejemplarRepo->updateEstado($idEjemplar, 'Prestado');
+                $ejemplar = $this->ejemplarRepo->find($idEjemplar);
+                if (!$ejemplar) {
+                    throw new \Exception("El ejemplar no existe.");
+                }
+                $ejemplar->setEstado('Prestado');
+                $this->ejemplarRepo->updateEstado($ejemplar);
             }
             $this->pdo->commit();
 

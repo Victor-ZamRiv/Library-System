@@ -102,6 +102,14 @@
                 </div>
             </fieldset>
 
+            <p class="text-center" style="margin-top: 20px;">
+                        <a href="<?= BASE_URL ?>/libros" class="btn btn-secondary btn-raised">
+                            <i class="fa-solid fa-arrow-left"></i> Volver
+                        </a>
+                        <button onclick="window.print();" class="btn btn-info btn-raised">
+                            <i class="fa-solid fa-print"></i> Imprimir Ficha
+                        </button>
+                    </p>
         </div>
     </div>
 </div>

@@ -3,8 +3,8 @@
 namespace App\Models\Services;
 
 use App\Contracts\IPrestamoRepository;
-use App\Contracts\IEjemplarPrestamoRepository;
 use App\Contracts\IEjemplarRepository;
+use App\Contracts\IEjemplarPrestamoRepository;
 use App\Contracts\IMultaRepository;
 use App\Contracts\IConfiguracionRepository;
 use App\Models\Entities\Multa;
@@ -14,88 +14,132 @@ class DevolucionService
 {
     private PDO $pdo;
     private IPrestamoRepository $prestamoRepo;
-    private IEjemplarPrestamoRepository $ejemplarPrestamoRepo;
     private IEjemplarRepository $ejemplarRepo;
+    private IEjemplarPrestamoRepository $ejemplarPrestamoRepo;
     private IMultaRepository $multaRepo;
     private IConfiguracionRepository $configRepo;
 
     public function __construct(
         PDO $pdo,
         IPrestamoRepository $prestamoRepo,
-        IEjemplarPrestamoRepository $ejemplarPrestamoRepo,
         IEjemplarRepository $ejemplarRepo,
+        IEjemplarPrestamoRepository $ejemplarPrestamoRepo,
         IMultaRepository $multaRepo,
         IConfiguracionRepository $configRepo
     ) {
         $this->pdo = $pdo;
         $this->prestamoRepo = $prestamoRepo;
-        $this->ejemplarPrestamoRepo = $ejemplarPrestamoRepo;
         $this->ejemplarRepo = $ejemplarRepo;
+        $this->ejemplarPrestamoRepo = $ejemplarPrestamoRepo;
         $this->multaRepo = $multaRepo;
         $this->configRepo = $configRepo;
     }
 
     /**
-     * Procesa la devolución completa de un préstamo.
-     *
-     * @param int  $idPrestamo
-     * @param int  $idAdmin
-     * @param bool $danado   Si algún ejemplar (o todos) está dañado.
-     * @return array ['success' => bool, 'message' => string, 'multa' => ?Multa]
+     * Previsualiza una devolución: calcula posible multa y obtiene ejemplares.
+     * 
+     * @param int $idPrestamo
+     * @return array ['success'=>bool, 'multaInfo'=>array|null, 'ejemplares'=>array, 'message'=>string]
      */
-    public function devolverPrestamoCompleto(int $idPrestamo, int $idAdmin, bool $danado = false): array
+    public function previsualizar(int $idPrestamo): array
+    {
+        $prestamo = $this->prestamoRepo->find($idPrestamo);
+        if (!$prestamo || $prestamo->getEstadoEntrega() !== 'Pendiente') {
+            return ['success' => false, 'message' => 'Préstamo no válido o ya devuelto.'];
+        }
+
+        // Obtener ejemplares del préstamo
+        $idsEjemplares = $this->ejemplarPrestamoRepo->findByPrestamo($idPrestamo);
+        $ejemplares = [];
+        foreach ($idsEjemplares as $idEj) {
+            $ej = $this->ejemplarRepo->find($idEj);
+            if ($ej) $ejemplares[] = $ej;
+        }
+
+        // Calcular posible multa por retraso (sin generarla aún)
+        $config = $this->configRepo->getConfiguracion();
+        $diasRetraso = $this->calcularDiasRetraso($prestamo->getFechaRecepcionEstipulada());
+        $multaInfo = null;
+        if ($diasRetraso > 0) {
+            $monto = $diasRetraso * $config->getMultaDiaria();
+            $multaInfo = [
+                'diasRetraso' => $diasRetraso,
+                'monto' => $monto,
+                'moneda' => 'USD'
+            ];
+        }
+
+        return [
+            'success' => true,
+            'multaInfo' => $multaInfo,
+            'ejemplares' => $ejemplares,
+            'prestamo' => $prestamo
+        ];
+    }
+
+    /**
+     * Ejecuta la devolución completa, asignando estado a cada ejemplar y generando multa si aplica.
+     *
+     * @param int   $idPrestamo
+     * @param int   $idAdmin
+     * @param array $estadosEjemplares  [ idEjemplar => 'Disponible' | 'Dañado' ]
+     * @return array ['success'=>bool, 'message'=>string, 'multa'=>Multa|null]
+     */
+    public function devolverPrestamoCompleto(int $idPrestamo, int $idAdmin, array $estadosEjemplares): array
     {
         $this->pdo->beginTransaction();
 
         try {
-            // 1. Obtener el préstamo
             $prestamo = $this->prestamoRepo->find($idPrestamo);
-            if (!$prestamo) {
-                throw new \Exception("Préstamo no encontrado.");
-            }
-            if ($prestamo->getEstadoEntrega() !== 'Pendiente') {
-                throw new \Exception("Este préstamo ya fue devuelto o está vencido.");
+            if (!$prestamo || $prestamo->getEstadoEntrega() !== 'Pendiente') {
+                throw new \Exception("Préstamo no válido o ya devuelto.");
             }
 
-            // 2. Obtener todos los ejemplares asociados
-            $idsEjemplares = $this->ejemplarPrestamoRepo->findByPrestamo($idPrestamo);
-            if (empty($idsEjemplares)) {
+            // Obtener ejemplares reales del préstamo
+            $idsEjemplaresBD = $this->ejemplarPrestamoRepo->findByPrestamo($idPrestamo);
+            if (empty($idsEjemplaresBD)) {
                 throw new \Exception("El préstamo no tiene ejemplares asociados.");
             }
 
-            // 3. Calcular días de retraso
-            $fechaReal = date('Y-m-d');
-            $fechaEstipulada = $prestamo->getFechaRecepcionEstipulada();
-            $diasRetraso = $this->calcularDiasRetraso($fechaEstipulada, $fechaReal);
+            // Verificar que recibimos estado para cada ejemplar
+            foreach ($idsEjemplaresBD as $idEj) {
+                if (!isset($estadosEjemplares[$idEj])) {
+                    throw new \Exception("Falta el estado para el ejemplar ID $idEj.");
+                }
+                $estado = $estadosEjemplares[$idEj];
+                if (!in_array($estado, ['Disponible', 'Dañado'])) {
+                    throw new \Exception("Estado no válido para ejemplar ID $idEj.");
+                }
+            }
 
-            // 4. Generar multa si hay retraso
+            // Calcular multa por retraso (si aplica)
+            $config = $this->configRepo->getConfiguracion();
+            $diasRetraso = $this->calcularDiasRetraso($prestamo->getFechaRecepcionEstipulada());
             $multa = null;
             if ($diasRetraso > 0) {
-                $config = $this->configRepo->getConfiguracion();
-                if (!$config) {
-                    throw new \Exception("No se pudo obtener la configuración del sistema.");
-                }
-                $montoPorDia = $config->getMultaDiaria();
-                $monto = $diasRetraso * $montoPorDia;
+                $monto = $diasRetraso * $config->getMultaDiaria();
                 $multa = $this->crearMulta($idPrestamo, $idAdmin, $monto);
             }
 
-            // 5. Actualizar estado de cada ejemplar
-            $nuevoEstadoEjemplar = $danado ? 'Dañado' : 'Disponible';
-            foreach ($idsEjemplares as $idEjemplar) {
-                $this->ejemplarRepo->updateEstado($idEjemplar, $nuevoEstadoEjemplar);
+            // Actualizar cada ejemplar con el estado indicado
+            foreach ($idsEjemplaresBD as $idEj) {
+                $ejemplar = $this->ejemplarRepo->find($idEj);
+                if (!$ejemplar) {
+                    throw new \Exception("Ejemplar ID $idEj no encontrado.");
+                }
+                $ejemplar->setEstado($estadosEjemplares[$idEj]);
+                $this->ejemplarRepo->updateEstado($ejemplar);
+                // Registro de daños (pendiente)
             }
 
-            // 6. Registrar devolución en el préstamo
+            // Registrar devolución
+            $fechaReal = date('Y-m-d');
             $estadoEntrega = $diasRetraso > 0 ? 'Vencido' : 'Devuelto';
             $this->prestamoRepo->registrarDevolucion($idPrestamo, $fechaReal, $estadoEntrega);
 
             $this->pdo->commit();
 
-            $message = $multa
-                ? "Devolución completada. Se generó una multa de {$multa->getMonto()} USD."
-                : "Devolución completada sin multa.";
-
+            $message = $multa ? "Devolución registrada. Se generó multa de {$multa->getMonto()} USD." : "Devolución registrada sin multa.";
             return ['success' => true, 'message' => $message, 'multa' => $multa];
         } catch (\Exception $e) {
             $this->pdo->rollBack();
@@ -103,22 +147,16 @@ class DevolucionService
         }
     }
 
-    /**
-     * Calcula los días de retraso (si la fecha real es posterior a la estipulada).
-     */
-    private function calcularDiasRetraso(string $fechaEstipulada, string $fechaReal): int
+    private function calcularDiasRetraso(string $fechaEstipulada): int
     {
+        $hoy = new \DateTime();
         $est = new \DateTime($fechaEstipulada);
-        $real = new \DateTime($fechaReal);
-        if ($real > $est) {
-            return $real->diff($est)->days;
+        if ($hoy > $est) {
+            return $hoy->diff($est)->days;
         }
         return 0;
     }
 
-    /**
-     * Crea una nueva multa en la base de datos.
-     */
     private function crearMulta(int $idPrestamo, int $idAdmin, float $monto): Multa
     {
         $multa = new Multa(null, $idPrestamo, $idAdmin, $monto, null, 'Pendiente');

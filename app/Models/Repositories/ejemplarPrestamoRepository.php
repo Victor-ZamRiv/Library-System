@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models\Repositories;
 
 use App\Core\BaseRepository;
@@ -53,8 +52,6 @@ class EjemplarPrestamoRepository extends BaseRepository implements IEjemplarPres
         return $id !== false ? (int) $id : null;
     }
 
-    /*Método requerido por BaseRepository (aunque no se use directamente).
-     *Como no tenemos entidad, retornamos un array vacío o lanzamos excepción. */
     protected function mapToEntity(array $row): object
     {
         throw new \LogicException("EjemplarPrestamoRepository no maneja entidades.");

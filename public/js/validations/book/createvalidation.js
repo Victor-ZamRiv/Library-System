@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
      * Función que habilita o deshabilita el campo Área Infantil
      */
     function gestionarEstadoArea(valorSala) {
-        if (valorSala === "Sala Infantil") {
+        if (valorSala === "X") {
             // HABILITAR
             areaDisplayContainer.style.pointerEvents = "auto";
             areaDisplayContainer.style.opacity = "1";

@@ -22,14 +22,14 @@ class PrestamoRepository extends BaseRepository implements IPrestamoRepository
         }
 
         $sql = "INSERT INTO {$this->table} 
-                (ID_Lector, ID_Admin, Fecha_Entregado, Fecha_Recepcion_Estipulada, Fecha_Recepcion_Real, Estado_Entrega, Activo)
-                VALUES (:idLector, :idAdmin, :fechaEntregado, :fechaEstipulada, :fechaReal, :estado, :activo)";
+                (ID_Lector, ID_Admin, Fecha_Entrega, Fecha_Recepcion_Estipulada, Fecha_Recepcion_Real, Estado_Entrega, Activo)
+                VALUES (:idLector, :idAdmin, :fechaEntrega, :fechaEstipulada, :fechaReal, :estado, :activo)";
         
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
             ':idLector'        => $prestamo->getIdLector(),
             ':idAdmin'         => $prestamo->getIdAdmin(),
-            ':fechaEntregado'  => $prestamo->getFechaEntregado(),
+            ':fechaEntrega'    => $prestamo->getFechaEntregado(),
             ':fechaEstipulada' => $prestamo->getFechaRecepcionEstipulada(),
             ':fechaReal'       => $prestamo->getFechaRecepcionReal(),
             ':estado'          => $prestamo->getEstadoEntrega(),
@@ -51,7 +51,7 @@ class PrestamoRepository extends BaseRepository implements IPrestamoRepository
         $sql = "UPDATE {$this->table} SET
                     ID_Lector = :idLector,
                     ID_Admin = :idAdmin,
-                    Fecha_Entregado = :fechaEntregado,
+                    Fecha_Entrega = :fechaEntrega,
                     Fecha_Recepcion_Estipulada = :fechaEstipulada,
                     Fecha_Recepcion_Real = :fechaReal,
                     Estado_Entrega = :estado,
@@ -62,7 +62,7 @@ class PrestamoRepository extends BaseRepository implements IPrestamoRepository
         return $stmt->execute([
             ':idLector'        => $prestamo->getIdLector(),
             ':idAdmin'         => $prestamo->getIdAdmin(),
-            ':fechaEntregado'  => $prestamo->getFechaEntregado(),
+            ':fechaEntrega'    => $prestamo->getFechaEntregado(),
             ':fechaEstipulada' => $prestamo->getFechaRecepcionEstipulada(),
             ':fechaReal'       => $prestamo->getFechaRecepcionReal(),
             ':estado'          => $prestamo->getEstadoEntrega(),

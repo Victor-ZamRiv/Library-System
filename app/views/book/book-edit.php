@@ -46,10 +46,10 @@
                                             <div class="dropdown">
                                                 <input type="text" id="sala-display" class="form-control" readonly data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer; background-color: transparent;">
                                                 <ul class="dropdown-menu" id="dropdown-sala" style="width: 100%;">
-                                                    <li><a href="#!" data-value="Sala General">Sala General</a></li>
-                                                    <li><a href="#!" data-value="Sala de Referencia">Sala de Referencia</a></li>
-                                                    <li><a href="#!" data-value="Sala Estatal">Sala Estatal</a></li>
-                                                    <li><a href="#!" data-value="Sala Infantil">Sala Infantil</a></li>
+                                                    <li><a href="#!" data-value="G">Sala General</a></li>
+                                                    <li><a href="#!" data-value="R">Sala de Referencia</a></li>
+                                                    <li><a href="#!" data-value="SE">Sala Estatal</a></li>
+                                                    <li><a href="#!" data-value="X">Sala Infantil</a></li>
                                                 </ul>
                                             </div>
                                             <input type="hidden" name="sala-reg" id="salaSelect" required>
@@ -432,4 +432,4 @@
     <script src="<?php echo PUBLIC_PATH; ?>/js/modal/specimens.js"></script>
 </body>
 
-</html>
+</html> 

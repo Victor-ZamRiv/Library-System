@@ -1,3 +1,9 @@
+<?php 
+    $old = $_SESSION['old'] ?? [];
+    $error = $_SESSION['error'] ?? null;
+    unset($_SESSION['old'], $_SESSION['error']);
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -23,7 +29,7 @@
                     <h3 class="panel-title"> &nbsp; CREAR USUARIO</h3>
                 </div>
                 <div class="panel-body">
-                    <form action="#" method="POST" id="form-registro-usuario">
+                    <form action="<?= BASE_URL ?>/administradores/store" method="POST" id="form-registro-usuario">
                         <fieldset>
                             <legend> &nbsp; Información personal</legend>
                             <div class="container-fluid">
@@ -35,7 +41,7 @@
                                                 pattern="[0-9]{6,12}"
                                                 class="form-control"
                                                 type="text"
-                                                name="dni-reg"
+                                                name="cedula"
                                                 id="dni-reg"
                                                 required
                                                 maxlength="8"
@@ -202,15 +208,15 @@
                             <div class="container-fluid">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-6">
-                                        <p class="text-left"><span class="label label-success">Nivel 1</span> Control total del sistema</p>
-                                        <p class="text-left"><span class="label label-primary">Nivel 2</span> Permiso para registro y actualización</p>
-                                        <p class="text-left"><span class="label label-info">Nivel 3</span> Permiso para registro</p>
+                                        <p class="text-left"><span class="label label-success">Nivel 1</span> Manejo de catalogo y prestamos</p>
+                                        <p class="text-left"><span class="label label-primary">Nivel 2</span> Gestión de salas y actividades</p>
+                                        <p class="text-left"><span class="label label-info">Nivel 3</span> Control total del sistema</p>
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
                                         <label>Selecciona el Nivel de Privilegio:</label><br>
-                                        <label><input type="radio" name="optionsPrivilegio" value="Bibliotecario" checked> Nivel 1</label><br>
-                                        <label><input type="radio" name="optionsPrivilegio" value="Jefe de sala"> Nivel 2</label><br>
-                                        <label><input type="radio" name="optionsPrivilegio" value="Director"> Nivel 3</label>
+                                        <label><input type="radio" name="rol" value="Bibliotecario" checked> Bibliotecario</label><br>
+                                        <label><input type="radio" name="rol" value="Jefe de sala"> Jefe de sala</label><br>
+                                        <label><input type="radio" name="rol" value="Director"> Director</label>
                                     </div>
                                 </div>
                             </div>
