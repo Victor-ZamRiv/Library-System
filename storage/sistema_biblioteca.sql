@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 27-04-2026 a las 01:42:50
+-- Tiempo de generación: 03-05-2026 a las 10:41:57
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -142,12 +142,19 @@ CREATE TABLE `colores` (
 
 CREATE TABLE `configuraciones_sistema` (
   `ID_Configuracion` int(11) NOT NULL,
-  `dias_prestamo` int(11) NOT NULL DEFAULT 3,
+  `Dias_Prestamo` int(11) NOT NULL DEFAULT 3,
   `Dias_Prestamo_Novelas` int(1) NOT NULL DEFAULT 7,
-  `monto_multa_dia` decimal(10,2) NOT NULL DEFAULT 0.50,
-  `limite_prestamos_simultaneos` int(11) NOT NULL DEFAULT 3,
-  `max_renovaciones` int(11) NOT NULL DEFAULT 2
+  `Monto_Multa_Dia` decimal(10,2) NOT NULL DEFAULT 0.50,
+  `Limite_Prestamos_Simultaneos` int(11) NOT NULL DEFAULT 3,
+  `Max_Renovaciones` int(11) NOT NULL DEFAULT 2
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Volcado de datos para la tabla `configuraciones_sistema`
+--
+
+INSERT INTO `configuraciones_sistema` (`ID_Configuracion`, `Dias_Prestamo`, `Dias_Prestamo_Novelas`, `Monto_Multa_Dia`, `Limite_Prestamos_Simultaneos`, `Max_Renovaciones`) VALUES
+(1, 3, 7, 0.50, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -520,7 +527,8 @@ CREATE TABLE `multas` (
   `Monto` decimal(10,2) NOT NULL,
   `Fecha_Cancelacion` date DEFAULT NULL,
   `Estado` enum('Pendiente','Pagada','Cancelada') NOT NULL,
-  `Fecha_Generacion` timestamp NOT NULL DEFAULT current_timestamp()
+  `Fecha_Generacion` timestamp NOT NULL DEFAULT current_timestamp(),
+  `Activo` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
@@ -916,7 +924,7 @@ ALTER TABLE `colores`
 -- AUTO_INCREMENT de la tabla `configuraciones_sistema`
 --
 ALTER TABLE `configuraciones_sistema`
-  MODIFY `ID_Configuracion` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Configuracion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `consultas_area_diarias`
@@ -946,7 +954,7 @@ ALTER TABLE `ejemplares`
 -- AUTO_INCREMENT de la tabla `ejemplar_prestamo`
 --
 ALTER TABLE `ejemplar_prestamo`
-  MODIFY `ID_Prestamo_Ejemplar` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Prestamo_Ejemplar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `estado_cuantificable`
@@ -1036,7 +1044,7 @@ ALTER TABLE `preguntas_seguridad`
 -- AUTO_INCREMENT de la tabla `prestamos`
 --
 ALTER TABLE `prestamos`
-  MODIFY `ID_Prestamo` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Prestamo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `tipos_de_clasificacion`
