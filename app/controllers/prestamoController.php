@@ -290,14 +290,23 @@ class PrestamoController extends BaseController
     {
         $idPrestamo = (int) $this->input('id');
         $idAdmin = $_SESSION['administrador']['id'] ?? 0;
-        $resultado = $this->renovacionService->renovar($idPrestamo, $idAdmin);
+        try {
+            
+            if(!$resultado = $this->renovacionService->renovar($idPrestamo, $idAdmin)) {
+                throw new \Exception("Error al procesar la renovación.");
+            }
 
-        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-            echo json_encode($resultado);
-        } else {
-            $_SESSION[$resultado['success'] ? 'success' : 'error'] = $resultado['message'];
-            $this->redirect('/prestamos/show?id=' . $idPrestamo);
+            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                echo json_encode($resultado);
+            } else {
+                $_SESSION[$resultado['success'] ? 'success' : 'error'] = $resultado['message'];
+                $this->redirect('/prestamos/show?id=' . $idPrestamo);
+            }
+        } catch (\Exception $e) {
+                $_SESSION['error'] = $e->getMessage();
+                $this->redirect('/prestamos/show?id=' . ($idPrestamo ?? 0));
         }
+        
     }
     
     public function index(): string

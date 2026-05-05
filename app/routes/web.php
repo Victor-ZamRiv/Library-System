@@ -75,6 +75,7 @@ $router->post('/prestamos/store', 'PrestamoController@store');
 $router->get('/prestamos/show', 'PrestamoController@show');
 $router->get('/prestamos/previsualizar-devolucion', 'PrestamoController@previsualizarDevolucion');
 $router->post('/prestamos/devolver', 'PrestamoController@devolver');
+$router->post('/prestamos/renovar', 'PrestamoController@renovar');
 
 //Rutas multas
 $router->get('/multas', 'MultaController@index');
