@@ -8,7 +8,9 @@ use App\Contracts\ILectorRepository;
 use App\Contracts\IEjemplarRepository;
 use App\Contracts\IConfiguracionRepository;
 use App\Contracts\IMultaRepository;
+use App\Contracts\ILibroRepository;
 use App\Models\Entities\Prestamo;
+use App\Models\Services\FechaService;
 use PDO;
 
 class PrestamoRegistrationService
@@ -20,6 +22,8 @@ class PrestamoRegistrationService
     private IEjemplarRepository $ejemplarRepo;
     private IConfiguracionRepository $configRepo;
     private IMultaRepository $multaRepo;
+    private ILibroRepository $libroRepo;
+    private FechaService $fechaService;
 
     public function __construct(
         IPrestamoRepository $prestamoRepo,
@@ -28,6 +32,8 @@ class PrestamoRegistrationService
         IEjemplarRepository $ejemplarRepo,
         IConfiguracionRepository $configRepo,
         IMultaRepository $multaRepo,
+        ILibroRepository $libroRepo,
+        FechaService $fechaService,
         PDO $pdo,
     ) {
         $this->prestamoRepo = $prestamoRepo;
@@ -36,20 +42,24 @@ class PrestamoRegistrationService
         $this->ejemplarRepo = $ejemplarRepo;
         $this->configRepo = $configRepo;
         $this->multaRepo = $multaRepo;
+        $this->libroRepo = $libroRepo;
+        $this->fechaService = $fechaService;
         $this->pdo = $pdo;
     }
+
 
     /**
      * Registra un nuevo préstamo.
      *
      * @param int $idLector
-     * @param array $idEjemplar
+     * @param array $idsEjemplares
      * @param int $idAdmin
      * @return Prestamo
      * @throws \Exception Si alguna validación falla o hay error en BD.
      */
     public function registrar(int $idLector, array $idsEjemplares, int $idAdmin): Prestamo
     {
+        $ejemplares = [];
         $configuracion = $this->configRepo->getConfiguracion();
         if (!$configuracion) {
             throw new \Exception("No se pudo obtener la configuración del sistema.");
@@ -87,12 +97,29 @@ class PrestamoRegistrationService
             if ($prestamoExistente) {
                 throw new \Exception("El ejemplar ID $idEjemplar ya está prestado actualmente.");
             }
+            $ejemplares[] = $ejemplar;
+        }
+
+        foreach ($ejemplares as $ejemplar) {
+            $libro = $this->libroRepo->find($ejemplar->getLibroId());
+            if (!$libro || !$libro->isActivo()) {
+                throw new \Exception("El libro asociado al ejemplar ID {$ejemplar->getIdEjemplar()} no está activo.");
+            }
+            if ($libro->getIdArea() === 'N' || $libro->getIdArea() === 'NV') {
+                $novelas = true;
+            }
         }
 
         // 6. Calcular fechas
-        $fechaActual = date('Y-m-d');
-        $diasPrestamo = (int) $configuracion->getDiasPrestamo();
-        $fechaEstipulada = date('Y-m-d', strtotime("+{$diasPrestamo} days"));
+
+        $fechaActual = date('Y-m-d');        
+        
+        if (isset($novelas) && $novelas) {
+            $diasPrestamo = (int) $configuracion->getDiasPrestamoNovelas();
+        } else {
+            $diasPrestamo = (int) $configuracion->getDiasPrestamo();
+        }
+        $fechaEstipulada = $this->fechaService->sumarDiasHabiles($fechaActual, $diasPrestamo);
 
         $prestamo = new Prestamo(
             null,               
@@ -108,8 +135,7 @@ class PrestamoRegistrationService
         // 8. Transacción para guardar todo
         $this->pdo->beginTransaction();
         try {
-            foreach ($idsEjemplares as $idEjemplar) {
-                $ejemplar = $this->ejemplarRepo->find($idEjemplar);
+            foreach ($ejemplares as $ejemplar) {
                 if (!$ejemplar) {
                     throw new \Exception("El ejemplar no existe.");
                 }
@@ -118,14 +144,10 @@ class PrestamoRegistrationService
                 }
             }
             $idPrestamo = $this->prestamoRepo->insert($prestamo);
-            foreach ($idsEjemplares as $idEjemplar) {
-                $this->ejemplarPrestamoRepo->associate($idPrestamo, $idEjemplar);
+            foreach ($ejemplares as $ejemplar) {
+                $this->ejemplarPrestamoRepo->associate($idPrestamo, $ejemplar->getIdEjemplar());
             }
-            foreach ($idsEjemplares as $idEjemplar) {
-                $ejemplar = $this->ejemplarRepo->find($idEjemplar);
-                if (!$ejemplar) {
-                    throw new \Exception("El ejemplar no existe.");
-                }
+            foreach ($ejemplares as $ejemplar) {
                 $ejemplar->setEstado('Prestado');
                 $this->ejemplarRepo->updateEstado($ejemplar);
             }

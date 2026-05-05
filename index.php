@@ -46,6 +46,10 @@ use App\Models\Services\ListLectorService;
 use App\Models\Services\PrestamoRegistrationService;
 use App\Models\Services\VisitanteService;
 use App\Models\Services\DevolucionService;
+use App\Models\Services\PrestamoListService;
+use App\Models\Services\PrestamoDetailService;
+use App\Models\Services\PrestamoRenovacionService;
+use App\Models\Services\FechaService;
 
 $router = require __DIR__ . '/app/routes/web.php';
 
@@ -65,6 +69,8 @@ $prestamoRepo = new PrestamoRepository($pdo);
 $ejemplarPrestamoRepo = new EjemplarPrestamoRepository($pdo);
 $multaRepo = new MultaRepository($pdo);
 $configuracionRepo = new ConfiguracionRepository($pdo);
+
+$fechaService = new FechaService();
 
 $container = [
     \PDO::class => $pdo,
@@ -87,7 +93,9 @@ $container = [
 
 
     LibroSearchService::class => new LibroSearchService(
-        $libroRepo, $autorRepo),
+        $libroRepo, 
+        $autorRepo
+    ),
     LibroRegistrationService::class => new LibroRegistrationService(
         $libroRepo,
         $autorRepo,
@@ -140,6 +148,8 @@ $container = [
         $ejemplarRepo,
         $configuracionRepo,
         $multaRepo,
+        $libroRepo,
+        $fechaService,
         $pdo
     ),
     DevolucionService::class => new DevolucionService(
@@ -149,7 +159,28 @@ $container = [
         $ejemplarPrestamoRepo,
         $multaRepo,
         $configuracionRepo
-    )
+    ),
+    PrestamoListService::class => new PrestamoListService(
+        $pdo
+    ),
+    PrestamoDetailService::class => new PrestamoDetailService(
+        $prestamoRepo,
+        $lectorRepo,
+        $administradorRepo,
+        $ejemplarPrestamoRepo,
+        $ejemplarRepo,
+        $libroRepo,
+        $autorRepo
+    ),
+    PrestamoRenovacionService::class => new PrestamoRenovacionService(
+        $prestamoRepo,
+        $ejemplarPrestamoRepo,
+        $ejemplarRepo,
+        $libroRepo,
+        $configuracionRepo,
+        $fechaService,
+        $pdo
+    ),
 ];
 
 $uri = str_ireplace(BASE_URL, '', $_SERVER['REQUEST_URI']);

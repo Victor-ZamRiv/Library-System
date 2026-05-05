@@ -11,6 +11,7 @@ class prestamo extends baseEntity{
     private string $fechaRecepcionEstipulada = '';
     private ?string $fechaRecepcionReal = null;
     private string $estadoEntrega = 'Pendiente';
+    private int $renovaciones = 0;
     private bool $activo = true;
 
     public function __construct(
@@ -21,6 +22,7 @@ class prestamo extends baseEntity{
         string $fechaRecepcionEstipulada = '',
         ?string $fechaRecepcionReal = null,
         string $estadoEntrega = 'Pendiente',
+        int $renovaciones = 0,
         bool $activo = true
     ) {
         $this->idPrestamo = $idPrestamo;
@@ -30,6 +32,7 @@ class prestamo extends baseEntity{
         $this->fechaRecepcionEstipulada = $fechaRecepcionEstipulada;
         $this->fechaRecepcionReal = $fechaRecepcionReal;
         $this->estadoEntrega = $estadoEntrega;
+        $this->renovaciones = $renovaciones;
         $this->activo = $activo;
     }
 
@@ -41,6 +44,7 @@ class prestamo extends baseEntity{
     public function getFechaRecepcionEstipulada(): string { return $this->fechaRecepcionEstipulada; }
     public function getFechaRecepcionReal(): ?string { return $this->fechaRecepcionReal; }
     public function getEstadoEntrega(): string { return $this->estadoEntrega;}
+    public function getRenovaciones(): int { return $this->renovaciones; }
     public function getActivo(): bool { return $this->activo; }
     
     //Setters
@@ -64,6 +68,9 @@ class prestamo extends baseEntity{
     }
     public function setEstadoEntrega(string $estadoEntrega): void {
         $this->estadoEntrega = $estadoEntrega;
+    }
+    public function setRenovaciones(int $renovaciones): void {
+        $this->renovaciones = $renovaciones;
     }
     public function setActivo(bool $activo): void {
         $this->activo = $activo;

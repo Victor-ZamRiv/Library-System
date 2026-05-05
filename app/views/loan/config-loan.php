@@ -20,7 +20,7 @@
 
             <div class="row">
                 <div class="col-xs-12 col-md-10 col-md-offset-1">
-                    <form action="../controller/update_config_prestamos.php" method="POST">
+                    <form action="<?= BASE_URL ?>/configuracion/prestamos/update" method="POST">
                         <div class="panel panel-primary">
                             <div class="panel-heading">
                                 <h3 class="panel-title"><i class="fa-solid fa-clock"></i> Valores y Límites del Sistema</h3>
@@ -32,35 +32,35 @@
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
                                             <label class="control-label">Días de Préstamo (General)</label>
-                                            <input class="form-control" type="number" name="dias_prestamo" required>
+                                            <input class="form-control" type="number" name="dias_prestamo" value="<?= $configuracion->getDiasPrestamo() ?>" required>
                                         </div>
                                     </div>
 
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
                                             <label class="control-label">Días de Préstamo (Novelas)</label>
-                                            <input class="form-control" type="number" name="Dias_Prestamo_Novelas" required>
+                                            <input class="form-control" type="number" name="dias_prestamo_novelas" value="<?= $configuracion->getDiasPrestamoNovelas() ?>" required>
                                         </div>
                                     </div>
 
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
                                             <label class="control-label">Monto Multa por Día ($)</label>
-                                            <input class="form-control" type="number" step="0.01" name="monto_multa_dia" required>
+                                            <input class="form-control" type="number" step="0.01" name="monto_multa_dia" value="<?= $configuracion->getMontoMultaDia() ?>" required>
                                         </div>
                                     </div>
 
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
                                             <label class="control-label">Límite de Préstamos Simultáneos</label>
-                                            <input class="form-control" type="number" name="limite_prestamos_simultaneos" required>
+                                            <input class="form-control" type="number" name="maximo_prestamos" value="<?= $configuracion->getLimitePrestamosSimultaneos() ?>" required>
                                         </div>
                                     </div>
 
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
                                             <label class="control-label">Máximo de Renovaciones Permitidas</label>
-                                            <input class="form-control" type="number" name="max_renovaciones" required>
+                                            <input class="form-control" type="number" name="max_renovaciones" value="<?= $configuracion->getMaxRenovaciones() ?>" required>
                                         </div>
                                     </div>
                                 </div>

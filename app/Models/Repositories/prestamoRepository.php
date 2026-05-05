@@ -71,6 +71,15 @@ class PrestamoRepository extends BaseRepository implements IPrestamoRepository
         ]);
     }
 
+    public function actualizarVencidos(): int {
+        $sql = "UPDATE {$this->table} SET Estado_Entrega = 'Vencido' 
+                WHERE Estado_Entrega = 'Pendiente' 
+                AND Fecha_Recepcion_Estipulada < CURDATE() AND Activo = 1";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        return $stmt->rowCount();
+    }
+
     //Métodos de busqueda.
     
     public function find(int $id): ?Prestamo
@@ -81,6 +90,7 @@ class PrestamoRepository extends BaseRepository implements IPrestamoRepository
 
     public function all(): array
     {
+        $this->actualizarVencidos(); 
         $stmt = $this->pdo->query("SELECT * FROM {$this->table} WHERE Activo = 1");
         $rows = $stmt->fetchAll();
         return array_map(fn($row) => $this->mapToEntity($row), $rows);
@@ -115,8 +125,7 @@ class PrestamoRepository extends BaseRepository implements IPrestamoRepository
         $stmt->execute([':idEjemplar' => $idEjemplar]);
         $row = $stmt->fetch();
         return $row ? $this->mapToEntity($row) : null;
-    }
-    
+    }    
  
      //Registra la devolución de un préstamo (fecha real y nuevo estado).
 

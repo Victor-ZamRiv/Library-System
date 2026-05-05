@@ -1,4 +1,5 @@
 <style>
+    /* --- Estilos de Layout y Responsive --- */
     @media (min-width: 768px) {
         .dropdown:hover > .dropdown-menu { display: block; margin-top: 0; }
         #quick-search-box {
@@ -21,7 +22,7 @@
         #input-search-quick { width: 100% !important; height: 40px; }
     }
 
-    /* Resaltado Azul Navbar */
+    /* --- Resaltado Azul --- */
     .navbar-nav > li.active > a {
         background-color: #e7f1ff !important; 
         color: #004085 !important;
@@ -33,6 +34,24 @@
     }
     .fa-chevron-down { transition: transform 0.3s ease; }
     .open > a > .fa-chevron-down { transform: rotate(-180deg); }
+
+    /* --- Limpieza de iconos fantasma (Material Icons fix) --- */
+    .navbar-nav .dropdown-toggle::after {
+        display: none !important;
+        content: "" !important;
+    }
+    
+    .navbar-nav .dropdown-toggle {
+        font-size: 0 !important; /* Oculta el texto inyectado "keyboard_arrow..." */
+    }
+    
+    .navbar-nav .dropdown-toggle i, 
+    .navbar-nav .dropdown-toggle span {
+        font-size: 14px !important; /* Restablece el tamaño solo para lo que queremos ver */
+        display: inline-block;
+        vertical-align: middle;
+    }
+    .navbar-nav .dropdown-toggle span { margin: 0 5px; }
 </style>
 
 <nav class="navbar navbar-default full-box" style="border: none; border-bottom: 1px solid #e1e1e1; margin-bottom: 0;">
@@ -47,9 +66,12 @@
         <div class="collapse navbar-collapse" id="navbar-options">
             <ul class="nav navbar-nav navbar-right">
                 
-
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa-solid fa-users"></i> Visitas <i class="fa-solid fa-chevron-down"></i></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa-solid fa-users"></i> 
+                        <span>Visitas</span> 
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </a>
                     <ul class="dropdown-menu">
                         <li><a href="<?= BASE_URL ?>/visitantes/registro">Registro de Visitas</a></li>
                         <li><a href="<?= BASE_URL ?>/visitantes">Gestión de Visitas</a></li>
@@ -57,15 +79,35 @@
                 </li>
 
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa-solid fa-book"></i> Catálogo <i class="fa-solid fa-chevron-down"></i></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">
+                        <i class="fa-solid fa-calendar"></i> 
+                        <span>Eventos</span>
+                         <i class="fa-solid fa-chevron-down"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="<?= BASE_URL ?>/eventos">Listado de Eventos</a></li>
+                        <li><a href="<?= BASE_URL ?>/actividad/create">Registro de Actividades</a></li>
+                        <li><a href="<?= BASE_URL ?>/logro/create">Registro de Logros</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa-solid fa-book"></i> 
+                        <span>Catálogo</span> 
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </a>
                     <ul class="dropdown-menu">
                         <li><a href="<?= BASE_URL ?>/libros/opcion">Registro de Libros</a></li>
                         <li><a href="<?= BASE_URL ?>/libros">Libros</a></li>
                     </ul>
                 </li>
+
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">
-                        <i class="fa-solid fa-bookmark"></i> Préstamos <i class="fa-solid fa-chevron-down"></i>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa-solid fa-bookmark"></i> 
+                        <span>Préstamos</span> 
+                        <i class="fa-solid fa-chevron-down"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="<?= BASE_URL ?>/prestamos">Lista de Préstamos</a></li>
@@ -85,18 +127,26 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const currentUrl = window.location.href;
+        // Obtenemos solo la ruta (path), sin el dominio ni los parámetros ?query=...
         const currentPath = window.location.pathname;
 
-        // Resaltado Navbar
         $('.navbar-nav a').each(function() {
             const href = $(this).attr('href');
-            if (href && href !== "#" && (currentUrl.endsWith(href) || currentPath.endsWith(href))) {
-                $(this).closest('li').addClass('active');
-                if ($(this).closest('.dropdown-menu').length) $(this).closest('.dropdown').addClass('active');
+            
+            if (href && href !== "#") {
+                // Creamos un objeto URL temporal para comparar solo las rutas
+                const linkPath = new URL(href, window.location.origin).pathname;
+
+                // Solo marcamos como activo si la ruta coincide exactamente
+                if (currentPath === linkPath) {
+                    $(this).closest('li').addClass('active');
+                    
+                    // Si es un elemento de submenú, marcamos el dropdown padre
+                    if ($(this).closest('.dropdown-menu').length) {
+                        $(this).closest('.dropdown').addClass('active');
+                    }
+                }
             }
         });
-
-       
     });
 </script>

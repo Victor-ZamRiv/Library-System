@@ -13,6 +13,9 @@ use App\Contracts\IConfiguracionRepository;
 use App\Contracts\IPersonaRepository;
 use App\Models\Services\PrestamoRegistrationService;
 use App\Models\Services\DevolucionService;
+use App\Models\Services\PrestamoListService;
+use App\Models\Services\PrestamoDetailService;
+use App\Models\Services\PrestamoRenovacionService;
 use App\Models\Entities\Prestamo;
 use App\Models\Entities\Configuracion;
 use App\Models\Entities\Persona;
@@ -29,6 +32,9 @@ class PrestamoController extends BaseController
     private IPersonaRepository $personaRepo;
     private PrestamoRegistrationService $prestamoRegistrationService;
     private DevolucionService $devolucionService;
+    private PrestamoListService $prestamoListService;
+    private PrestamoDetailService $prestamoDetailService;
+    private PrestamoRenovacionService $renovacionService;
 
     public function __construct(
         IPrestamoRepository $prestamoRepo,
@@ -40,7 +46,10 @@ class PrestamoController extends BaseController
         IConfiguracionRepository $configRepository,
         IPersonaRepository $personaRepo,
         PrestamoRegistrationService $prestamoRegistrationService,
-        DevolucionService $devolucionService
+        DevolucionService $devolucionService,
+        PrestamoListService $prestamoListService,
+        PrestamoDetailService $prestamoDetailService,
+        PrestamoRenovacionService $renovacionService
     ) {
         $this->prestamoRepo = $prestamoRepo;
         $this->ejemplarPrestamoRepo = $ejemplarPrestamoRepo;
@@ -52,6 +61,9 @@ class PrestamoController extends BaseController
         $this->personaRepo = $personaRepo;
         $this->prestamoRegistrationService = $prestamoRegistrationService;
         $this->devolucionService = $devolucionService;
+        $this->prestamoListService = $prestamoListService;
+        $this->prestamoDetailService = $prestamoDetailService;
+        $this->renovacionService = $renovacionService;
 
         // Proteger todas las acciones (requiere autenticación)
         $this->authenticate();
@@ -274,12 +286,40 @@ class PrestamoController extends BaseController
         }
     }
 
+    public function renovar(): void
+    {
+        $idPrestamo = (int) $this->input('id');
+        $idAdmin = $_SESSION['administrador']['id'] ?? 0;
+        $resultado = $this->renovacionService->renovar($idPrestamo, $idAdmin);
+
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+            echo json_encode($resultado);
+        } else {
+            $_SESSION[$resultado['success'] ? 'success' : 'error'] = $resultado['message'];
+            $this->redirect('/prestamos/show?id=' . $idPrestamo);
+        }
+    }
     
     public function index(): string
     {
-        $prestamos = $this->prestamoRepo->all();
-        // Aquí podrías cargar datos adicionales (lector, ejemplar, etc.) si lo necesitas
-        return $this->render('loan/loan-list', ['prestamos' => $prestamos]);
+        $pagina = (int) ($this->input('page') ?? 1);
+        $criterio = $this->input('criterio') ?? '';
+        $termino = trim($this->input('busqueda') ?? '');
+        $porPagina = 10;
+
+        $resultados = $this->prestamoListService->listarPaginado($pagina, $porPagina, $criterio, $termino);
+        
+        return $this->render('loan/loan-list', [
+            'prestamos' => $resultados['datos'],
+            'paginacion' => [
+                'actual' => $resultados['pagina'],
+                'porPagina' => $resultados['porPagina'],
+                'total' => $resultados['total'],
+                'ultima' => $resultados['ultimaPagina']
+            ],
+            'criterio' => $criterio,
+            'termino' => $termino
+        ]);
     }
 
     /**
@@ -288,20 +328,14 @@ class PrestamoController extends BaseController
     public function show(): string
     {
         $id = (int) $this->input('id');
-        $prestamo = $this->prestamoRepo->find($id);
-        if (!$prestamo) {
+        $detalles = $this->prestamoDetailService->obtenerDetalles($id);
+        
+        if (!$detalles) {
             http_response_code(404);
-            return "Préstamo no encontrado";
+            $_SESSION['error'] = "Préstamo no encontrado.";
+            $this->redirect('/prestamos');
         }
-        // Obtener ejemplares asociados
-        $ejemplaresIds = $this->ejemplarPrestamoRepo->findByPrestamo($id);
-        $ejemplares = [];
-        foreach ($ejemplaresIds as $ejemplarId) {
-            $ejemplares[] = $this->ejemplarRepo->find($ejemplarId);
-        }
-        return $this->render('loan/loan-info', [
-            'prestamo' => $prestamo,
-            'ejemplares' => $ejemplares
-        ]);
+        
+        return $this->render('loan/loan-info', $detalles);
     }
 }

@@ -26,10 +26,10 @@ class ConfiguracionController extends BaseController {
 
     public function prestamoUpdate() {
         $diasPrestamo = $this->input('dias_prestamo');
-        $multaDiaria = $this->input('multa_diaria');
+        $multaDiaria = $this->input('monto_multa_dia');
         $diasPrestamoNovelas = $this->input('dias_prestamo_novelas');
         $maximoPrestamos = $this->input('maximo_prestamos');
-        $limiteRenovaciones = $this->input('limite_renovaciones');
+        $limiteRenovaciones = $this->input('max_renovaciones');
         try {
             $configuracion = $this->configuracionRepo->getConfiguracion();
             if (!$configuracion) {
@@ -41,8 +41,11 @@ class ConfiguracionController extends BaseController {
             $configuracion->setLimitePrestamosSimultaneos($maximoPrestamos);
             $configuracion->setMaxRenovaciones($limiteRenovaciones);
             $this->configuracionRepo->updateConfiguracion($configuracion);
+            $_SESSION['success'] = 'Configuración de préstamos actualizada exitosamente.';
+            return $this->redirect('/configuracion/prestamos');
         } catch (\Exception $e) {
             $_SESSION['error'] = 'Error al actualizar la configuración: ' . $e->getMessage();
+            return $this->redirect('/configuracion/prestamos');
         }
 
     }
