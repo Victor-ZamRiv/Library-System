@@ -107,12 +107,6 @@ class AdministradorRepository extends BaseRepository implements IAdministradorRe
         ]);
     }
 
-    public function deactivate(int $idAdministrador): void {
-        $sql = "UPDATE administradors SET Activo = 0 WHERE ID_Administrador = :id";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':id' => $idAdministrador]);
-    }
-
     protected function mapToEntity(array $row): object {
         return Administrador::fromArray($row);
     }

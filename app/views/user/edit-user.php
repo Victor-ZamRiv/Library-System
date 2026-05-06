@@ -4,6 +4,7 @@
 <title>Editar Datos</title>
 <?php
 include  VIEW_PATH . "/component/heat.php";
+$preguntas = $data['preguntas'] ?? [];
 ?>
 
 <body>
@@ -100,10 +101,10 @@ include  VIEW_PATH . "/component/heat.php";
                                             <label class="control-label"><span class="text-danger">*</span> Tipo de pregunta de seguridad </label>
                                             <select class="form-control" name="pregunta-tipo-reg" id="pregunta-tipo-reg" required>
                                                 <option value="" disabled selected>Seleccione una opción</option>
-                                                <option value="Nombre de tu mascota">¿Nombre de tu primera mascota?</option>
-                                                <option value="Ciudad de nacimiento">¿En qué ciudad naciste?</option>
-                                                <option value="Escuela primaria">¿Nombre de tu escuela primaria?</option>
-                                                <option value="Color favorito">¿Cuál es tu color favorito?</option>
+                                                <?php foreach ($preguntas as $pregunta): ?>
+                                                    <option value="<?= htmlspecialchars($pregunta->getIdPregunta()) ?>">
+                                                        <?= htmlspecialchars($pregunta->getDescripcion()) ?></option>
+                                                <?php endforeach; ?>
                                             </select>
                                         </div>
                                     </div>

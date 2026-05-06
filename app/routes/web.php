@@ -41,6 +41,7 @@ $router->post('/administradores/store', 'AdministradorController@store');
 $router->get('/administradores/edit', 'AdministradorController@edit');
 $router->post('/administradores/update', 'AdministradorController@update');
 $router->get('/administradores/show', 'AdministradorController@show');
+$router->get('/administradores/delete', 'AdministradorController@delete');
 
 // Rutas para lectores
 $router->get('/lectores', 'LectorController@list');
@@ -79,12 +80,8 @@ $router->post('/prestamos/renovar', 'PrestamoController@renovar');
 
 //Rutas multas
 $router->get('/multas', 'MultaController@index');
-
-// Rutas configuracion prestamos
-
-
-
-
+$router->post('/multas/pagar', 'MultaController@pagar');
+$router->post('/multas/cancelar', 'MultaController@cancelar');
 
 
 return $router;

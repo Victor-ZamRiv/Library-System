@@ -20,7 +20,7 @@
 
             <div class="row">
                 <div class="col-xs-12 col-md-10 col-md-offset-1">
-                    <form action="<?= BASE_URL ?>/configuracion/prestamos/update" method="POST">
+                    <form action="<?= BASE_URL ?>/configuracion/prestamos/update" method="POST" id="formPrestamos">
                         <div class="panel panel-primary">
                             <div class="panel-heading">
                                 <h3 class="panel-title"><i class="fa-solid fa-clock"></i> Valores y Límites del Sistema</h3>
@@ -67,7 +67,7 @@
                             </div>
                             
                             <div class="panel-footer text-right">
-                                <button type="submit" class="btn btn-success btn-raised">
+                                <button type="button" class="btn btn-success btn-raised" id="btnGuardarPrestamos">
                                     <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
                                 </button>
                             </div>
@@ -78,6 +78,26 @@
         </div>
     </section>
 
+    
+
     <?php include VIEW_PATH . "/component/scripts.php"; ?>
+    <?php include VIEW_PATH . "/modal/save-config-loan.php"; ?>
+
+    <script>
+    $(document).ready(function() {
+        // Abrir modal al hacer clic en Guardar
+        $('#btnGuardarPrestamos').on('click', function() {
+            // Llenar resumen con valores actuales
+            $('#diasPrestamoResumen').text($('input[name="dias_prestamo"]').val());
+            $('#diasNovelasResumen').text($('input[name="dias_prestamo_novelas"]').val());
+            $('#montoMultaResumen').text($('input[name="monto_multa_dia"]').val());
+            $('#maxPrestamosResumen').text($('input[name="maximo_prestamos"]').val());
+            $('#maxRenovacionesResumen').text($('input[name="max_renovaciones"]').val());
+            
+            $('#confirmSavePrestamosModal').modal('show');
+        });
+    });
+    </script>
+
 </body>
 </html>

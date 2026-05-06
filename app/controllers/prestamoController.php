@@ -273,7 +273,11 @@ class PrestamoController extends BaseController
             if ($isAjax) {
                 echo json_encode($resultado);
             } else {
-                $_SESSION[$resultado['success'] ? 'success' : 'error'] = $resultado['message'];
+                if ($resultado['multa']){
+                    $_SESSION['info'] = $resultado['message'];
+                } else {                
+                    $_SESSION[$resultado['success'] ? 'success' : 'error'] = $resultado['message'];
+                }
                 $this->redirect("/prestamos/show?id=" . $idPrestamo);
             }
         } catch (\Exception $e) {

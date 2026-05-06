@@ -112,7 +112,7 @@ class LectorRepository extends BaseRepository implements ILectorRepository {
             ':refLegal' => $lector->getRefLegal(),
             ':refLegalTel' => $lector->getRefLegalTel(),
             ':estado' => $lector->getEstado(),
-            ':vencimientoCarnet' => $lector->getVencimientoCarnet(),
+            //':vencimientoCarnet' => $lector->getVencimientoCarnet(),
             ':activo' => $lector->getEstado() === 'Activo' ? 1 : 0,
             ':id' => $lector->getIdLector()
         ]);

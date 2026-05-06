@@ -7,7 +7,7 @@ class prestamo extends baseEntity{
     private ?int $idPrestamo = null;
     private int $idLector = 0;
     private int $idAdmin = 0;
-    private string $fechaEntregado = '';
+    private string $fechaEntrega = '';
     private string $fechaRecepcionEstipulada = '';
     private ?string $fechaRecepcionReal = null;
     private string $estadoEntrega = 'Pendiente';
@@ -18,7 +18,7 @@ class prestamo extends baseEntity{
         ?int $idPrestamo = null,
         int $idLector = 0,
         int $idAdmin = 0,
-        string $fechaEntregado = '',
+        string $fechaEntrega = '',
         string $fechaRecepcionEstipulada = '',
         ?string $fechaRecepcionReal = null,
         string $estadoEntrega = 'Pendiente',
@@ -28,7 +28,7 @@ class prestamo extends baseEntity{
         $this->idPrestamo = $idPrestamo;
         $this->idLector = $idLector;
         $this->idAdmin = $idAdmin;
-        $this->fechaEntregado = $fechaEntregado;
+        $this->fechaEntrega = $fechaEntrega;
         $this->fechaRecepcionEstipulada = $fechaRecepcionEstipulada;
         $this->fechaRecepcionReal = $fechaRecepcionReal;
         $this->estadoEntrega = $estadoEntrega;
@@ -40,7 +40,7 @@ class prestamo extends baseEntity{
     public function getIdPrestamo(): ?int { return $this->idPrestamo; }
     public function getIdLector(): int {return $this->idLector; }
     public function getIdAdmin(): int { return $this->idAdmin; }
-    public function getFechaEntregado(): string { return $this->fechaEntregado; }
+    public function getFechaEntrega(): string { return $this->fechaEntrega; }
     public function getFechaRecepcionEstipulada(): string { return $this->fechaRecepcionEstipulada; }
     public function getFechaRecepcionReal(): ?string { return $this->fechaRecepcionReal; }
     public function getEstadoEntrega(): string { return $this->estadoEntrega;}
@@ -57,8 +57,8 @@ class prestamo extends baseEntity{
     public function setIdAdmin(int $idAdmin): void {
         $this->idAdmin = $idAdmin;
     }
-    public function setFechaEntregado(string $fechaEntregado): void {
-        $this->fechaEntregado = $fechaEntregado;
+    public function setFechaEntrega(string $fechaEntrega): void {
+        $this->fechaEntrega = $fechaEntrega;
     }
     public function setFechaRecepcionEstipulada(string $fechaRecepcionEstipulada): void {
         $this->fechaRecepcionEstipulada = $fechaRecepcionEstipulada;

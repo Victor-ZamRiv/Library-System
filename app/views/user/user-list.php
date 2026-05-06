@@ -59,11 +59,14 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr>
+								
 									<?php if (empty($administradores)): ?>
+									<tr>
 										<td colspan="7">No se encontraron administradores.</td>
+									</tr>
 									<?php else: ?>
 										<?php foreach ($administradores as $admin): ?>
+										<tr>
 											<td><?= htmlspecialchars($admin->getNombreUsuario()) ?></td>
 											<td><?= htmlspecialchars($admin->getPersona()->getCedula()) ?></td>
 											<td><?= htmlspecialchars($admin->getPersona()->getNombre()) ?></td>
@@ -76,22 +79,21 @@
 													<i class="fa-solid fa-info"></i>
 												</a>
 											</td>
+										<?php if ($admin->getIdAdministrador() != $_SESSION['administrador']['id']): ?>
 											<td>
 												<a href="#!" class="btn btn-danger btn-raised btn-sm"
 													data-toggle="modal"
 													data-target="#confirmDeleteUserModal"
 
 
-
-
-													data-id="1"
-
-
+													data-id="<?= $admin->getIdAdministrador() ?>"
 
 
 													data-nombre="<?= htmlspecialchars($admin->getNombreUsuario()) ?>"><i class="fa-solid fa-trash"></i>
 												</a>
 											</td>
+										</tr>
+										<?php endif; ?>
 										<?php endforeach; ?>
 									<?php endif; ?>
 								</tr>
@@ -103,10 +105,6 @@
 						<ul class="pagination pagination-sm">
 							<li class="disabled"><a href="javascript:void(0)">«</a></li>
 							<li class="active"><a href="javascript:void(0)">1</a></li>
-							<li><a href="javascript:void(0)">2</a></li>
-							<li><a href="javascript:void(0)">3</a></li>
-							<li><a href="javascript:void(0)">4</a></li>
-							<li><a href="javascript:void(0)">5</a></li>
 							<li><a href="javascript:void(0)">»</a></li>
 						</ul>
 					</nav>
@@ -135,7 +133,7 @@
 				modal.find('#modalUserName').text(userName);
 
 				// Ajusta esta URL según tu sistema de rutas (ejemplo: administradores/delete/ID)
-				var deleteUrl = '<?= BASE_URL ?>/administradores/delete/' + userId;
+				var deleteUrl = '<?= BASE_URL ?>/administradores/delete?id=' + userId;
 				modal.find('#confirmDeleteBtn').attr('href', deleteUrl);
 			});
 		});

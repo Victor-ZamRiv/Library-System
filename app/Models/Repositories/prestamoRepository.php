@@ -29,7 +29,7 @@ class PrestamoRepository extends BaseRepository implements IPrestamoRepository
         $stmt->execute([
             ':idLector'        => $prestamo->getIdLector(),
             ':idAdmin'         => $prestamo->getIdAdmin(),
-            ':fechaEntrega'    => $prestamo->getFechaEntregado(),
+            ':fechaEntrega'    => $prestamo->getFechaEntrega(),
             ':fechaEstipulada' => $prestamo->getFechaRecepcionEstipulada(),
             ':fechaReal'       => $prestamo->getFechaRecepcionReal(),
             ':estado'          => $prestamo->getEstadoEntrega(),
@@ -62,7 +62,7 @@ class PrestamoRepository extends BaseRepository implements IPrestamoRepository
         return $stmt->execute([
             ':idLector'        => $prestamo->getIdLector(),
             ':idAdmin'         => $prestamo->getIdAdmin(),
-            ':fechaEntrega'    => $prestamo->getFechaEntregado(),
+            ':fechaEntrega'    => $prestamo->getFechaEntrega(),
             ':fechaEstipulada' => $prestamo->getFechaRecepcionEstipulada(),
             ':fechaReal'       => $prestamo->getFechaRecepcionReal(),
             ':estado'          => $prestamo->getEstadoEntrega(),

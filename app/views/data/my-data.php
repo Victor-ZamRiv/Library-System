@@ -59,7 +59,7 @@ include VIEW_PATH . "/component/heat.php";
 
 
 							<div class="card-footer text-center">
-								<a href="../user/edit-user.php" class="btn btn-info btn-raised btn-sm">
+								<a href="<?= BASE_URL ?>/administradores/edit?id=<?= $administrador->getIdAdministrador() ?>" class="btn btn-info btn-raised btn-sm">
 									Editar Datos
 								</a>
 							</div>

@@ -18,7 +18,6 @@
             </div>
         </div>
 
-        <?php include VIEW_PATH . "/component/finebar.php" ?>
 
         <div class="container-fluid">
             <div class="panel panel-success">
@@ -30,60 +29,52 @@
                         <table class="table table-hover text-center">
                             <thead>
                                 <tr>
-                                  
+
                                     <th class="text-center">N° PRÉSTAMO</th>
-                                    <th class="text-center">CONCEPTO</th>
                                     <th class="text-center">MONTO</th>
                                     <th class="text-center">ESTADO</th>
+                                    <th class="text-center">FECHA DE CANCELACIÓN</th>
                                     <th class="text-center">ACCIONES</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
+                            <?php if (empty($multas)): ?>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="5" class="text-center">No hay multas registradas.</td>
+                                    </tr>
+                                </tbody>
+                            <?php else: ?>
+                                <?php foreach ($multas as $multa): ?>
+                                <tbody>
+                                    <tr>
+
+                                        <td><?php echo $multa->getIdPrestamo(); ?></td>
                                     
-                                    <td>002154</td>
-                                    <td>Entrega fuera de fecha</td>
-                                    <td>$15.25</td>
-                                    <td><span class="label label-danger">Pendiente</span></td>
-                                    <td>
-                                        <a href="#!" class="btn btn-success btn-raised btn-xs" title="Pagar">
-                                            <i class="zmdi zmdi-money-box"></i>
-                                        </a>
-                                        <a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar">
-                                            <i class="zmdi zmdi-edit"></i>
-                                        </a>
-                                        <form action="" method="POST" style="display: inline-block;">
-                                            <button type="submit" class="btn btn-danger btn-raised btn-xs" title="Eliminar">
-                                                <i class="zmdi zmdi-delete"></i>
+                                        <td>$<?php echo number_format($multa->getMonto(), 2); ?></td>
+                                        <?php if ($multa->getFechaCancelacion()): ?>
+                                            <td><span class="label label-success">Pagada</span></td>
+                                        <?php else: ?>
+                                            <td><span class="label label-danger">Pendiente</span></td>
+                                        <?php endif; ?>
+                                        <td><?= $multa->getFechaCancelacion() ? date('d/m/Y', strtotime($multa->getFechaCancelacion())) : 'Pendiente' ?></td>
+                                        <td>
+                                            <button type="button"
+                                                class="btn btn-success btn-raised btn-xs btn-preparar-pago"
+                                                title="Cancelar Multa"
+                                                data-toggle="modal"
+                                                data-target="#modalConfirmarPago"
+                                                data-id="<?php echo $multa->getIdMulta(); ?>"
+                                                data-numero="<?php echo $multa->getIdPrestamo(); ?>">
+                                                Cancelar multa
                                             </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                
-                                <tr>
-                                    
-                                    <td>002188</td>
-                                    <td>Libro dañado (hojas sueltas)</td>
-                                    <td>$5.00</td>
-                                    <td><span class="label label-success">Pagado</span></td>
-                                    <td>
-                                        <button class="btn btn-secondary btn-raised btn-xs" disabled>
-                                            <i class="zmdi zmdi-check-all"></i>
-                                        </button>
-                                        <a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar">
-                                            <i class="zmdi zmdi-edit"></i>
-                                        </a>
-                                        <form action="" method="POST" style="display: inline-block;">
-                                            <button type="submit" class="btn btn-danger btn-raised btn-xs" title="Eliminar">
-                                                <i class="zmdi zmdi-delete"></i>
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            </tbody>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </table>
                     </div>
-                    
+
                     <nav class="text-center">
                         <ul class="pagination pagination-sm">
                             <li class="disabled"><a href="javascript:void(0)">«</a></li>
@@ -99,6 +90,21 @@
     </section>
 
     <?php include VIEW_PATH . "/component/scripts.php" ?>
-    </body>
+    <?php include VIEW_PATH . "/modal/pay-fine.php" ?>
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
+    $('.btn-preparar-pago').on('click', function() {
+        // Obtenemos los datos del botón que fue clickeado
+        var idMulta = $(this).data('id');
+        var numPrestamo = $(this).data('numero');
+
+        // Actualizamos el texto del modal
+        $('#numPrestamoModal').text(numPrestamo);
+        // Guardamos el ID de la multa en el campo oculto del formulario
+        $('#idMultaInput').val(idMulta);
+    });
+});
+</script>
+</body>
 
 </html>

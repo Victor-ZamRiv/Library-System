@@ -187,7 +187,7 @@
                                             <input
                                                 class="form-control"
                                                 type="text"
-                                                name="pregunta-secreta"
+                                                name="respuesta-reg"
                                                 id="pregunta-resp-reg"
                                                 pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{2,50}"
                                                 required

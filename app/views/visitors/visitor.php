@@ -45,8 +45,8 @@
                                     <label class="control-label"><span class="text-danger">*</span> Sala:</label>
                                     <select class="form-control" name="sala">
                                         <option selected disabled>Seleccione una Sala</option>
-                                        <option value="Sala General">Sala General</option>
-                                        <option value="Sala de Referencia">Sala de Referencia</option>
+                                        <option value="G">Sala General</option>
+                                        <option value="R">Sala de Referencia</option>
                                         <option value="Sala Estatal">Sala Estatal</option>
                                         <option value="Sala Infantil">Sala Infantil</option>
                                     </select>

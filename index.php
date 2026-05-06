@@ -50,6 +50,7 @@ use App\Models\Services\PrestamoListService;
 use App\Models\Services\PrestamoDetailService;
 use App\Models\Services\PrestamoRenovacionService;
 use App\Models\Services\FechaService;
+use App\Models\Services\MultaService;
 
 $router = require __DIR__ . '/app/routes/web.php';
 
@@ -167,10 +168,12 @@ $container = [
         $prestamoRepo,
         $lectorRepo,
         $administradorRepo,
+        $personaRepo,
         $ejemplarPrestamoRepo,
         $ejemplarRepo,
         $libroRepo,
-        $autorRepo
+        $autorRepo,
+        $configuracionRepo
     ),
     PrestamoRenovacionService::class => new PrestamoRenovacionService(
         $prestamoRepo,
@@ -180,6 +183,9 @@ $container = [
         $configuracionRepo,
         $fechaService,
         $pdo
+    ),
+    MultaService::class => new MultaService(
+        $multaRepo
     ),
 ];
 

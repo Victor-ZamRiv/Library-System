@@ -60,6 +60,20 @@ class AdministradorController extends BaseController {
         return $this->render('user/user', ['preguntas' => $preguntas]);
     }
 
+    public function edit() {
+        $id = (int)$this->input('id', 0);
+        $administrador = $this->adminRepo->find($id);
+
+        if (!$administrador) {
+            http_response_code(404);
+            $_SESSION['error'] = "Administrador no encontrado.";
+            return $this->redirect('/administradores/show?id=' . $id);
+        }
+        $administrador->setPersona($this->personaRepo->find($administrador->getIdPersona()));
+        $preguntas = $this->preguntaRepo->all();
+        return $this->render('user/edit-user', ['administrador' => $administrador, 'preguntas' => $preguntas]);
+    }
+
     public function passwordRecoveryForm(): string {
         return $this->render('login/password-recovery', );
     }
@@ -83,6 +97,8 @@ class AdministradorController extends BaseController {
                 $this->input('usuario-reg'),
                 password_hash($this->input('password1-reg'), PASSWORD_DEFAULT),
                 $this->input('rol'), // Ej: Director, Jefe de sala, Bibliotecario
+                $this->input('pregunta-seguidad') ? (int)$this->input('pregunta-reg') : null,
+                $this->input('respuesta-reg') ? password_hash($this->input('respuesta-reg'), PASSWORD_DEFAULT) : null,
                 true
             );
 
@@ -90,7 +106,7 @@ class AdministradorController extends BaseController {
             $idAdmin = $this->registrationService->registrar($persona, $admin);
 
             $_SESSION['success'] = "Administrador registrado con éxito (ID: $idAdmin).";
-            $this->redirect("/administradores/list");
+            $this->redirect("/administradores");
 
         } catch (\RuntimeException $e) {
             http_response_code(500);
@@ -102,6 +118,28 @@ class AdministradorController extends BaseController {
             $_SESSION['error'] = "Error al registrar administrador: " . $e->getMessage();
             $_SESSION['old_data'] = $_POST;
             $this->redirect("/administradores/register");
+        }
+    }
+
+    public function delete() {
+        $id = (int)$this->input('id', 0);
+        $admin = $this->adminRepo->find($id);
+
+        if (!$admin) {
+            http_response_code(404);
+            return "Administrador no encontrado";
+        }
+
+        try {
+            $this->adminRepo->deactivate($id);
+            $_SESSION['success'] = "Administrador desactivado con éxito.";
+            $this->redirect("/administradores");
+        } catch (\Exception $e) {
+            http_response_code(500);
+            return $this->render('errors/error', [
+                'mensaje' => "Ocurrió un error inesperado al desactivar el administrador.",
+                'detalle' => $e->getMessage()
+            ]);
         }
     }
 }

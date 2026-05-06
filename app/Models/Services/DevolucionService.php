@@ -61,7 +61,7 @@ class DevolucionService
         $diasRetraso = $this->calcularDiasRetraso($prestamo->getFechaRecepcionEstipulada());
         $multaInfo = null;
         if ($diasRetraso > 0) {
-            $monto = $diasRetraso * $config->getMultaDiaria();
+            $monto = $diasRetraso * $config->getMontoMultaDia();
             $multaInfo = [
                 'diasRetraso' => $diasRetraso,
                 'monto' => $monto,
@@ -117,7 +117,7 @@ class DevolucionService
             $diasRetraso = $this->calcularDiasRetraso($prestamo->getFechaRecepcionEstipulada());
             $multa = null;
             if ($diasRetraso > 0) {
-                $monto = $diasRetraso * $config->getMultaDiaria();
+                $monto = $diasRetraso * $config->getMontoMultaDia();
                 $multa = $this->crearMulta($idPrestamo, $idAdmin, $monto);
             }
 
@@ -139,7 +139,7 @@ class DevolucionService
 
             $this->pdo->commit();
 
-            $message = $multa ? "Devolución registrada. Se generó multa de {$multa->getMonto()} USD." : "Devolución registrada sin multa.";
+            $message = $multa ? "Devolución registrada. Se generó multa de {$multa->getMonto()} Ref." : "Devolución registrada sin multa.";
             return ['success' => true, 'message' => $message, 'multa' => $multa];
         } catch (\Exception $e) {
             $this->pdo->rollBack();

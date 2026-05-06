@@ -7,13 +7,15 @@
                 <h4 class="modal-title"><i class="fa-solid fa-clipboard-check text-primary"></i> Confirmar Devolución</h4>
             </div>
             
-            <form action="procesar_devolucion.php" method="POST">
+            <form action="<?= BASE_URL ?>/prestamos/devolver" method="POST">
                 <div class="modal-body">
-                    <!-- Alerta de Multa (Se puede mostrar u ocultar con lógica PHP/JS) -->
+                    <!-- Alerta de Multa (solo si hay retraso) -->
+                    <?php if ($diasRetraso > 0): ?>
                     <div class="alert alert-danger">
                         <h4 class="alert-heading"><i class="fa-solid fa-triangle-exclamation"></i> ¡Préstamo Atrasado!</h4>
-                        <p>Este préstamo tiene 3 días de retraso. La multa total acumulada es de: <strong>$5.00</strong></p>
+                        <p>Este préstamo tiene <?= $diasRetraso ?> días de retraso. La multa total acumulada es de: <strong>$<?= number_format($montoMulta, 2) ?></strong></p>
                     </div>
+                    <?php endif; ?>
 
                     <p class="text-muted">Por favor, verifique el estado físico de cada ejemplar antes de procesar la devolución:</p>
                     
@@ -26,42 +28,29 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Libro 1 -->
+                                <?php foreach ($ejemplares as $item): 
+                                    $libro = $item['libro'];
+                                    $ejemplar = $item['ejemplar'];
+                                ?>
                                 <tr>
                                     <td>
-                                        <strong>Libro 1:</strong> LIB001 <br>
-                                        <small>Cálculo de Stewart</small>
+                                        <strong><?= htmlspecialchars($libro->getTitulo()) ?></strong><br>
+                                        <small>Cota: <?= htmlspecialchars($libro->getCota()) ?> | Ejemplar #<?= $ejemplar->getNumeroEjemplar() ?><br>
                                     </td>
                                     <td>
-                                        <select name="estado_libro1" class="form-control" required>
-                                            <option value="bueno">Buen Estado</option>
-                                            <option value="danado">Dañado / Deteriorado</option>
-                                            <option value="extraviado">Extraviado</option>
+                                        <select name="estados[<?= $ejemplar->getIdEjemplar() ?>]" class="form-control" required>
+                                            <option value="Disponible">Buen Estado</option>
+                                            <option value="Dañado">Dañado / Deteriorado</option>
                                         </select>
                                     </td>
                                 </tr>
-                                <!-- Libro 2 (Si existe) -->
-                                <tr>
-                                    <td>
-                                        <strong>Libro 2:</strong> LIB005 <br>
-                                        <small>Física Universitaria</small>
-                                    </td>
-                                    <td>
-                                        <select name="estado_libro2" class="form-control">
-                                            <option value="bueno">Buen Estado</option>
-                                            <option value="danado">Dañado / Deteriorado</option>
-                                            <option value="extraviado">Extraviado</option>
-                                        </select>
-                                    </td>
-                                </tr>
+                                <?php endforeach; ?>
                             </tbody>
                         </table>
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label">Observaciones adicionales (opcional):</label>
-                        <textarea class="form-control" name="observaciones" rows="2"></textarea>
-                    </div>
+                    <!-- Campo oculto con el ID del préstamo -->
+                    <input type="hidden" name="id" value="<?= $prestamo->getIdPrestamo() ?>">
                 </div>
 
                 <div class="modal-footer">
