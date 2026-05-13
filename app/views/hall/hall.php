@@ -20,7 +20,7 @@
 
             <div class="row">
                 <div class="col-xs-12 col-md-10 col-md-offset-1">
-                    <form method="POST" action="" id="formSalas">
+                    <form method="POST" action="<?= BASE_URL ?>/configuracion/sala/update" id="formSalas">
                         <div class="panel panel-primary">
                             <div class="panel-heading">
                                 <h3 class="panel-title"><i class="fa-solid fa-sliders"></i> Control de Acceso a Salas</h3>
@@ -42,7 +42,7 @@
                                             <tr>
                                                 <td><strong>SALA GENERAL</strong></td>
                                                 <td>
-                                                    <input type="number" class="form-control input-sm text-center" name="capacidad_general" value="100" min="1" max="500" readonly style="width: 80px;">
+                                                    <input type="number" class="form-control input-sm text-center" name="capacidad_general" value="<?= $salas['G']->getCapacidad() ?>" min="1" max="500" style="width: 80px;">
                                                 </td>
                                                 <td><span class="label label-success">Siempre Activa</span></td>
                                                 <td>
@@ -57,13 +57,17 @@
                                             <tr>
                                                 <td>SALA DE REFERENCIA</td>
                                                 <td>
-                                                    <input type="number" class="form-control input-sm text-center" name="capacidad_referencia" value="50" min="1" max="200" style="width: 80px;">
+                                                    <input type="number" class="form-control input-sm text-center" name="capacidad_referencia" value="<?= $salas['R']->getCapacidad() ?>" min="1" max="200" style="width: 80px;">
                                                 </td>
-                                                <td><span class="label label-success">Activa</span></td>
+                                                <?php if ($salas['R']->getDisponible()): ?>
+                                                    <td><span class="label label-success">Activa</span></td>
+                                                <?php else: ?>
+                                                    <td><span class="label label-danger">Inactiva</span></td>
+                                                <?php endif; ?>
                                                 <td>
                                                     <div class="toggle">
                                                         <label>
-                                                            <input type="checkbox" name="sala_referencia" checked>
+                                                            <input type="checkbox" name="sala_referencia" <?= $salas['R']->getDisponible() ? 'checked' : '' ?>>
                                                             Habilitar
                                                         </label>
                                                     </div>
@@ -72,13 +76,17 @@
                                             <tr>
                                                 <td>SALA ESTATAL</td>
                                                 <td>
-                                                    <input type="number" class="form-control input-sm text-center" name="capacidad_estatal" value="75" min="1" max="300" style="width: 80px;">
+                                                    <input type="number" class="form-control input-sm text-center" name="capacidad_estatal" value="<?= $salas['E']->getCapacidad() ?>" min="1" max="300" style="width: 80px;">
                                                 </td>
-                                                <td><span class="label label-danger">Inactiva</span></td>
+                                                <?php if ($salas['E']->getDisponible()): ?>
+                                                    <td><span class="label label-success">Activa</span></td>
+                                                <?php else: ?>
+                                                    <td><span class="label label-danger">Inactiva</span></td>
+                                                <?php endif; ?>
                                                 <td>
                                                     <div class="toggle">
                                                         <label>
-                                                            <input type="checkbox" name="sala_estatal">
+                                                            <input type="checkbox" name="sala_estatal" <?= $salas['E']->getDisponible() ? 'checked' : '' ?>>
                                                             Habilitar
                                                         </label>
                                                     </div>
@@ -87,13 +95,17 @@
                                             <tr>
                                                 <td>SALA INFANTIL</td>
                                                 <td>
-                                                    <input type="number" class="form-control input-sm text-center" name="capacidad_infantil" value="30" min="1" max="100" style="width: 80px;">
+                                                    <input type="number" class="form-control input-sm text-center" name="capacidad_infantil" value="<?= $salas['I']->getCapacidad() ?>" min="1" max="100" style="width: 80px;">
                                                 </td>
-                                                <td><span class="label label-success">Activa</span></td>
+                                                <?php if ($salas['I']->getDisponible()): ?>
+                                                    <td><span class="label label-success">Activa</span></td>
+                                                <?php else: ?>
+                                                    <td><span class="label label-danger">Inactiva</span></td>
+                                                <?php endif; ?>
                                                 <td>
                                                     <div class="toggle">
                                                         <label>
-                                                            <input type="checkbox" name="sala_infantil" checked>
+                                                            <input type="checkbox" name="sala_infantil" <?= $salas['I']->getDisponible() ? 'checked' : '' ?>>
                                                             Habilitar
                                                         </label>
                                                     </div>

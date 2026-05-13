@@ -8,6 +8,7 @@ interface IAdministradorRepository {
     public function find(int $id): ?Administrador;
     public function insert(Administrador $Administrador): int;
     public function update(Administrador $Administrador): bool;
+    public function updatePassword(int $id, string $hash): bool;
     public function findByUsername(string $username): ?Administrador;
     public function findByEmail(string $email): ?Administrador;
     public function existsUsername(string $username, ?int $excludeId = null): bool;

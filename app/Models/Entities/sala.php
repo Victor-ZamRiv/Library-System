@@ -3,12 +3,12 @@ namespace App\Models\Entities;
 use App\Core\baseEntity;
 
 class Sala extends baseEntity {
-    private string $idSala;
-    private string $nombre;
-    private int $capacidad;
-    private int $disponible;
+    private string $idSala = '';
+    private string $nombre = '';
+    private int $capacidad = 0;
+    private int $disponible = 1;
 
-    public function __construct(string $idSala, string $nombre, int $capacidad, int $disponible = 1) {
+    public function __construct(string $idSala = '', string $nombre = '', int $capacidad = 0, int $disponible = 1) {
         $this->idSala = $idSala;
         $this->nombre = $nombre;
         $this->capacidad = $capacidad;

@@ -1,8 +1,9 @@
 /**
- * Generador de Reportes con Doble Logo y Animación Nativa
+ * Generador de Reportes Institucionales
+ * Biblioteca Pública Central "Armando Zuloaga Blanco"
  */
 
-// 1. Inyección de estilos para el cargador
+// 1. Inyección de estilos para el cargador (Corregido para visibilidad)
 (function injectLoaderStyles() {
     if (!document.getElementById('pdf-loader-styles')) {
         const style = document.createElement('style');
@@ -12,15 +13,16 @@
                 position: fixed;
                 top: 0; left: 0;
                 width: 100%; height: 100%;
-                background: rgba(44, 62, 80, 0.9);
+                background: rgba(23, 31, 55, 0.7);
                 display: flex; flex-direction: column;
                 justify-content: center; align-items: center;
-                z-index: 10000; color: white; font-family: sans-serif;
+                z-index: 10000; 
+                font-family: sans-serif;
             }
             .pdf-spinner {
                 width: 60px; height: 60px;
-                border: 6px solid rgba(255,255,255,0.3);
-                border-top: 6px solid #ffffff;
+                border: 6px solid #f3f3f3;
+                border-top: 6px solid #616162; /* Color institucional */
                 border-radius: 50%;
                 animation: pdf-spin 1s linear infinite;
                 margin-bottom: 20px;
@@ -29,7 +31,17 @@
                 0% { transform: rotate(0deg); }
                 100% { transform: rotate(360deg); }
             }
-            .pdf-loader-text { font-size: 18px; font-weight: bold; letter-spacing: 1px; }
+            .pdf-loader-text { 
+                font-size: 18px; 
+                font-weight: bold; 
+                color: #ffffff; 
+                letter-spacing: 1px; 
+            }
+            .pdf-loader-subtext {
+                font-size: 12px;
+                color: #ffffff;
+                margin-top: 10px;
+            }
         `;
         document.head.appendChild(style);
     }
@@ -43,7 +55,7 @@ async function descargarPDF(tipo) {
         <div class="pdf-loader-overlay">
             <div class="pdf-spinner"></div>
             <div class="pdf-loader-text">GENERANDO REPORTE...</div>
-            <p style="font-size: 12px; margin-top: 10px;">Procesando datos e imágenes</p>
+            <p class="pdf-loader-subtext">Preparando formato oficial e imágenes</p>
         </div>
     `;
     document.body.appendChild(loader);
@@ -55,7 +67,7 @@ async function descargarPDF(tipo) {
         // --- MANEJO DE RUTAS ---
         const baseUrl = window.BASE_URL || ''; 
         const logoIzquierdoUrl = `${baseUrl}/img/img-login/libro.png`; 
-        const logoDerechoUrl = `${baseUrl}/img/img-login/gobernacion2.jpeg`; 
+        const logoDerechoUrl = `${baseUrl}/img/img-login/gobernacion1.png`; 
 
         const cargarImagen = (url) => {
             return new Promise((resolve) => {
@@ -64,34 +76,44 @@ async function descargarPDF(tipo) {
                 img.onload = () => resolve(img);
                 img.onerror = () => {
                     console.warn("No se pudo cargar la imagen en:", url);
-                    resolve(null); // Resolvemos con null para no romper el flujo
+                    resolve(null);
                 };
                 img.src = url;
             });
         };
 
-        // --- DISEÑO: Cintillo Superior ---
-        doc.setFillColor(44, 62, 80);
-        doc.rect(0, 0, 210, 30, 'F');
+        // --- DISEÑO: Cintillo Superior Institucional ---
+        doc.setFillColor(255, 255, 255);
+        doc.rect(0, 0, 210, 35, 'F');
 
-        // Carga de logos con Promise.all
         const [imgIzq, imgDer] = await Promise.all([
             cargarImagen(logoIzquierdoUrl),
             cargarImagen(logoDerechoUrl)
         ]);
 
-        if (imgIzq) doc.addImage(imgIzq, 'PNG', 12, 4, 22, 22);
-        if (imgDer) doc.addImage(imgDer, 'JPEG', 176, 4, 22, 22);
+        if (imgIzq) doc.addImage(imgIzq, 'PNG', 12, 5, 22, 22);
+        if (imgDer) doc.addImage(imgDer, 'PNG', 176, 5, 22, 22);
 
-        // Texto del encabezado
-        doc.setTextColor(255, 255, 255);
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(11);
-        doc.text("Biblioteca Pública Central Armando Zuloaga Blanco", 105, 12, { align: "center" });
-        doc.setFontSize(8);
+        doc.setTextColor(0, 0, 0);
         doc.setFont("helvetica", "normal");
-        doc.text("SISTEMA DE GESTIÓN Y CONTROL DE INDICADORES", 105, 18, { align: "center" });
-        doc.text("Cumaná, Estado Sucre, Venezuela", 105, 23, { align: "center" });
+        doc.setFontSize(8);
+        
+        const centerX = 105;
+        doc.text("República Bolivariana de Venezuela", centerX, 8, { align: "center" });
+        doc.text("Gobernación del Estado Sucre", centerX, 12, { align: "center" });
+        doc.text("Dirección de Cultura del Estado Sucre", centerX, 16, { align: "center" });
+        doc.text("División de Bibliotecas Públicas del Estado Sucre", centerX, 20, { align: "center" });
+        
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(10);
+        doc.text('Biblioteca Pública Central "Armando Zuloaga Blanco"', centerX, 26, { align: "center" });
+
+        // Líneas divisoras del cintillo
+        doc.setDrawColor(0, 0, 0);
+        doc.setLineWidth(0.4);
+        doc.line(12, 32, 198, 32);
+        doc.setLineWidth(0.1);
+        doc.line(12, 33.5, 198, 33.5);
 
         // --- CONFIGURACIONES DE REPORTES ---
         const configs = {
@@ -111,15 +133,15 @@ async function descargarPDF(tipo) {
 
         // Título del cuerpo
         doc.setTextColor(40, 40, 40);
-        doc.setFontSize(16);
+        doc.setFontSize(14);
         doc.text(config.titulo, 14, 45);
-        doc.setFontSize(10);
+        doc.setFontSize(9);
         doc.setFont("helvetica", "normal");
-        doc.text("Fecha de emisión: " + new Date().toLocaleString(), 14, 52);
-        doc.line(14, 55, 196, 55);
+        doc.text("Fecha de emisión: " + new Date().toLocaleString(), 14, 51);
+        doc.line(14, 53, 196, 53);
 
         // --- CAPTURA DE GRÁFICA ---
-        let finalChartY = 55;
+        let finalChartY = 53;
         if (config.hasChart && config.chartId) {
             const chartElement = document.querySelector(config.chartId);
             if (chartElement) {
@@ -132,11 +154,11 @@ async function descargarPDF(tipo) {
                     const canvas = await html2canvas(chartElement, { scale: 2, backgroundColor: "#ffffff", useCORS: true });
                     imgData = canvas.toDataURL('image/png');
                 }
-                doc.addImage(imgData, 'PNG', 15, 60, 180, 75);
-                finalChartY = 142;
+                doc.addImage(imgData, 'PNG', 15, 58, 180, 75);
+                finalChartY = 140;
             }
         } else {
-            finalChartY = 62;
+            finalChartY = 60;
         }
 
         // --- EXTRACCIÓN DE DATOS ---
@@ -162,27 +184,28 @@ async function descargarPDF(tipo) {
         });
 
         // --- SECCIÓN DE FIRMAS ---
-        const finalY = doc.lastAutoTable.finalY + 25;
         const pageHeight = doc.internal.pageSize.height;
-        const safeY = (finalY + 20) > pageHeight ? pageHeight - 35 : finalY;
+        let finalY = doc.lastAutoTable.finalY + 25;
+        
+        // Evitar que las firmas queden fuera de la página
+        if (finalY + 20 > pageHeight) {
+            doc.addPage();
+            finalY = 30;
+        }
         
         doc.setFontSize(9);
-        doc.text("__________________________", 55, safeY, { align: "center" });
-        doc.text("Firma del Responsable", 55, safeY + 5, { align: "center" });
-        doc.text("__________________________", 155, safeY, { align: "center" });
-        doc.text("Sello de la Institución", 155, safeY + 5, { align: "center" });
-
-        // --- PIE DE PÁGINA ---
-        doc.setFontSize(7);
-        doc.setTextColor(150);
-        doc.text("Generado por el Sistema de Gestión de BPCAZB", 105, 285, { align: "center" });
+        doc.setTextColor(0);
+        doc.text("__________________________", 55, finalY, { align: "center" });
+        doc.text("Firma del Responsable", 55, finalY + 5, { align: "center" });
+        doc.text("__________________________", 155, finalY, { align: "center" });
+        doc.text("Sello de la Institución", 155, finalY + 5, { align: "center" });
 
         // ABRIR PDF
         window.open(doc.output('bloburl'), '_blank');
 
     } catch (error) {
         console.error("Error al generar PDF:", error);
-        alert("Ocurrió un error al generar el PDF. Revisa la consola para más detalles.");
+        alert("Ocurrió un error al generar el PDF.");
     } finally {
         const loaderContainer = document.getElementById('pdf-loader-container');
         if (loaderContainer) loaderContainer.remove();

@@ -107,6 +107,12 @@ class AdministradorRepository extends BaseRepository implements IAdministradorRe
         ]);
     }
 
+    public function updatePassword(int $id, string $hash): bool
+    {
+        $stmt = $this->pdo->prepare("UPDATE administradores SET ContrasenaHash = :hash WHERE ID_Admin = :id");
+        return $stmt->execute([':hash' => $hash, ':id' => $id]);
+    }
+
     protected function mapToEntity(array $row): object {
         return Administrador::fromArray($row);
     }

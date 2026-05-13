@@ -4,6 +4,7 @@ namespace App\Controllers;
 use App\Core\BaseController;
 use App\Contracts\ILibroRepository;
 use App\Contracts\IAutorRepository;
+use App\Contracts\IEditorialRepository;
 use App\Models\Services\LibroRegistrationService;
 use App\Models\Services\LibroSearchService;
 use App\Models\Services\libroDetailService;
@@ -18,11 +19,11 @@ class LibroController extends BaseController {
     private LibroSearchService $libroSearchService;
     private libroDetailService $libroDetailsService;
     private LibroUpdateService $libroUpdateService;
-
+    private IEditorialRepository $editorialRepo;
     public function __construct(
         ILibroRepository $repo, IAutorRepository $autorRepo, LibroRegistrationService $libroRegistrationService, 
         LibroSearchService $libroSearchService, libroDetailService $libroDetailsService, 
-        LibroUpdateService $libroUpdateService)
+        LibroUpdateService $libroUpdateService, IEditorialRepository $editorialRepo)
         {
         $this->repo = $repo;
         $this->autorRepo = $autorRepo;
@@ -30,6 +31,7 @@ class LibroController extends BaseController {
         $this->libroSearchService = $libroSearchService;
         $this->libroDetailsService = $libroDetailsService;
         $this->libroUpdateService = $libroUpdateService;
+        $this->editorialRepo = $editorialRepo;
         $this->authenticate();
     }
 
@@ -116,14 +118,38 @@ class LibroController extends BaseController {
     public function newEdition(): string {
         $cota = $this->input('cota-reg', '');
         $libroExistente = $this->repo->findByCota($cota);
+        $libro=$this->libroDetailsService->obtenerDetallesLibro($libroExistente->getIdLibro());
         if (!$libroExistente) {
             $_SESSION['error'] = "No se encontró un libro con la cota proporcionada.";
             $this->redirect("/libros/opcion");
         }
-        return $this->render('book/book', ['libro' => $libroExistente]);
+        return $this->render('book/book', ['libro' => $libro]);
     }
 
-    
+    public function storeNewEdition() {
+        try {
+            $cota = $this->input('cota', '');
+            $libroExistente = $this->repo->findByCota($cota);
+            if (!$libroExistente) {
+                throw new \App\Exceptions\RegistroLibroException("No se encontró un libro con la cota proporcionada.");
+            }
+            $_POST['cota'] = $cota . ' ' . $_POST['year'];
+            $autores [] = $_POST['autores'];
+            $libro = $this->libroRegistrationService->registrar($_POST, $autores, $_POST['editorial'], (int)$_POST['ejemplares']);
+            $_SESSION['success'] = "Libro registrado con éxito";
+            $this->redirect("/libros/show?id=" . $libro->getIdLibro());
+        } catch (\App\Exceptions\RegistroLibroException $e) {
+            $_SESSION['old_data'] = $_POST; 
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect("/libros/opcion");
+        } catch (\Exception $e) {
+            http_response_code(500);
+            return $this->render('errors/error', [
+                'mensaje' => "Ocurrió un error inesperado al registrar la nueva edición.",
+                'detalle' => $e->getMessage()
+            ]);
+        }
+    }
 
     public function edit(): string {
         $id = $this->input('id');

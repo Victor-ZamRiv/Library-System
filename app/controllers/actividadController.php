@@ -98,7 +98,7 @@ class ActividadController extends BaseController {
             return "Actividad no encontrada";
         }
 
-        return $this->render('actividad/edit', ['actividad' => $actividad]);
+        return $this->render('event/actividad-edit', ['actividad' => $actividad]);
     }
 
     // Actualizar actividad
@@ -108,7 +108,7 @@ class ActividadController extends BaseController {
 
         if (!$actividad) {
             $_SESSION['error'] = "La actividad no existe.";
-            $this->redirect("/actividades");
+            $this->redirect("/actividad/edit?id=" . $id);
             return;
         }
 
@@ -125,7 +125,7 @@ class ActividadController extends BaseController {
             $_SESSION['error'] = "No se pudo actualizar la actividad.";
         }
 
-        $this->redirect("/actividades/show?id=" . $id);
+        $this->redirect("/eventos");
     }
 
     // Desactivar actividad

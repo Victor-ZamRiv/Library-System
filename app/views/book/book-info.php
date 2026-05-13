@@ -197,7 +197,7 @@
                     <p class="text-center" style="margin-top: 20px;">
                         <a href="<?= BASE_URL ?>/libros" class="btn btn-secondary btn-raised">Volver</a>
                         <button onclick="window.print();" class="btn btn-info btn-raised">Imprimir Ficha</button>
-                        <a href="<?= BASE_URL ?>/libros/editar/<?= $libro->getCota() ?>" class="btn btn-warning btn-raised">Editar Libro</a>
+                        <a href="<?= BASE_URL ?>/libros/edit?id=<?= $libro->getIdLibro() ?>" class="btn btn-warning btn-raised">Editar Libro</a>
                     </p>
                 </div>
             </div>

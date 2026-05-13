@@ -131,6 +131,7 @@
     <div id="contenedor-toast" class="contenedor-toast"></div>
 
     <script>
+        const BASE_URL = '<?= BASE_URL ?>';
         document.addEventListener('DOMContentLoaded', () => {
             
             // --- 1. MOSTRAR MENSAJES DE SESIÓN (PHP) ---
@@ -168,11 +169,8 @@
         });
 
         // --- 3. LÓGICA DE RECUPERACIÓN ---
-        const usuarioPrueba = {
-            username: "admin",
-            pregunta: "¿Cuál es el nombre de tu primera mascota?",
-            respuesta: "pelusa"
-        };
+
+        let currentUsername = null;
 
         function flipCard() {
             document.getElementById('cardInner').classList.toggle('is-flipped');
@@ -181,33 +179,59 @@
                 document.getElementById('step-2').style.display = 'none';
                 document.getElementById('recover_username').value = '';
                 document.getElementById('security_answer').value = '';
+                currentUsername = null;
             }, 300);
         }
 
         function verifyUserStatic() {
-            const inputUser = document.getElementById('recover_username').value.trim();
-            const step1 = document.getElementById('step-1');
-            const step2 = document.getElementById('step-2');
-            const questionText = document.getElementById('security-question-text');
-
-            if (inputUser.toLowerCase() === usuarioPrueba.username) {
-                step1.style.display = 'none';
-                step2.style.display = 'block';
-                questionText.innerText = usuarioPrueba.pregunta;
-                agregarToast({ tipo: 'info', titulo: 'Usuario Verificado', descripcion: 'Responde la pregunta.' });
-            } else {
-                agregarToast({ tipo: 'error', titulo: 'No encontrado', descripcion: 'El usuario no existe.' });
+            const username = document.getElementById('recover_username').value.trim();
+            if (username === '') {
+                agregarToast({ tipo: 'warning', titulo: 'Campo vacío', descripcion: 'Debes ingresar tu usuario.' });
+                return;
             }
+
+            // Mostrar indicador de carga (opcional)
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.innerText = 'Verificando...';
+            btn.disabled = true;
+
+            fetch(BASE_URL + '/password-recovery/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'username=' + encodeURIComponent(username)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    currentUsername = username;
+                    document.getElementById('step-1').style.display = 'none';
+                    document.getElementById('step-2').style.display = 'block';
+                    document.getElementById('security-question-text').innerText = data.pregunta;
+                } else {
+                    agregarToast({ tipo: 'error', titulo: 'Error', descripcion: data.message });
+                }
+            })
+            .catch(err => {
+                agregarToast({ tipo: 'error', titulo: 'Error de conexión', descripcion: 'No se pudo conectar al servidor.' });
+            })
+            .finally(() => {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
         }
 
         function checkFinalAnswer() {
             const answer = document.getElementById('security_answer').value.trim();
-            if (answer.toLowerCase() === usuarioPrueba.respuesta) {
-                agregarToast({ tipo: 'exito', titulo: '¡Correcto!', descripcion: 'Ingresa tu nueva clave.' });
-                openPasswordModal();
-            } else {
-                agregarToast({ tipo: 'warning', titulo: 'Error', descripcion: 'Respuesta incorrecta.' });
+            if (answer === '') {
+                agregarToast({ tipo: 'warning', titulo: 'Respuesta vacía', descripcion: 'Debes responder la pregunta.' });
+                return;
             }
+
+            // Nota: la respuesta se enviará al backend junto con la nueva contraseña en el paso final.
+            // Por simplicidad, almacenamos la respuesta y abrimos el modal para la nueva contraseña.
+            window.tempAnswer = answer;
+            openPasswordModal();
         }
 
         // --- 4. MODAL Y GUARDADO ---
@@ -226,9 +250,42 @@
                 agregarToast({ tipo: 'error', titulo: 'Error', descripcion: 'Las claves no coinciden.' });
                 return;
             }
+            if (!currentUsername || !window.tempAnswer) {
+                agregarToast({ tipo: 'error', titulo: 'Error', descripcion: 'Datos incompletos. Vuelve a iniciar la recuperación.' });
+                return;
+            }
 
-            agregarToast({ tipo: 'exito', titulo: '¡Éxito!', descripcion: 'Contraseña actualizada.' });
-            setTimeout(() => { window.location.reload(); }, 2000);
+            const btn = document.querySelector('#modal-password .btn-access');
+            const originalText = btn.innerText;
+            btn.innerText = 'Guardando...';
+            btn.disabled = true;
+
+            fetch(BASE_URL + '/password-recovery/reset', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'username=' + encodeURIComponent(currentUsername) +
+                    '&respuesta=' + encodeURIComponent(window.tempAnswer) +
+                    '&new_password=' + encodeURIComponent(p1)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    agregarToast({ tipo: 'exito', titulo: '¡Éxito!', descripcion: data.message });
+                    setTimeout(() => { window.location.reload(); }, 2000);
+                } else {
+                    agregarToast({ tipo: 'error', titulo: 'Error', descripcion: data.message });
+                    closePasswordModal();
+                    // Opcional: regresar al paso 1
+                    flipCard();
+                }
+            })
+            .catch(err => {
+                agregarToast({ tipo: 'error', titulo: 'Error', descripcion: 'No se pudo conectar al servidor.' });
+            })
+            .finally(() => {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
         }
     </script>
 </body>

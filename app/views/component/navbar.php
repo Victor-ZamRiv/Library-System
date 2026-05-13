@@ -1,3 +1,4 @@
+
 <style>
     /* --- Estilos de Layout y Responsive --- */
     @media (min-width: 768px) {
@@ -56,18 +57,13 @@
 
 <nav class="navbar navbar-default full-box" style="border: none; border-bottom: 1px solid #e1e1e1; margin-bottom: 0;">
     <div class="container-fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-options">
-                <i class="fa-solid fa-ellipsis-vertical"></i>
-            </button>
-            <a href="<?= BASE_URL ?>/dashboard" class="navbar-brand btn-menu-dashboard"><i class="fa-solid fa-bars"></i></a>
-        </div>
-
         <div class="collapse navbar-collapse" id="navbar-options">
             <ul class="nav navbar-nav navbar-right">
                 
+                <!-- VISITAS -->
+                <?php if ($styleVisitas == ''): ?>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <a href="#" class="dropdown-toggle" data-dropdown>
                         <i class="fa-solid fa-users"></i> 
                         <span>Visitas</span> 
                         <i class="fa-solid fa-chevron-down"></i>
@@ -77,12 +73,15 @@
                         <li><a href="<?= BASE_URL ?>/visitantes">Gestión de Visitas</a></li>
                     </ul>
                 </li>
+                <?php endif; ?>
 
+                <!-- EVENTOS -->
+                <?php if ($styleEventos == ''): ?>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa-solid fa-calendar"></i> 
                         <span>Eventos</span>
-                         <i class="fa-solid fa-chevron-down"></i>
+                        <i class="fa-solid fa-chevron-down"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="<?= BASE_URL ?>/eventos">Listado de Eventos</a></li>
@@ -90,7 +89,10 @@
                         <li><a href="<?= BASE_URL ?>/logro/create">Registro de Logros</a></li>
                     </ul>
                 </li>
+                <?php endif; ?>
 
+                <!-- CATÁLOGO -->
+                <?php if ($styleBiblioteca == ''): ?>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa-solid fa-book"></i> 
@@ -102,7 +104,10 @@
                         <li><a href="<?= BASE_URL ?>/libros">Libros</a></li>
                     </ul>
                 </li>
+                <?php endif; ?>
 
+                <!-- PRÉSTAMOS -->
+                <?php if ($styleBiblioteca == ''): ?>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa-solid fa-bookmark"></i> 
@@ -116,6 +121,7 @@
                         <li><a href="<?= BASE_URL ?>/multas"><i class="fa-solid fa-hand-holding-dollar"></i> Multas</a></li>
                     </ul>
                 </li>
+                <?php endif; ?>
 
                 <li class="hidden-xs" style="display: flex; align-items: center; padding: 0 15px; height: 50px;">
                     <img src="<?= PUBLIC_PATH ?>/img/img-login/libro.png" alt="Logo" style="max-height: 40px;">

@@ -10,6 +10,11 @@ class preguntaRepository extends baseRepository implements IPreguntaRepository{
         parent::__construct($pdo, "preguntas_seguridad", "ID_Pregunta");
     }
 
+    public function find(int $id): ?pregunta {
+        $row = $this->fetchById($id);
+        return $row ? $this->mapToEntity($row) : null;
+    }
+
     protected function mapToEntity(array $row): pregunta {
         return pregunta::fromArray($row);
     }

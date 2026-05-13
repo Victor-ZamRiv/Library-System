@@ -1,3 +1,14 @@
+<?php 
+    $rol = $_SESSION['administrador']['rol'] ?? '';
+    
+
+    // Definición de permisos (Vacío = Visible, display:none = Oculto)
+    $styleDashboard = ($rol == 'Director' || $rol == 'Jefe de Sala') ? '' : 'display: none !important;';
+    $styleVisitas    = ($rol == 'Director' || $rol == 'Jefe de Sala' || $rol == 'Bibliotecario') ? '' : 'display: none !important;';
+    $styleBiblioteca = ($rol == 'Director' || $rol == 'Jefe de Sala' || $rol == 'Bibliotecario') ? '' : 'display: none !important;';
+    $styleEventos    = ($rol == 'Director' || $rol == 'Jefe de Sala') ? '' : 'display: none !important;';
+    $styleAdminOnly  = ($rol == 'Director') ? '' : 'display: none !important;';
+?>
 	<?php include  VIEW_PATH . "/component/message.php"; ?>
 
 	<meta charset="UTF-8">

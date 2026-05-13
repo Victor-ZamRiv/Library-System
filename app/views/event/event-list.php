@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -63,7 +64,7 @@
                                 <td><?= htmlspecialchars($actividad->getDescripcion()) ?></td>
                                 <td>
                                     <div class="d-flex justify-content-center">
-                                        <a href="#!" class="btn btn-success btn-raised btn-xs" title="Editar">
+                                        <a href="Library_System/actividad/edit?id=<?= htmlspecialchars($actividad->getIdActividad()) ?>" class="btn btn-success btn-raised btn-xs" title="Editar">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </a>
                                         

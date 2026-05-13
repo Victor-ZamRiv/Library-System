@@ -18,6 +18,7 @@ use App\Models\Repositories\PrestamoRepository;
 use App\Models\Repositories\EjemplarPrestamoRepository;
 use App\Models\Repositories\MultaRepository;
 use App\Models\Repositories\ConfiguracionRepository;
+use App\Models\Repositories\SalaRepository;
 use App\Contracts\ILibroRepository;
 use App\Contracts\IAutorRepository;
 use App\Contracts\IEditorialRepository;
@@ -34,6 +35,7 @@ use App\Contracts\IPrestamoRepository;
 use App\Contracts\IEjemplarPrestamoRepository;
 use App\Contracts\IMultaRepository;
 use App\Contracts\IConfiguracionRepository;
+use App\Contracts\ISalaRepository;
 use App\Models\Services\AuthService;
 use App\Models\Services\LibroSearchService;
 use App\Models\Services\LibroRegistrationService;
@@ -70,7 +72,7 @@ $prestamoRepo = new PrestamoRepository($pdo);
 $ejemplarPrestamoRepo = new EjemplarPrestamoRepository($pdo);
 $multaRepo = new MultaRepository($pdo);
 $configuracionRepo = new ConfiguracionRepository($pdo);
-
+$salaRepo = new SalaRepository($pdo);
 $fechaService = new FechaService();
 
 $container = [
@@ -91,7 +93,7 @@ $container = [
     IEjemplarPrestamoRepository::class => $ejemplarPrestamoRepo,
     IMultaRepository::class => $multaRepo,
     IConfiguracionRepository::class => $configuracionRepo,
-
+    ISalaRepository::class => $salaRepo,
 
     LibroSearchService::class => new LibroSearchService(
         $libroRepo, 

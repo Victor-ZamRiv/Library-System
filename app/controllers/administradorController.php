@@ -97,7 +97,7 @@ class AdministradorController extends BaseController {
                 $this->input('usuario-reg'),
                 password_hash($this->input('password1-reg'), PASSWORD_DEFAULT),
                 $this->input('rol'), // Ej: Director, Jefe de sala, Bibliotecario
-                $this->input('pregunta-seguidad') ? (int)$this->input('pregunta-reg') : null,
+                $this->input('pregunta-seguidad'),
                 $this->input('respuesta-reg') ? password_hash($this->input('respuesta-reg'), PASSWORD_DEFAULT) : null,
                 true
             );

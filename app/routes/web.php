@@ -10,6 +10,7 @@ $router->get('/', 'DashboardController@index');
 // Rutas para configuración
 $router->get('/configuracion', 'ConfiguracionController@index');
 $router->get('/configuracion/sala', 'ConfiguracionController@salaConfiguration');
+$router->post('/configuracion/sala/update', 'ConfiguracionController@updateSalas');
 $router->get('/configuracion/area', 'ConfiguracionController@areaConfiguration');
 $router->get('/history', 'ConfiguracionController@historial');
 $router->get('/configuracion/indicator', 'ConfiguracionController@indicatorConfiguration');
@@ -21,6 +22,7 @@ $router->get('/libros', 'LibroController@index');
 $router->get('/libros/search', 'LibroController@search');
 $router->get('/libros/opcion', 'LibroController@option');
 $router->post('/libros/nueva-edicion', 'LibroController@newEdition');
+$router->post('/libros/nueva-edicion/store', 'LibroController@storeNewEdition');
 $router->get('/libros/create', 'LibroController@create');
 $router->post('/libros', 'LibroController@store');
 $router->get('/libros/show', 'LibroController@show');
@@ -31,6 +33,8 @@ $router->post('/libros/update', 'LibroController@update');
 $router->get('/login', 'AuthController@loginForm');
 $router->post('/login', 'AuthController@login');
 $router->get('/logout', 'AuthController@logout');
+$router->post('/password-recovery/verify', 'AuthController@recoveryVerify');
+$router->post('/password-recovery/reset', 'AuthController@recoveryReset');
 $router->get('/password-recovery', 'AuthController@passwordRecoveryForm');
 
 // Rutas para administradores
@@ -57,10 +61,14 @@ $router->get('/lectores/search', 'LectorController@search');
 $router->get('/eventos', 'ActividadController@list');
 $router->get('/actividad/create', 'ActividadController@create');
 $router->post('/actividad/store', 'ActividadController@store');
+$router->get('/actividad/edit', 'ActividadController@edit');
+$router->post('/actividad/update', 'ActividadController@update');
 
 //Rutas logros
 $router->get('/logro/create', 'LogroController@create');
 $router->post('/logro/store', 'LogroController@store');
+$router->get('/logro/edit', 'LogroController@edit');
+$router->post('/logro/update', 'LogroController@update');
 
 // Rutas visitantes y consultas
 $router->get('/visitantes', 'VisitantesController@index');

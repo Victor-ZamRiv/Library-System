@@ -30,7 +30,7 @@
                                         <td style="vertical-align: middle;"><?= htmlspecialchars($logro->getDescripcion()) ?></td>
                                         <td style="vertical-align: middle;">
                                             <div class="d-flex justify-content-center">
-                                                <a href="#!" class="btn btn-success btn-raised btn-sm">
+                                                <a href="<?= BASE_URL ?>/logro/edit?id=<?= htmlspecialchars($logro->getIdLogro()) ?>" class="btn btn-success btn-raised btn-sm">
                                                     <i class="fa-solid fa-pen-to-square"></i> EDITAR
                                                 </a>
                                             </div>

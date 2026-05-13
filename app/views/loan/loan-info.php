@@ -8,7 +8,7 @@
         .card,
         .btn,
         .table {
-            box-shadow: none !important;
+            box-shadow: none !important; 
             /* Elimina cualquier sombra residual */
             text-shadow: none !important;
         }
@@ -172,19 +172,19 @@
                             <div class="no-print mt-5">
                                 <hr>
                                 <div class="text-center">
-                                    <a href="<?= BASE_URL ?>/prestamos" class="btn btn-secondary">
+                                    <a href="<?= BASE_URL ?>/prestamos" class="btn btn-secondary btn-raised">
                                         <i class="fa-solid fa-arrow-left"></i> Volver
                                     </a>
 
-                                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modalRenovacion">
+                                    <button type="button" class="btn btn-warning btn-raised" data-toggle="modal" data-target="#modalRenovacion">
                                         <i class="fa-solid fa-calendar-plus"></i> Renovar Préstamo
                                     </button>
 
-                                    <button type="button" class="btn btn-primary btn-devolucion" data-toggle="modal" data-target="#modalDevolucion">
+                                    <button type="button" class="btn btn-primary btn-raised primary" data-toggle="modal" data-target="#modalDevolucion">
                                         <i class="fa-solid fa-arrow-rotate-left"></i> Procesar Devolución
                                     </button>
 
-                                    <button type="button" class="btn btn-info" onclick="window.print();">
+                                    <button type="button" class="btn btn-info btn-raised info" onclick="window.print();">
                                         <i class="fa-solid fa-print"></i> Imprimir Comprobante
                                     </button>
                                 </div>

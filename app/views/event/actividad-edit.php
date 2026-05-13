@@ -32,9 +32,9 @@ include VIEW_PATH . "/component/heat.php";
                     <h3 class="text-center text-titles">Actualizar Formulario</h3>
                     <hr>
 
-                    <form action="?c=Actividad&m=update" method="POST" id="form-editar-actividad">
+                    <form action="<?= BASE_URL ?>/actividad/update" method="POST" id="form-editar-actividad">
                         <!-- CAMPO OCULTO PARA EL ID -->
-                        <input type="hidden" name="id_actividad" value="<?= $actividad->id_actividad ?>">
+                        <input type="hidden" name="id" value="<?= $actividad->getIdActividad() ?>">
 
                         <div class="row">
                             <div class="col-xs-12 col-sm-6">
@@ -42,7 +42,7 @@ include VIEW_PATH . "/component/heat.php";
                                     <label class="control-label"><span class="text-danger">*</span> Fecha del Evento:</label>
                                     <!-- VALUE CON LA FECHA -->
                                     <input type="date" class="form-control" name="fecha" id="fecha" 
-                                           value="<?= $actividad->fecha ?>" onkeydown="return false" required>
+                                           value="<?= $actividad->getFecha() ?>" onkeydown="return false" required>
                                     <div class="invalid-feedback bg-danger text-danger rounded-pill" id="fecha-error" style="display: none; padding: 5px 10px; font-size: 12px; margin-top: 5px;">
                                         <i class="fas fa-exclamation-circle"></i> Fecha fuera de rango.
                                     </div>
@@ -56,7 +56,7 @@ include VIEW_PATH . "/component/heat.php";
                                         <?php 
                                         $categorias = ["Cultural", "Educativa", "Mantenimiento", "Reunión", "Otro"];
                                         foreach($categorias as $cat): ?>
-                                            <option value="<?= $cat ?>" <?= ($actividad->categoria == $cat) ? 'selected' : '' ?>>
+                                            <option value="<?= $cat ?>" <?= ($actividad->getCategoria() == $cat) ? 'selected' : '' ?>>
                                                 <?= ($cat == "Reunión") ? "Reunión / Asamblea" : $cat ?>
                                             </option>
                                         <?php endforeach; ?>
@@ -70,7 +70,7 @@ include VIEW_PATH . "/component/heat.php";
                                 <div class="form-group label-floating">
                                     <label class="control-label">Número de Asistentes:</label>
                                     <input type="number" class="form-control" name="asistentes" id="asistentes" 
-                                           value="<?= $actividad->asistentes ?>" placeholder="0">
+                                           value="<?= $actividad->getAsistentes() ?>" placeholder="0">
                                 </div>
                             </div>
 
@@ -81,7 +81,7 @@ include VIEW_PATH . "/component/heat.php";
                                         <?php 
                                         $estados = ["Completado", "En Proceso", "Pendiente", "Cancelado"];
                                         foreach($estados as $est): ?>
-                                            <option value="<?= $est ?>" <?= ($actividad->estado == $est) ? 'selected' : '' ?>>
+                                            <option value="<?= $est ?>" <?= ($actividad->getEstado() == $est) ? 'selected' : '' ?>>
                                                 <?= $est ?>
                                             </option>
                                         <?php endforeach; ?>
@@ -93,11 +93,11 @@ include VIEW_PATH . "/component/heat.php";
                         <div class="form-group label-floating">
                             <label class="control-label"><span class="text-danger">*</span> Descripción:</label>
                             <!-- EL TEXTAREA NO USA VALUE, SE PONE DENTRO DE LAS ETIQUETAS -->
-                            <textarea class="form-control" name="descripcion" id="descripcion" rows="4" required><?= $actividad->descripcion ?></textarea>
+                            <textarea class="form-control" name="descripcion" id="descripcion" rows="4" required><?= $actividad->getDescripcion() ?></textarea>
                         </div>
 
                         <div class="form-group text-right">
-                            <a href="?c=Actividad" class="btn btn-default btn-raised">Cancelar</a>
+                            <a href="<?= BASE_URL ?>/eventos" class="btn btn-default btn-raised">Cancelar</a>
                             <button type="submit" class="btn btn-success btn-raised">Actualizar Cambios</button>
                         </div>
                     </form>

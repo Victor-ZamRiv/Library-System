@@ -74,7 +74,7 @@ class LogroController extends BaseController {
             return "Logro no encontrado";
         }
 
-        return $this->render('logros/edit', ['logro' => $logro]);
+        return $this->render('event/achievement-edit', ['logro' => $logro]);
     }
 
     // Actualizar logro
@@ -99,7 +99,7 @@ class LogroController extends BaseController {
             $_SESSION['error'] = "No se pudo actualizar el logro.";
         }
 
-        $this->redirect("/logros/show?id=" . $id);
+        $this->redirect("/eventos");
     }
 
     // Desactivar logro

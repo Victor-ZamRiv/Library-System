@@ -26,7 +26,7 @@
                     <h3 class="panel-title">&nbsp; REGISTRAR NUEVO LIBRO</h3>
                 </div>
                 <div class="panel-body">
-                    <form action="/library_system/libros" method="POST" enctype="multipart/form-data" id="form-registro-libro">
+                    <form action="<?php if(isset($libro)) { echo '/library_system/libros/nueva-edicion/store'; } else { echo '/library_system/libros'; } ?>" method="POST" enctype="multipart/form-data" id="form-registro-libro">
                         <fieldset>
                             <legend> &nbsp; Información del Libro</legend>
                             <div class="container-fluid">
@@ -91,8 +91,13 @@
                                             <input class="form-control mdl-textfield__input" type="text" name="titulo" id="titulo-reg" maxlength="50"
                                                 pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s]+"
                                                 title="Solo se permiten letras, números y espacios"
-                                                value="<?= htmlspecialchars($old['titulo'] ?? '') ?>"
-                                                required
+                                                <?php if (isset($libro)): ?>
+                                                    value="<?= htmlspecialchars($libro->getTitulo()) ?>"
+                                                    readonly
+                                                <?php else: ?>
+                                                    value="<?= htmlspecialchars($old['titulo'] ?? '')?>"
+                                                    required
+                                                <?php endif; ?>
                                                 aria-describedby="titulo-error"
                                                 onblur="validarTitulo(this)">
                                             <div class="invalid-feedback bg-danger text-danger rounded-pill" id="titulo-error" style="display: none;">
@@ -113,8 +118,14 @@
                                                 id="cota"
                                                 maxlength="30"
                                                 title="Ej: NH 234 o 120 A563."
-                                                value="<?= htmlspecialchars($old['cota'] ?? '') ?>"
-                                                required
+                                                <?php if (isset($libro)): ?>
+                                                    value="<?= htmlspecialchars($libro->getCota()) ?>"
+                                                    readonly
+                                                <?php else: ?>
+                                                    value="<?= htmlspecialchars($old['cota'] ?? '') ?>"
+                                                    required
+                                                <?php endif; ?>
+                                                
                                                 aria-describedby="cota-error"
                                                 onblur="validarCota(this)">
 
@@ -134,8 +145,15 @@
                                                 id="autor-reg"
                                                 maxlength="50"
                                                 pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios"
+                                                <?php if (isset($libro)): ?>
+                                                    <?php foreach ($libro->getAutores() as $autor): ?>
+                                                        value="<?= htmlspecialchars($autor->getNombre()) . ' ' ?>"
+                                                    <?php endforeach; ?>
+                                                    readonly
+                                                <?php else: ?>
                                                 value="<?= htmlspecialchars($old['autores'] ?? '') ?>"
                                                 required
+                                                <?php endif; ?>
                                                 aria-describedby="autor-error"
                                                 onblur="formatearAutor(this); if (!this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('autor-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('autor-error').style.display = 'none'; }">
                                             <div class="invalid-feedback bg-danger text-danger rounded-pill" id="autor-error" style="display: none;">
@@ -156,8 +174,13 @@
                                                 name="ciudad"
                                                 id="ciudad"
                                                 maxlength="20"
-                                                value="<?= htmlspecialchars($old['ciudad'] ?? '') ?>"
-                                                required
+                                                <?php if (isset($libro)): ?>
+                                                    value="<?= htmlspecialchars($libro->getCiudad()) ?>"
+                                                    readonly
+                                                <?php else: ?>
+                                                    value="<?= htmlspecialchars($old['ciudad'] ?? '') ?>"
+                                                    required
+                                                <?php endif; ?>
                                                 title="Solo se permiten letras y espacios, máximo 20 caracteres"
                                                 aria-describedby="ciudad-error"
 
@@ -247,7 +270,11 @@
                                                 class="form-control"
                                                 type="text" inputmode="numeric" name="paginas"
                                                 id="paginas-reg" maxlength="4"
-                                                value="<?= htmlspecialchars($old['paginas'] ?? '') ?>"
+                                                <?php if (isset($libro)): ?>
+                                                    value="<?= htmlspecialchars($libro->getPaginas()) ?>"
+                                                <?php else: ?>
+                                                    value="<?= htmlspecialchars($old['paginas'] ?? '') ?>"
+                                                <?php endif; ?>
                                                 required title="Solo se permiten números, entre 1 y 4 dígitos" aria-describedby="paginas-error" onblur="validarPaginas(this)" onkeypress="return isNumberKey(event)">
 
                                             <div class="invalid-feedback bg-danger text-danger rounded-pill" id="paginas-error" style="display: none;">
@@ -267,7 +294,11 @@
                                                 type="text"
                                                 name="editorial"
                                                 id="editorial-reg" maxlength="70"
-                                                value="<?= htmlspecialchars($old['editorial'] ?? '') ?>"
+                                                <?php if (isset($libro)): ?>
+                                                    value="<?= htmlspecialchars($libro->getEditorial() ? $libro->getEditorial()->getNombre() : '') ?>"
+                                                <?php else: ?>
+                                                    value="<?= htmlspecialchars($old['editorial'] ?? '') ?>"
+                                                <?php endif; ?>
                                                 required title="Solo se permiten letras y espacios, máximo 70 caracteres" aria-describedby="editorial-error" onblur="validarEditorial(this)">
 
                                             <div class="invalid-feedback bg-danger text-danger rounded-pill" id="editorial-error" style="display: none;">

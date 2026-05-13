@@ -1,4 +1,5 @@
-	<?php include  VIEW_PATH . "/component/notification.php"; ?>
+	
+    <?php include  VIEW_PATH . "/component/notification.php"; ?>
 
 <style>
     /* Resaltado Azul Sidebar (Más oscuro y conciso) */
@@ -26,6 +27,8 @@
     }
 </style>
 
+
+
 <section class="full-box cover dashboard-sideBar">
     <div class="full-box dashboard-sideBar-bg btn-menu-dashboard"></div>
     <div class="full-box dashboard-sideBar-ct">
@@ -43,32 +46,37 @@
             </ul>
         </div>
         <ul class="list-unstyled full-box dashboard-sideBar-Menu">
-            <li><a href="<?= BASE_URL ?>/dashboard"><i class="fa-solid fa-gauge"></i> Dashboard</a></li>
-            <li><a href="<?= BASE_URL ?>/lectores"><i class="fa-solid fa-book-open-reader"></i> Lectores</a></li>
-            
-            <li>
-                <a href="#!" class="btn-sideBar-SubMenu">
-                    <i class="fa-solid fa-user"></i> Usuarios <i class="fa-solid fa-caret-down"></i>
-                </a>
-                <ul class="list-unstyled full-box">
-                    <li><a href="<?= BASE_URL ?>/administradores/register"> Nuevo Usuario</a></li>
-                    <li><a href="<?= BASE_URL ?>/administradores"> Lista de Usuarios</a></li>
-                </ul>
-            </li>
-
-            <li>
-                <a href="#!" class="btn-sideBar-SubMenu">
-                    <i class="fa-solid fa-gears"></i> Configuración <i class="fa-solid fa-caret-down"></i>
-                </a>
-                <ul class="list-unstyled full-box">
-                    <li><a href="<?= BASE_URL ?>/configuracion/indicator">Indicadores</a></li>
-                    <li><a href="<?= BASE_URL ?>/configuracion/sala">Salas</a></li>
-                    <li><a href="<?= BASE_URL ?>/configuracion/area-conocimiento"> Áreas de Conocimiento</a></li>
-                    <li><a href="<?= BASE_URL ?>/configuracion/prestamos"> Prestamos</a></li>
-                    <li><a href="<?= BASE_URL ?>/history"> Historial</a></li>
-                </ul>
-            </li>
+    <!-- Dashboard: Visible para todos -->
+    <li><a href="<?= BASE_URL ?>/dashboard"><i class="fa-solid fa-gauge"></i> Dashboard</a></li>
+    
+    <!-- Lectores: Bibliotecario, Jefe de Sala y Director -->
+    <li style="<?= $styleVisitas ?>"><a href="<?= BASE_URL ?>/lectores"><i class="fa-solid fa-book-open-reader"></i> Lectores</a></li>
+    
+    <!-- Usuarios: SOLO DIRECTOR -->
+    <li style="<?= $styleAdminOnly ?>">
+        <a href="#!" class="btn-sideBar-SubMenu">
+            <i class="fa-solid fa-user"></i> Usuarios <i class="fa-solid fa-caret-down"></i>
+        </a>
+        <ul class="list-unstyled full-box">
+            <li><a href="<?= BASE_URL ?>/administradores/register"> Nuevo Usuario</a></li>
+            <li><a href="<?= BASE_URL ?>/administradores"> Lista de Usuarios</a></li>
         </ul>
+    </li>
+
+    <!-- Configuración: SOLO DIRECTOR -->
+    <li style="<?= $styleAdminOnly ?>">
+        <a href="#!" class="btn-sideBar-SubMenu">
+            <i class="fa-solid fa-gears"></i> Configuración <i class="fa-solid fa-caret-down"></i>
+        </a>
+        <ul class="list-unstyled full-box">
+            <li><a href="<?= BASE_URL ?>/configuracion/indicator">Indicadores</a></li>
+            <li><a href="<?= BASE_URL ?>/configuracion/sala">Salas</a></li>
+            <li><a href="<?= BASE_URL ?>/configuracion/area-conocimiento"> Áreas de Conocimiento</a></li>
+            <li><a href="<?= BASE_URL ?>/configuracion/prestamos"> Prestamos</a></li>
+            <li><a href="<?= BASE_URL ?>/history"> Historial</a></li>
+        </ul>
+    </li>
+</ul>
     </div>
 </section>
 
@@ -118,17 +126,33 @@
 
 <script>
     // 4. Toasts
-        (function() {
-            <?php if (isset($success) && $success): ?>
-                if (typeof agregarToast === 'function') {
-                    agregarToast({ tipo: 'exito', titulo: '¡Éxito!', descripcion: '<?= addslashes(htmlspecialchars($success)) ?>' });
-                }
-            <?php endif; ?>
+    (function() {
+        // Bloque de Éxito
+        <?php if (isset($success) && $success): ?>
+            if (typeof agregarToast === 'function') {
+                agregarToast({ tipo: 'exito', titulo: '¡Éxito!', descripcion: '<?= addslashes(htmlspecialchars($success)) ?>' });
+            }
+        <?php endif; ?>
 
-            <?php if (isset($error) && $error): ?>
-                if (typeof agregarToast === 'function') {
-                    agregarToast({ tipo: 'error', titulo: 'Error', descripcion: '<?= addslashes(htmlspecialchars($error)) ?>' });
-                }
-            <?php endif; ?>
-        })();
+        // Bloque de Error
+        <?php if (isset($error) && $error): ?>
+            if (typeof agregarToast === 'function') {
+                agregarToast({ tipo: 'error', titulo: 'Error', descripcion: '<?= addslashes(htmlspecialchars($error)) ?>' });
+            }
+        <?php endif; ?>
+
+        // Bloque de Info (NUEVO)
+        <?php if (isset($info) && $info): ?>
+            if (typeof agregarToast === 'function') {
+                agregarToast({ tipo: 'info', titulo: 'Información', descripcion: '<?= addslashes(htmlspecialchars($info)) ?>' });
+            }
+        <?php endif; ?>
+
+        // Bloque de Warning (NUEVO)
+        <?php if (isset($warning) && $warning): ?>
+            if (typeof agregarToast === 'function') {
+                agregarToast({ tipo: 'warning', titulo: 'Atención', descripcion: '<?= addslashes(htmlspecialchars($warning)) ?>' });
+            }
+        <?php endif; ?>
+    })();
 </script>
