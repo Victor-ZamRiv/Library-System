@@ -12,7 +12,10 @@ class BaseController {
     protected function middlewareRol(array $rolesPermitidos, string $modulo) {
         if (!isset($_SESSION['administrador']['rol']) || !in_array($_SESSION['administrador']['rol'], $rolesPermitidos)) {
             $_SESSION['error'] = "No tienes permisos para acceder al modulo $modulo.";
-            $this->redirect("/dashboard");
+            if ($_SESSION['administrador']['rol'] === 'Bibliotecario'){
+                $this->redirect("/libros");
+            } else {
+            $this->redirect("/dashboard"); }
         }
     }
     protected function authenticate() {
