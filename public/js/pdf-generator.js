@@ -68,7 +68,7 @@ async function descargarPDF(tipo) {
         const baseUrl = window.BASE_URL || ''; 
         
         // Logos del Cintillo Superior
-        const logoIzquierdoUrl = `${baseUrl}/img/img-login/gobernacion.png`; 
+        const logoIzquierdoUrl = `${baseUrl}/img/img-login/gober.png`; 
         const logoDerechoUrl = `${baseUrl}/img/img-login/libro.png`; 
 
         // =========================================================================

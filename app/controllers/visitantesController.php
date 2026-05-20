@@ -6,20 +6,38 @@ use App\Models\Entities\VisitantesRegistro;
 use App\Models\Entities\ConsultaRegistro;
 use App\Models\Services\VisitanteService;
 use App\Models\Services\VisitanteEstadisticaService;
+use App\Models\Services\VisitaDetailService;
 
 class VisitantesController extends BaseController
 {
     private VisitanteService $visitanteService;
     private VisitanteEstadisticaService $estadisticaService;
+    private VisitaDetailService $visitaDetailService;
 
     public function __construct(
         VisitanteService $visitanteService,
-        VisitanteEstadisticaService $estadisticaService
+        VisitanteEstadisticaService $estadisticaService,
+        VisitaDetailService $visitaDetailService
     ) {
         $this->visitanteService = $visitanteService;
         $this->estadisticaService = $estadisticaService;
+        $this->visitaDetailService = $visitaDetailService;
         $this->authenticate();
         $this->middlewareRol(['Jefe_Sala', 'Director'], 'registro de visitantes');
+    }
+
+    public function show(): string
+    {
+        $id = (int) $this->input('id');
+        $detalle = $this->visitaDetailService->obtenerDetalleCompleto($id);
+        if (!$detalle) {
+            http_response_code(404);
+            return "Registro no encontrado";
+        }
+        return $this->render('visitors/visitor-info', [
+            'visitante' => $detalle['visitante'],
+            'consultas' => $detalle['consultas']
+        ]);
     }
 
     /**

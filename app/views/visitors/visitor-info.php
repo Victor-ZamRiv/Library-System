@@ -1,8 +1,21 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <title>Listado de Visitas</title>
+    <title>Detalle del Registro de Visitas</title>
     <?php include VIEW_PATH . "/component/heat.php"; ?>
+    <style>
+        .detail-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #fff;
+        }
+        .consultas-table th, .consultas-table td {
+            vertical-align: middle;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <?php include VIEW_PATH . "/component/sidebar.php"; ?>
@@ -12,70 +25,119 @@
 
         <div class="container-fluid">
             <div class="page-header">
-                <h1 class="text-titles"><i class="fa-solid fa-list-check"></i> Visitas <small> Historial de Registros</small></h1>
+                <h1 class="text-titles"><i class="fa-solid fa-clipboard-list"></i> Visitas <small> Detalle del Registro</small></h1>
             </div>
         </div>
 
         <div class="container-fluid">
-            <div class="card shadow-lg p-3 mb-4 bg-white rounded">
+            <div class="card shadow-lg p-4 bg-white rounded">
                 <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <h3 class="text-titles">Registros Recientes</h3>
+                    <!-- Botón volver -->
+                    <div class="text-right mb-3">
+                        <a href="<?= BASE_URL ?>/visitantes" class="btn btn-secondary btn-raised">
+                            <i class="fa-solid fa-arrow-left"></i> Volver al listado
+                        </a>
+                    </div>
+
+                    <!-- Datos del Visitante -->
+                    <div class="detail-card">
+                        <h3 class="text-titles">Información del Registro</h3>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p><strong>Fecha:</strong> <?= date('d/m/Y', strtotime($visitante->getFecha())) ?></p>
+                            </div>
+                            <div class="col-md-4">
+                                <p><strong>Sala:</strong> <?= htmlspecialchars($visitante->getIdSala()) ?></p>
+                            </div>
+                            <div class="col-md-4">
+                                <p><strong>Turno:</strong> <?= htmlspecialchars($visitante->getTurno()) ?></p>
+                            </div>
                         </div>
-                        <div class="col-md-6 text-right">
-                            <a href="<?= BASE_URL ?>/visitantes/create" class="btn btn-success btn-raised">
-                                <i class="fa-solid fa-plus"></i> Nuevo Registro
-                            </a>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p><strong>Registrado por:</strong> Administrador ID: <?= $visitante->getIdAdmin() ?></p>
+                            </div>
                         </div>
                     </div>
-                    
-                    <div class="table-responsive">
-                        <table class="table table-hover text-center">
-                            <thead>
-                                <tr class="bg-info text-white">
-                                    <th>Fecha</th>
-                                    <th>Sala</th>
-                                    <th>Turno</th>
-                                    <th>Total Visitantes</th>
-                                    <th>Total Obras</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if(!empty($visitantes)): ?>
-                                    <?php foreach($visitantes as $v): 
-                                        // Sumatoria rápida de visitantes
-                                        $total_v = $v->ninos_f + $v->ninos_m + $v->adol_f + $v->adol_m + $v->adultos_f + $v->adultos_m;
-                                        // Sumatoria rápida de obras (ajusta según los nombres de tu objeto/array)
-                                        $total_o = $v->obra_000 + $v->obra_100 + $v->obra_200 + $v->obra_300 + $v->obra_400 + $v->obra_500 + $v->obra_600 + $v->obra_700 + $v->obra_800 + $v->obra_900 + $v->obra_Biog;
-                                    ?>
-                                    <tr>
-                                        <td><?= date("d/m/Y", strtotime($v->fecha)) ?></td>
-                                        <td><span class="label label-default"><?= $v->sala ?></span></td>
-                                        <td><?= $v->turno ?></td>
-                                        <td><strong><?= $total_v ?></strong></td>
-                                        <td><strong><?= $total_o ?></strong></td>
-                                        <td>
-                                            <button class="btn btn-info btn-xs" title="Ver Detalles" data-toggle="modal" data-target="#modal-<?= $v->id ?>">
-                                                <i class="fa-solid fa-eye"></i>
-                                            </button>
-                                            <a href="<?= BASE_URL ?>/visitantes/edit/<?= $v->id ?>" class="btn btn-warning btn-xs" title="Editar">
-                                                <i class="fa-solid fa-pen-to-square"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    
-                                    <?php include VIEW_PATH . "/visitantes/modal_detalle.php"; ?>
 
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr>
-                                        <td colspan="6" class="text-center">No hay registros disponibles.</td>
-                                    </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
+                    <!-- Distribución de visitantes -->
+                    <div class="detail-card">
+                        <h3 class="text-titles">Distribución de Visitantes</h3>
+                        <hr>
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <div class="panel panel-info">
+                                    <div class="panel-heading">Niños</div>
+                                    <div class="panel-body">
+                                        <p>Hombres: <?= $visitante->getNinosHombres() ?></p>
+                                        <p>Mujeres: <?= $visitante->getNinosMujeres() ?></p>
+                                        <p><strong>Total: <?= $visitante->getNinosHombres() + $visitante->getNinosMujeres() ?></strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading">Adolescentes</div>
+                                    <div class="panel-body">
+                                        <p>Hombres: <?= $visitante->getAdolescentesHombres() ?></p>
+                                        <p>Mujeres: <?= $visitante->getAdolescentesMujeres() ?></p>
+                                        <p><strong>Total: <?= $visitante->getAdolescentesHombres() + $visitante->getAdolescentesMujeres() ?></strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="panel panel-success">
+                                    <div class="panel-heading">Adultos</div>
+                                    <div class="panel-body">
+                                        <p>Hombres: <?= $visitante->getAdultosHombres() ?></p>
+                                        <p>Mujeres: <?= $visitante->getAdultosMujeres() ?></p>
+                                        <p><strong>Total: <?= $visitante->getAdultosHombres() + $visitante->getAdultosMujeres() ?></strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Consultas por área -->
+                    <div class="detail-card">
+                        <h3 class="text-titles">Consultas de Obras (Clasificación)</h3>
+                        <hr>
+                        <?php if (empty($consultas)): ?>
+                            <p class="text-muted">No se registraron consultas para este día/turno.</p>
+                        <?php else: ?>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover consultas-table">
+                                    <thead>
+                                        <tr class="bg-info">
+                                            <th>Área (Clasificación)</th>
+                                            <th>Cantidad de Obras</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($consultas as $consulta): ?>
+                                            <tr>
+                                                <td><?= htmlspecialchars($consulta->getIdArea()) ?></td>
+                                                <td><?= $consulta->getCantidadConsultada() ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="active">
+                                            <th class="text-right">TOTAL OBRAS:</th>
+                                            <th><?= array_sum(array_map(fn($c) => $c->getCantidadConsultada(), $consultas)) ?></th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Acciones adicionales (opcional) -->
+                    <div class="text-right mt-3">
+                        <a href="<?= BASE_URL ?>/visitantes" class="btn btn-default btn-raised">Cerrar</a>
+                        <!-- Botón para imprimir 
+                        <button onclick="window.print();" class="btn btn-primary btn-raised"><i class="fa-solid fa-print"></i> Imprimir</button> -->
                     </div>
                 </div>
             </div>

@@ -76,11 +76,11 @@
                                         <br>
                                         <input type="number" class="form-control input-numerico"
                                             name="<?php echo $key; ?>_f" id="<?php echo $key; ?>_f"
-                                            placeholder="Femenino (F)" min="0" value="0" required>
+                                            placeholder="Femenino (F)" min="0" required>
 
                                         <input type="number" class="form-control mt-2 input-numerico"
                                             name="<?php echo $key; ?>_m" id="<?php echo $key; ?>_m"
-                                            placeholder="Masculino (M)" min="0" value="0" required>
+                                            placeholder="Masculino (M)" min="0" required>
 
                                         <div class="invalid-feedback bg-danger text-danger rounded-pill error-msg" style="display: none;">
                                             <i class="fas fa-exclamation-circle"></i> Solo números positivos.

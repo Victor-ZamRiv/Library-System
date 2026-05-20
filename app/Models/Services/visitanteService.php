@@ -70,8 +70,8 @@ class VisitanteService
                     $area,
                     $fecha,
                     $cantidad,
+                    $turno,
                     $idAdmin,
-                    true
                 );
             }
         }
@@ -81,6 +81,9 @@ class VisitanteService
         try {
             $this->visitanteRepo->insert($visitante);
             foreach ($consultas as $consulta) {
+                if ($this->consultaRepo->findBySalaFechaTurno($consulta->getIdSala(), $consulta->getFecha(), $consulta->getTurno())) {
+                    throw new \Exception("Ya existe un registro de consultas para esta sala, fecha y turno.");
+                }
                 $this->consultaRepo->insert($consulta);
             }
             $this->pdo->commit();

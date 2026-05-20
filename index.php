@@ -48,6 +48,7 @@ use App\Models\Services\ListLectorService;
 use App\Models\Services\PrestamoRegistrationService;
 use App\Models\Services\VisitanteService;
 use App\Models\Services\VisitanteEstadisticaService;
+use App\Models\Services\VisitaDetailService;
 use App\Models\Services\DevolucionService;
 use App\Models\Services\PrestamoListService;
 use App\Models\Services\PrestamoDetailService;
@@ -147,6 +148,10 @@ $container = [
     ),
     VisitanteEstadisticaService::class => new VisitanteEstadisticaService(
         $pdo
+    ),
+    VisitaDetailService::class => new VisitaDetailService(
+        $visitanteRepo,
+        $consultaRepo,
     ),
     PrestamoRegistrationService::class => new PrestamoRegistrationService(
         $prestamoRepo,

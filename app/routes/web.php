@@ -77,6 +77,7 @@ $router->post('/visitantes/store', 'VisitantesController@store');
 $router->get('/visitantes/datos-grafico', 'VisitantesController@datosGrafico');
 $router->get('/visitantes/datos-modal', 'VisitantesController@datosModal');
 $router->post('/visitantes/delete', 'VisitantesController@delete');
+$router->get('/visitantes/show', 'VisitantesController@show');
 
 //Rutas para préstamos
 $router->get('/prestamos', 'PrestamoController@index');

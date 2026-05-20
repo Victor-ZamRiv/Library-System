@@ -21,14 +21,15 @@ class ConsultaRepository extends BaseRepository implements IConsultaRepository{
     public function insert(ConsultaRegistro $consulta): int
     {
         $sql = "INSERT INTO {$this->table} 
-                (ID_Sala, ID_Area, Fecha, Cantidad_Consultada, ID_Admin)
-                VALUES (:sala, :area, :fecha, :cant, :admin)";
+                (ID_Sala, ID_Area, Fecha, Cantidad_Consultada, Turno, ID_Admin)
+                VALUES (:sala, :area, :fecha, :cant, :turno, :admin)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
             ':sala'   => $consulta->getIdSala(),
             ':area'   => $consulta->getIdArea(),
             ':fecha'  => $consulta->getFecha(),
             ':cant'   => $consulta->getCantidadConsultada(),
+            ':turno'  => $consulta->getTurno(),
             ':admin'  => $consulta->getIdAdmin(),
         ]);
         return (int) $this->pdo->lastInsertId();
@@ -44,6 +45,7 @@ class ConsultaRepository extends BaseRepository implements IConsultaRepository{
                     ID_Area = :idArea,
                     Fecha = :fecha,
                     Cantidad_Consultada = :cantidad,
+                    Turno = :turno,
                     ID_Admin = :idAdmin
                 WHERE ID_Consulta_Area = :id";
         $stmt = $this->pdo->prepare($sql);
@@ -52,6 +54,7 @@ class ConsultaRepository extends BaseRepository implements IConsultaRepository{
             ':idArea' => $consulta->getIdArea(),
             ':fecha' => $consulta->getFecha(),
             ':cantidad' => $consulta->getCantidadConsultada(),
+            ':turno' => $consulta->getTurno(),
             ':idAdmin' => $consulta->getIdAdmin(),
             ':id' => $consulta->getIdConsultaArea()
         ]);
@@ -61,6 +64,14 @@ class ConsultaRepository extends BaseRepository implements IConsultaRepository{
         $sql = "SELECT * FROM consultas_area_diarias WHERE ID_Sala = :idSala AND Fecha = :fecha";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':idSala' => $idSala, ':fecha' => $fecha]);
+        $rows = $stmt->fetchAll();
+        return array_map(fn($row) => $this->mapToEntity($row), $rows);
+    }
+
+    public function findBySalaFechaTurno(string $idSala, string $fecha, string $turno): array {
+        $sql = "SELECT * FROM consultas_area_diarias WHERE ID_Sala = :idSala AND Fecha = :fecha AND Turno = :turno";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':idSala' => $idSala, ':fecha' => $fecha, ':turno' => $turno]);
         $rows = $stmt->fetchAll();
         return array_map(fn($row) => $this->mapToEntity($row), $rows);
     }

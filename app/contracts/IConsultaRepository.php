@@ -5,6 +5,7 @@ interface IConsultaRepository {
     public function all(): array;
     public function find(int $id): ?ConsultaRegistro;
     public function findBySalaAndFecha(string $idSala, string $fecha): array;
+    public function findBySalaFechaTurno(string $idSala, string $fecha, string $turno): array;
     public function existsBySalaFechaTurnoArea(string $idSala, string $fecha, string $turno, string $idArea): bool;
     public function insert(ConsultaRegistro $consulta): int;
     public function update(ConsultaRegistro $consulta): bool;
