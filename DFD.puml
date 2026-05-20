@@ -1,0 +1,74 @@
+@startuml
+title Diagrama de Flujo - Arquitectura Base del Sistema (Library System)
+
+|#Navegador|
+start
+:Usuario realiza petición HTTP;
+-> (GET /Library_System/libros) ;
+
+|#Index|
+:index.php recibe la petición;
+:session_start();
+:require 'boots/init.php';
+
+|#Init|
+:init.php ejecuta:
+- require 'autoload.php';
+- cargar config/config.php;
+- definir constantes (BASE_PATH, VIEW_PATH, BASE_URL);
+- crear conexión PDO;
+:Retorna $pdo y $config a index.php;
+
+|#Autoload|
+:autoload.php registra spl_autoload_register;
+:Convierte App\Model\... en ruta de archivo;
+:Carga clases bajo demanda;
+
+|#Index|
+:Instancia repositorios (usando $pdo);
+:Instancia servicios (usando repositorios);
+:Construye array $container (mapa interfaces → instancias);
+:require 'app/routes/web.php' → obtiene $router;
+:Determina la URI (quitando BASE_URL);
+:Llama a $router->dispatch($uri, $method, $container);
+
+|#Router|
+:Busca ruta en $routes[$method][$uri];
+if (¿Ruta encontrada?) then (sí)
+  :Extrae "Controlador@metodo";
+  :Instancia controlador usando Reflection y $container;
+  :Ejecuta $controlador->$metodo();
+else (no)
+  :HTTP 404 Not Found;
+  stop
+endif
+
+|#Controlador|
+:Ejecuta método (ej. index, show);
+:Verifica autenticación (authenticate());
+:Verifica roles (middlewareRol());
+:Solicita datos a repositorios o servicios;
+:Prepara datos para la vista;
+:Llama a $this->render('vista', $data);
+
+|#BaseController|
+:BaseController::render() inicia buffer;
+:require VIEW_PATH . 'vista.php';
+:Retorna contenido del buffer;
+
+|#Controlador|
+:Recibe el HTML renderizado;
+:Retorna la respuesta;
+
+|#Router|
+:Recibe la respuesta del controlador;
+:La imprime (echo);
+
+|#Index|
+:La respuesta viaja de vuelta al cliente;
+
+|#Navegador|
+:Se muestra la página HTML;
+stop
+
+@enduml

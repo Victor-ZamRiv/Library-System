@@ -18,28 +18,25 @@ class VisitanteRepository extends BaseRepository implements IVisitanteRepository
         return $row ? $this->mapToEntity($row) : null;
     }
 
-    public function insert(VisitantesRegistro $registro): int {
-        if ($registro->getIdConteo() !== null) {
-            throw new \InvalidArgumentException("El registro ya tiene ID, no puede insertarse");
-        }
-
-        $sql = "INSERT INTO conteo_diario_visitantes 
-            (ID_Sala, Fecha, Niños_Hombres, Niños_Mujeres, Adolescentes_Hombres, Adolescentes_Mujeres, Adultos_Hombres, Adultos_Mujeres, ID_Admin)
-            VALUES (:idSala, :fecha, :ninosH, :ninosM, :adolH, :adolM, :adultH, :adultM, :idAdmin)";
+    public function insert(VisitantesRegistro $registro): int
+    {
+        $sql = "INSERT INTO {$this->table} 
+                (ID_Sala, Fecha, Niños_Hombres, Niños_Mujeres, Adolescentes_Hombres, Adolescentes_Mujeres, Adultos_Hombres, Adultos_Mujeres, Turno, ID_Admin)
+                VALUES (:sala, :fecha, :nh, :nm, :ah, :am, :adh, :adm, :turno, :admin)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
-            ':idSala' => $registro->getIdSala(),
-            ':fecha' => $registro->getFecha(),
-            ':ninosH' => $registro->getNinosHombres(),
-            ':ninosM' => $registro->getNinosMujeres(),
-            ':adolH' => $registro->getAdolescentesHombres(),
-            ':adolM' => $registro->getAdolescentesMujeres(),
-            ':adultH' => $registro->getAdultosHombres(),
-            ':adultM' => $registro->getAdultosMujeres(),
-            ':idAdmin' => $registro->getIdAdmin()
+            ':sala'   => $registro->getIdSala(),
+            ':fecha'  => $registro->getFecha(),
+            ':nh'     => $registro->getNinosHombres(),
+            ':nm'     => $registro->getNinosMujeres(),
+            ':ah'     => $registro->getAdolescentesHombres(),
+            ':am'     => $registro->getAdolescentesMujeres(),
+            ':adh'    => $registro->getAdultosHombres(),
+            ':adm'    => $registro->getAdultosMujeres(),
+            ':turno'  => $registro->getTurno(),
+            ':admin'  => $registro->getIdAdmin(),
         ]);
-
-        return (int)$this->pdo->lastInsertId();
+        return (int) $this->pdo->lastInsertId();
     }
 
     public function update(VisitantesRegistro $registro): bool {

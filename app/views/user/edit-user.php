@@ -5,6 +5,7 @@
 <?php
 include  VIEW_PATH . "/component/heat.php";
 $preguntas = $data['preguntas'] ?? [];
+$administrador = $data['administrador'] ?? null;
 ?>
 
 <body>
@@ -30,8 +31,9 @@ $preguntas = $data['preguntas'] ?? [];
                     <h3 class="panel-title"> MI CUENTA</h3>
                 </div>
                 <div class="panel-body">
-                    <form id="form-editar-usuario">
+                    <form method="POST" action="<?= BASE_URL ?>/administradores/update" id="form-editar-usuario">
                         <fieldset>
+                            <input type="hidden" name="idAdmin" value="<?= $administrador->getIdAdministrador() ?>">
                             <legend>Datos de Acceso </legend>
                             <div class="container-fluid">
                                 <div class="row">
@@ -46,21 +48,23 @@ $preguntas = $data['preguntas'] ?? [];
                                                 id="usuario-reg"
                                                 required=""
                                                 maxlength="15"
-                                                value="Admin"
+                                                value="<?=  htmlspecialchars($administrador->getNombreUsuario()) ?>"
                                                 onblur="if (!this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('user-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('user-error').style.display = 'none'; }">
                                             <div class="invalid-feedback bg-danger text-danger rounded-pill" id="user-error" style="display: none;">
                                                 <i class="fas fa-exclamation-circle"></i> Solo letras y números (4-15 caracteres).
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
-                                            <label class="control-label">Nivel de Acceso</label>
-                                            <input class="form-control" type="text" name="access-level-up" readonly value="Nivel 1">
+                                            <label class="control-label">Rol</label>
+                                            <select name="rol-up" id="rol-up" class="form-control">
+                                                <option value="Director" <?= ($administrador && $administrador->getRol() === 'Director') ? 'selected' : '' ?>>Director</option>
+                                                <option value="Jefe de sala" <?= ($administrador && $administrador->getRol() === 'Jefe de sala') ? 'selected' : '' ?>>Jefe de sala</option>
+                                                <option value="Bibliotecario" <?= ($administrador && $administrador->getRol() === 'Bibliotecario') ? 'selected' : '' ?>>Bibliotecario</option>
+                                            </select>
                                         </div>
                                     </div>
-
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
                                             <label class="control-label"><span class="text-danger">*</span> Contraseña</label>
@@ -69,10 +73,8 @@ $preguntas = $data['preguntas'] ?? [];
                                                 type="password"
                                                 name="password-up"
                                                 id="password1-reg"
-                                                required=""
                                                 minlength="8"
                                                 maxlength="70"
-                                                value="Admin*2025"
                                                 onblur="if (!this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('pass1-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('pass1-error').style.display = 'none'; }">
                                             <div class="invalid-feedback bg-danger text-danger rounded-pill" id="pass1-error" style="display: none;">
                                                 <i class="fas fa-exclamation-circle"></i> La contraseña debe tener mínimo 8 caracteres.
@@ -88,8 +90,6 @@ $preguntas = $data['preguntas'] ?? [];
                                                 type="password"
                                                 name="password-confirm-up"
                                                 id="password2-reg"
-                                                required=""
-                                                value="Admin*2025"
                                                 onblur="validarPasswordsUnificadas(this)">
                                             <div class="invalid-feedback bg-danger text-danger rounded-pill" id="pass2-error" style="display: none;">
                                                 <i class="fas fa-exclamation-circle"></i> Las contraseñas no coinciden.
@@ -98,12 +98,14 @@ $preguntas = $data['preguntas'] ?? [];
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
-                                            <label class="control-label"><span class="text-danger">*</span> Tipo de pregunta de seguridad </label>
+                                            <label class="control-label"><span class="text-danger">*</span> Pregunta de seguridad </label>
                                             <select class="form-control" name="pregunta-tipo-reg" id="pregunta-tipo-reg" required>
                                                 <option value="" disabled selected>Seleccione una opción</option>
                                                 <?php foreach ($preguntas as $pregunta): ?>
-                                                    <option value="<?= htmlspecialchars($pregunta->getIdPregunta()) ?>">
-                                                        <?= htmlspecialchars($pregunta->getDescripcion()) ?></option>
+                                                    <option 
+                                                        value="<?= htmlspecialchars($pregunta->getIdPregunta()) ?>"
+                                                        <?= ($administrador && $administrador->getIdPregunta() === $pregunta->getIdPregunta()) ? 'selected' : '' ?>>
+                                                        <?= htmlspecialchars($pregunta->getPregunta()) ?></option>
                                                 <?php endforeach; ?>
                                             </select>
                                         </div>
@@ -119,20 +121,12 @@ $preguntas = $data['preguntas'] ?? [];
                                                 name="pregunta-resp-reg"
                                                 id="pregunta-resp-reg"
                                                 pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{2,50}"
-                                                required
                                                 maxlength="50"
                                                 onblur="validarTexto(this, 'resp-error')">
 
                                             <div class="invalid-feedback bg-danger text-danger rounded-pill" id="resp-error" style="display: none;">
                                                 <i class="fas fa-exclamation-circle"></i> La respuesta es inválida.
                                             </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-xs-12 col-sm-6">
-                                        <div class="form-group label-floating">
-                                            <label class="control-label">Rol</label>
-                                            <input class="form-control" type="text" name="access-description-up" readonly value="Administrador">
                                         </div>
                                     </div>
 
@@ -151,7 +145,8 @@ $preguntas = $data['preguntas'] ?? [];
                                                 id="dni-reg"
                                                 required=""
                                                 maxlength="8"
-                                                value=""
+                                                readonly
+                                                value="<?=  htmlspecialchars($administrador->getPersona()->getCedula()) ?>"
                                                 onblur="if (!this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('dni-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('dni-error').style.display = 'none'; }">
                                             <div class="invalid-feedback bg-danger text-danger rounded-pill" id="dni-error" style="display: none;">
                                                 <i class="fas fa-exclamation-circle"></i> La Cédula es inválida (6-8 dígitos).
@@ -170,7 +165,8 @@ $preguntas = $data['preguntas'] ?? [];
                                                 id="nombre-reg"
                                                 required=""
                                                 maxlength="30"
-                                                value=""
+                                                readonly
+                                                value="<?=  htmlspecialchars($administrador->getPersona()->getNombre()) ?>"
                                                 onblur="if (!this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('nombre-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('nombre-error').style.display = 'none'; }">
                                             <div class="invalid-feedback bg-danger text-danger rounded-pill" id="nombre-error" style="display: none;">
                                                 <i class="fas fa-exclamation-circle"></i> Solo letras y espacios máximo 30 caracteres.
@@ -189,7 +185,8 @@ $preguntas = $data['preguntas'] ?? [];
                                                 id="apellido-reg"
                                                 required=""
                                                 maxlength="30"
-                                                value=""
+                                                readonly
+                                                value="<?=  htmlspecialchars($administrador->getPersona()->getApellido()) ?>"
                                                 onblur="if (!this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('apellido-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('apellido-error').style.display = 'none'; }">
                                             <div class="invalid-feedback bg-danger text-danger rounded-pill" id="apellido-error" style="display: none;">
                                                 <i class="fas fa-exclamation-circle"></i> Solo letras y espacios máximo 30 caracteres.
@@ -207,7 +204,7 @@ $preguntas = $data['preguntas'] ?? [];
                                                 name="user-phone-up"
                                                 id="telf-reg"
                                                 maxlength="11"
-                                                value="04248802343"
+                                                value="<?=  htmlspecialchars($administrador->getPersona()->getTelefono()) ?>"
                                                 onblur="if (this.value !== '' && !this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('tel-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('tel-error').style.display = 'none'; }">
                                             <div class="invalid-feedback bg-danger text-danger rounded-pill" id="tel-error" style="display: none;">
                                                 <i class="fas fa-exclamation-circle"></i> Por favor, ingrese un Teléfono válido Ejem: 0424-5772539 (solo 11 dígitos).

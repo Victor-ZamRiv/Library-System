@@ -1,7 +1,7 @@
 <div class="modal fade" id="modalRotacion" tabindex="-1" role="dialog" aria-labelledby="modalRotacionLabel">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header" style="background-color: #d9534f; color: white;">
+            <div class="modal-header" id="modalRotacionHeader" style="color: white;">
                 <button type="button" class="close" data-dismiss="modal" style="color: white; opacity: 1;"><span>&times;</span></button>
                 <h4 class="modal-title" id="modalRotacionLabel">
                     <i class="fa-solid fa-rotate"></i> Análisis Detallado: Índice de Rotación
@@ -18,11 +18,11 @@
                         </div>
                     </div>
                     <div class="col-md-6 text-center">
-                        <div style="padding: 20px; border: 2px dashed #eee; border-radius: 10px;">
-                            <h2 class="text-danger">24%</h2>
-                            <p class="text-muted">Estado Actual: <strong>Crítico</strong></p>
-                            <div class="progress">
-                                <div class="progress-bar progress-bar-danger" style="width: 24%"></div>
+                        <div id="modalRotacionContenedorBox" style="padding: 20px; border: 2px dashed #eee; border-radius: 10px;">
+                            <h2 id="modalRotacionPorcentaje" style="margin-top: 0; font-weight: bold;">0%</h2>
+                            <p class="text-muted" style="margin-bottom: 5px;">Estado Actual: <strong id="modalRotacionEstado">Evaluable</strong></p>
+                            <div class="progress" style="margin-bottom: 0;">
+                                <div id="modalRotacionBarra" class="progress-bar" style="width: 0%"></div>
                             </div>
                         </div>
                     </div>

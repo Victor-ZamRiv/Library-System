@@ -23,7 +23,7 @@
                     <h3 class="text-center text-titles">Formulario de Visitas</h3>
                     <hr>
                     <form action="<?= BASE_URL ?>/visitantes/store" method="POST" id="form-registro-visitantes">
-
+                        <input type="hidden" name="idAdmin" value="<?= $_SESSION['administrador']['id'] ?>">
                         <div class="row">
                             <div class="col-xs-12 col-sm-4">
                                 <div class="form-group label-floating">
@@ -47,8 +47,8 @@
                                         <option selected disabled>Seleccione una Sala</option>
                                         <option value="G">Sala General</option>
                                         <option value="R">Sala de Referencia</option>
-                                        <option value="Sala Estatal">Sala Estatal</option>
-                                        <option value="Sala Infantil">Sala Infantil</option>
+                                        <option value="SE">Sala Estatal</option>
+                                        <option value="X">Sala Infantil</option>
                                     </select>
                                 </div>
                             </div>
@@ -76,11 +76,11 @@
                                         <br>
                                         <input type="number" class="form-control input-numerico"
                                             name="<?php echo $key; ?>_f" id="<?php echo $key; ?>_f"
-                                            placeholder="Femenino (F)" min="0" required>
+                                            placeholder="Femenino (F)" min="0" value="0" required>
 
                                         <input type="number" class="form-control mt-2 input-numerico"
                                             name="<?php echo $key; ?>_m" id="<?php echo $key; ?>_m"
-                                            placeholder="Masculino (M)" min="0" required>
+                                            placeholder="Masculino (M)" min="0" value="0" required>
 
                                         <div class="invalid-feedback bg-danger text-danger rounded-pill error-msg" style="display: none;">
                                             <i class="fas fa-exclamation-circle"></i> Solo números positivos.
@@ -94,7 +94,7 @@
                         <h4 class="text-titles"><i class="fa-solid fa-book"></i> Obras (Clasificación)</h4>
                         <div class="row">
                             <?php
-                            $categorias = ["000", "100", "200", "300", "400", "500", "600", "700", "800", "900", "Biog"];
+                            $categorias = ["000", "100", "200", "300", "400", "500", "600", "700", "800", "900", "N","NV", "Biog"];
                             foreach ($categorias as $cat): ?>
                                 <div class="col-xs-4 col-sm-2">
                                     <div class="form-group label-floating">

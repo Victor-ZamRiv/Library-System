@@ -74,13 +74,13 @@ class PersonaRepository extends BaseRepository Implements IPersonaRepository {
         }
 
         $sql = "UPDATE persona 
-                SET Nombre = :nombre, Apellido = :apellido, Email = :email, Telefono = :telefono
+                SET Nombre = :nombre, Apellido = :apellido, Telefono = :telefono
                 WHERE ID_Persona = :id";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             ':nombre' => $persona->getNombre(),
             ':apellido' => $persona->getApellido(),
-            ':email' => $persona->getEmail(),
+             //':email' => $persona->getEmail(),
             ':telefono' => $persona->getTelefono(),
             ':id' => $persona->getIdPersona()
         ]);

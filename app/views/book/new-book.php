@@ -4,7 +4,27 @@
 <head>
     <title>Gestión de Libros</title>
     <?php include VIEW_PATH . "/component/heat.php"; ?>
-    
+    <style>
+        /* Forzamos a que las columnas de la fila usen Flexbox */
+        .flex-row {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        /* Hacemos que el panel ocupe el 100% de la altura de su columna */
+        .flex-panel {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            margin-bottom: 0; /* Evita desfases por márgenes por defecto */
+        }
+        /* Asegura que el cuerpo del panel se estire para llenar el espacio sobrante */
+        .flex-panel .panel-body {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Alinea el contenido y los botones de forma simétrica */
+        }
+    </style>
 </head>
 
 <body>
@@ -20,33 +40,40 @@
         </div>
 
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-xs-12 col-sm-6">
-                    <div class="panel panel-success">
+            <!-- Añadimos la clase flex-row aquí -->
+            <div class="row flex-row">
+                <div class="col-xs-12 col-sm-6" style="margin-bottom: 20px;">
+                    <!-- Añadimos la clase flex-panel aquí -->
+                    <div class="panel panel-success flex-panel">
                         <div class="panel-heading">
                             <h3 class="panel-title"><i class="fa-solid fa-plus"></i> REGISTRO COMPLETO</h3>
                         </div>
                         <div class="panel-body text-center">
-                            <p>Utilice esta opción para registrar un libro que <b>no existente</b> en el catálogo.</p>
-                            <br>
-                            <i class="fa-solid fa-book-medical fa-5x" style="color: #4caf50;"></i>
+                            <div>
+                                <p>Utilice esta opción para registrar un libro que <b>no existente</b> en el catálogo.</p>
+                                <br>
+                                <i class="fa-solid fa-book-medical fa-5x" style="color: #4caf50;"></i>
+                            </div>
                             <br><br>
-                            <a href="<?= BASE_URL ?>/libros/create" class="btn btn-success btn-raised btn-lg">
-                                REGISTRAR NUEVO LIBRO
-                            </a>
+                            <div>
+                                <a href="<?= BASE_URL ?>/libros/create" class="btn btn-success btn-raised btn-lg">
+                                    REGISTRAR NUEVO LIBRO
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-xs-12 col-sm-6">
-                    <div class="panel panel-info">
+                <div class="col-xs-12 col-sm-6" style="margin-bottom: 20px;">
+                    <!-- Añadimos la clase flex-panel aquí -->
+                    <div class="panel panel-info flex-panel">
                         <div class="panel-heading">
                             <h3 class="panel-title"><i class="fa-solid fa-copy"></i> AGREGAR EDICIÓN</h3>
                         </div>
                         <div class="panel-body">
                             <p class="text-center">Si el libro ya existe, solo ingrese la <b>Cota</b> para añadir una nueva edición del mismo.</p>
 
-                            <form action="<?= BASE_URL ?>/libros/nueva-edicion" method="POST" id="form-ejemplar">
+                            <form action="<?= BASE_URL ?>/libros/nueva-edicion" method="POST" id="form-ejemplar" style="flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
                                 <div class="form-group label-floating">
                                     <label class="control-label" for="cota-ejemplar">
                                         <span class="text-danger">*</span> Cota del Libro:
@@ -73,7 +100,7 @@
                                     <p class="help-block">Ej: NH 234 o 120 A563</p>
                                 </div>
 
-                                <p class="text-center">
+                                <p class="text-center" style="margin-bottom: 0;">
                                     <button type="submit" class="btn btn-info btn-raised">
                                         AÑADIR EJEMPLAR
                                     </button>

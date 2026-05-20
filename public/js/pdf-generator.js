@@ -66,8 +66,17 @@ async function descargarPDF(tipo) {
         
         // --- MANEJO DE RUTAS ---
         const baseUrl = window.BASE_URL || ''; 
-        const logoIzquierdoUrl = `${baseUrl}/img/img-login/libro.png`; 
-        const logoDerechoUrl = `${baseUrl}/img/img-login/gobernacion1.png`; 
+        
+        // Logos del Cintillo Superior
+        const logoIzquierdoUrl = `${baseUrl}/img/img-login/gobernacion.png`; 
+        const logoDerechoUrl = `${baseUrl}/img/img-login/libro.png`; 
+
+        // =========================================================================
+        // CAMBIA AQUÍ LOS LOGOS INFERIORES: Coloca el nombre real de tus archivos
+        // =========================================================================
+        const logoInferiorIzqUrl = `${baseUrl}/img/img-login/sucre.png`; 
+        const logoInferiorDerUrl = `${baseUrl}/img/img-login/division.png`; 
+        // =========================================================================
 
         const cargarImagen = (url) => {
             return new Promise((resolve) => {
@@ -82,14 +91,17 @@ async function descargarPDF(tipo) {
             });
         };
 
+        // Carga asíncrona de las 4 imágenes en paralelo
+        const [imgIzq, imgDer, imgInfIzq, imgInfDer] = await Promise.all([
+            cargarImagen(logoIzquierdoUrl),
+            cargarImagen(logoDerechoUrl),
+            cargarImagen(logoInferiorIzqUrl),
+            cargarImagen(logoInferiorDerUrl)
+        ]);
+
         // --- DISEÑO: Cintillo Superior Institucional ---
         doc.setFillColor(255, 255, 255);
         doc.rect(0, 0, 210, 35, 'F');
-
-        const [imgIzq, imgDer] = await Promise.all([
-            cargarImagen(logoIzquierdoUrl),
-            cargarImagen(logoDerechoUrl)
-        ]);
 
         if (imgIzq) doc.addImage(imgIzq, 'PNG', 12, 5, 22, 22);
         if (imgDer) doc.addImage(imgDer, 'PNG', 176, 5, 22, 22);
@@ -101,7 +113,7 @@ async function descargarPDF(tipo) {
         const centerX = 105;
         doc.text("República Bolivariana de Venezuela", centerX, 8, { align: "center" });
         doc.text("Gobernación del Estado Sucre", centerX, 12, { align: "center" });
-        doc.text("Dirección de Cultura del Estado Sucre", centerX, 16, { align: "center" });
+        doc.text("Instituto Autónomo de Cultura del Estado Sucre", centerX, 16, { align: "center" });
         doc.text("División de Bibliotecas Públicas del Estado Sucre", centerX, 20, { align: "center" });
         
         doc.setFont("helvetica", "bold");
@@ -183,22 +195,42 @@ async function descargarPDF(tipo) {
             margin: { left: 14, right: 14 }
         });
 
-        // --- SECCIÓN DE FIRMAS ---
+        // --- SECCIÓN DE FIRMAS Y LOGOS INFERIORES ---
         const pageHeight = doc.internal.pageSize.height;
         let finalY = doc.lastAutoTable.finalY + 25;
         
-        // Evitar que las firmas queden fuera de la página
-        if (finalY + 20 > pageHeight) {
+        // Control de salto de página: evitar que firmas + logos se corten
+        if (finalY + 35 > pageHeight) {
             doc.addPage();
             finalY = 30;
         }
         
+        // 1. Renderizar Bloque de Firmas
         doc.setFontSize(9);
         doc.setTextColor(0);
         doc.text("__________________________", 55, finalY, { align: "center" });
         doc.text("Firma del Responsable", 55, finalY + 5, { align: "center" });
         doc.text("__________________________", 155, finalY, { align: "center" });
         doc.text("Sello de la Institución", 155, finalY + 5, { align: "center" });
+
+        // 2. Renderizar Logos Inferiores Nuevos
+        const logosBottomY = pageHeight - 27; 
+
+        // Líneas decorativas de cierre
+        doc.setDrawColor(0, 0, 0);
+        doc.setLineWidth(0.1);
+        doc.line(12, logosBottomY - 4, 198, logosBottomY - 4);
+        doc.setLineWidth(0.4);
+        doc.line(12, logosBottomY - 2.5, 198, logosBottomY - 2.5);
+
+        // Renderizado usando las variables de las nuevas imágenes cargadas arriba
+        if (imgInfIzq) doc.addImage(imgInfIzq, 'PNG', 12, logosBottomY, 22, 22);
+        if (imgInfDer) doc.addImage(imgInfDer, 'PNG', 176, logosBottomY, 22, 22);
+
+        // Pie de página institucional centrado
+        doc.setFont("helvetica", "italic");
+        doc.setFontSize(7);
+        doc.text("Biblioteca Pública Central 'Armando Zuloaga Blanco' - Estado Sucre", centerX, logosBottomY + 10, { align: "center" });
 
         // ABRIR PDF
         window.open(doc.output('bloburl'), '_blank');

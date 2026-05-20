@@ -9,6 +9,7 @@ use App\Contracts\IPersonaRepository;
 use App\Contracts\IPreguntaRepository;
 use App\Models\Entities\Persona;
 use App\Models\Entities\Administrador;
+use Exception;
 use RuntimeException;
 
 class AdministradorController extends BaseController {
@@ -118,6 +119,59 @@ class AdministradorController extends BaseController {
             $_SESSION['error'] = "Error al registrar administrador: " . $e->getMessage();
             $_SESSION['old_data'] = $_POST;
             $this->redirect("/administradores/register");
+        }
+    }
+
+    public function update() {
+        try {
+            $idAdmin = (int)$this->input('idAdmin');
+            $admin = $this->adminRepo->find($idAdmin);
+
+            if (!$admin) {
+                throw new Exception("Administrador no encontrado.");
+            }
+            $persona = $this->personaRepo->find($admin->getIdPersona());
+            if (!$persona) {
+                throw new Exception("Datos personales del administrador no encontrados.");
+            }
+
+            // Actualizar campos editables
+            if ($this->input('username-up') !== $admin->getNombreUsuario() && $this->adminRepo->existsUsername($this->input('username-up'), $idAdmin)) {
+                throw new Exception("El nombre de usuario ya está en uso por otro administrador.");
+            }
+            if ($admin->getNombreUsuario() !== $this->input('username-up')){
+                $admin->setNombreUsuario($this->input('username-up'));
+                $_SESSION['administrador']['nombre_usuario'] = $this->input('username-up');  
+            }
+            $persona->setTelefono($this->input('user-phone-up'));
+            if ($this->input('password-up') && $this->input('password-up') !== '') {
+                $admin->setContrasenaHash(password_hash($this->input('password-up'), PASSWORD_DEFAULT));
+            }
+            $admin->setRol($this->input('rol-up'));
+            if ($this->input('pregunta-tipo-reg') && $admin->getIdPregunta() !== (int)$this->input('pregunta-tipo-reg')) {
+                $admin->setIdPregunta($this->input('pregunta-tipo-reg'));
+            }
+            if ($this->input('pregunta-resp-reg') && $this->input('pregunta-resp-reg') !== '') {
+                $admin->setRespuestaHash(password_hash($this->input('pregunta-resp-reg'), PASSWORD_DEFAULT));
+            }
+
+            // Delegar actualización al repositorio
+            $this->personaRepo->update($persona);
+            $this->adminRepo->update($admin);
+
+            $_SESSION['success'] = "Administrador actualizado con éxito.";
+            $this->redirect("/administradores/show?id=" . $idAdmin);
+
+        } catch (\RuntimeException $e) {
+            http_response_code(500);
+            return $this->render('errors/error', [
+                'mensaje' => "Ocurrió un error inesperado al actualizar el administrador.",
+                'detalle' => $e->getMessage()
+            ]);
+        } catch (\Exception $e) {
+            $_SESSION['error'] = "Error al actualizar administrador: " . $e->getMessage();
+            $_SESSION['old_data'] = $_POST;
+            return $this->redirect("/administradores/edit?id=" . (int)$this->input('idAdmin', 0));
         }
     }
 

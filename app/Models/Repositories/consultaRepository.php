@@ -18,24 +18,20 @@ class ConsultaRepository extends BaseRepository implements IConsultaRepository{
         return $row ? $this->mapToEntity($row) : null;
     }
 
-    public function insert(ConsultaRegistro $consulta): int {
-        if ($consulta->getIdConsultaArea() !== null) {
-            throw new \InvalidArgumentException("La consulta ya tiene ID, no puede insertarse");
-        }
-
-        $sql = "INSERT INTO consultas_area_diarias 
+    public function insert(ConsultaRegistro $consulta): int
+    {
+        $sql = "INSERT INTO {$this->table} 
                 (ID_Sala, ID_Area, Fecha, Cantidad_Consultada, ID_Admin)
-                VALUES (:idSala, :idArea, :fecha, :cantidad, :idAdmin)";
+                VALUES (:sala, :area, :fecha, :cant, :admin)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
-            ':idSala' => $consulta->getIdSala(),
-            ':idArea' => $consulta->getIdArea(),
-            ':fecha' => $consulta->getFecha(),
-            ':cantidad' => $consulta->getCantidadConsultada(),
-            ':idAdmin' => $consulta->getIdAdmin()
+            ':sala'   => $consulta->getIdSala(),
+            ':area'   => $consulta->getIdArea(),
+            ':fecha'  => $consulta->getFecha(),
+            ':cant'   => $consulta->getCantidadConsultada(),
+            ':admin'  => $consulta->getIdAdmin(),
         ]);
-
-        return (int)$this->pdo->lastInsertId();
+        return (int) $this->pdo->lastInsertId();
     }
 
     public function update(ConsultaRegistro $consulta): bool {

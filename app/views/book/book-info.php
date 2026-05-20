@@ -1,78 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
+    <link rel="stylesheet" href="<?= PUBLIC_PATH ?>/css/style-book-info.css">
 <style>
-    .ficha-bibliografica {
-        background-color: #fff;
-        border: 2px solid #333;
-        padding: 0;
-        font-family: 'Courier New', Courier, monospace;
-        /* Fuente estilo máquina de escribir */
-        color: #000;
-        max-width: 800px;
-        margin: 20px auto;
-        text-transform: uppercase;
-        /* La mayoría de las fichas usan mayúsculas */
-    }
-
-    .ficha-row {
-        display: flex;
-        border-bottom: 1px solid #333;
-    }
-
-    .ficha-row:last-child {
-        border-bottom: none;
-    }
-
-    .ficha-item {
-        padding: 8px;
-        border-right: 1px solid #333;
-    }
-
-    .ficha-item:last-child {
-        border-right: none;
-    }
-
-    .label-ficha {
-        font-weight: bold;
-        font-size: 0.85em;
-        margin-right: 5px;
-    }
-
-    .content-ficha {
-        font-size: 1.1em;
-        text-decoration: underline;
-        /* Simula la línea donde se escribe */
-    }
-
-    /* Estilo específico para la COTA (el recuadro lateral) */
-    .cota-box {
-        width: 150px;
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        border-right: 2px solid #333;
-    }
-
-    @media print {
-
-        .sidebar,
-        .navbar,
-        .btn,
-        .page-header {
-            display: none !important;
-        }
-
-        .ficha-bibliografica {
-            border: 2px solid #000;
-            width: 100%;
-        }
-
-        .full-box {
-            margin: 0;
-            padding: 0;
-        }
-    }
+    
 </style>
 <title>Info Libro</title>
 <!-- SideBar -->
@@ -193,12 +123,20 @@
 
                     </div>
 
+
+
                     <!-- Botones de Acción -->
                     <p class="text-center" style="margin-top: 20px;">
                         <a href="<?= BASE_URL ?>/libros" class="btn btn-secondary btn-raised">Volver</a>
                         <button onclick="window.print();" class="btn btn-info btn-raised">Imprimir Ficha</button>
                         <a href="<?= BASE_URL ?>/libros/edit?id=<?= $libro->getIdLibro() ?>" class="btn btn-warning btn-raised">Editar Libro</a>
                     </p>
+                </div>
+                <div class="etiqueta-lomo-oculta">
+
+                    <div style="font-weight: bold;"><?= htmlspecialchars($libro->getIdsala()) ?></div>
+                    <div style="font-weight: bold;"><?= htmlspecialchars($libro->getCota()) ?></div>
+
                 </div>
             </div>
         </div>

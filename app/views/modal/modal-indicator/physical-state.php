@@ -1,7 +1,8 @@
 <div class="modal fade" id="modalEstadoFisico" tabindex="-1" role="dialog" aria-labelledby="modalEstadoFisicoLabel">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header" style="background-color: #5cb85c; color: white;">
+            <!-- ID para cambiar dinámicamente el fondo del header -->
+            <div class="modal-header" id="modalFisicoHeader" style="color: white;">
                 <button type="button" class="close" data-dismiss="modal" style="color: white; opacity: 1;"><span>&times;</span></button>
                 <h4 class="modal-title" id="modalEstadoFisicoLabel">
                     <i class="fa-solid fa-book-medical"></i> Salud de la Colección por Sala
@@ -14,15 +15,19 @@
                         <h4>Estado Global</h4>
                         <p>Porcentaje de libros que se encuentran en condiciones óptimas para el préstamo y consulta directa.</p>
                         <div class="well well-sm">
-                            <i class="fa-solid fa-circle-info"></i> <strong>Nota:</strong> Los libros en la sala <strong>Infantil</strong> requieren revisión semanal debido al alto uso.
+                            <strong>Fórmula:</strong> <br>
+                            (Ejemplares en buen estado / Total ejemplares auditados) × 100
                         </div>
                     </div>
                     <div class="col-md-6 text-center">
-                        <div style="padding: 20px; border: 2px dashed #5cb85c; border-radius: 10px; background-color: #f9fff9;">
-                            <h2 style="color: #5cb85c; margin-top: 0;">92%</h2>
-                            <p class="text-muted">Promedio General</p>
+                        <!-- ID para cambiar dinámicamente el color del borde y fondo de la caja informativa -->
+                        <div id="modalFisicoContenedorPorcentaje" style="padding: 20px; border: 2px dashed #ddd; border-radius: 10px;">
+                            <!-- ID para cambiar el texto y color del porcentaje grande -->
+                            <h2 id="modalFisicoPorcentaje" style="margin-top: 0; font-weight: bold;">--%</h2>
+                            <p class="text-muted" style="margin-bottom: 5px;">Promedio General (<span id="modalFisicoEstadoText">--</span>)</p>
                             <div class="progress" style="margin-bottom: 0;">
-                                <div class="progress-bar progress-bar-success" style="width: 92%"></div>
+                                <!-- ID para alterar el width y la clase de color de la barra -->
+                                <div id="modalFisicoBarra" class="progress-bar" style="width: 0%"></div>
                             </div>
                         </div>
                     </div>

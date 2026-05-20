@@ -1,7 +1,24 @@
 <!DOCTYPE html>
 <html lang="es">
 <title>Nuevo Libro</title>
+<style>
+    .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+        /* Esto es clave: permite que el navegador lo encuentre pero no lo muestre */
+        opacity: 0;
+        pointer-events: none;
+    }
+</style>
+
 <?php include VIEW_PATH . '/component/heat.php'; ?>
+
 <body>
 
     <?php include VIEW_PATH . '/component/sidebar.php'; ?>
@@ -20,13 +37,17 @@
         </div>
 
         <div class="container-fluid">
-            
+
             <div class="panel panel-info">
                 <div class="panel-heading">
                     <h3 class="panel-title">&nbsp; REGISTRAR NUEVO LIBRO</h3>
                 </div>
                 <div class="panel-body">
-                    <form action="<?php if(isset($libro)) { echo '/library_system/libros/nueva-edicion/store'; } else { echo '/library_system/libros'; } ?>" method="POST" enctype="multipart/form-data" id="form-registro-libro">
+                    <form action="<?php if (isset($libro)) {
+                                        echo '/library_system/libros/nueva-edicion/store';
+                                    } else {
+                                        echo '/library_system/libros';
+                                    } ?>" method="POST" enctype="multipart/form-data" id="form-registro-libro">
                         <fieldset>
                             <legend> &nbsp; Información del Libro</legend>
                             <div class="container-fluid">
@@ -35,7 +56,15 @@
                                         <div class="form-group label-floating">
                                             <label class="control-label"><span class="text-danger">*</span> Sala <i class="fa-solid fa-angle-down"></i></label>
                                             <div class="dropdown">
-                                                <input type="text" id="sala-display" class="form-control" readonly data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer; background-color: transparent;">
+                                                <input type="text"
+                                                    id="sala-display"
+                                                    class="form-control"
+                                                    readonly
+                                                    data-toggle="dropdown"
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false"
+                                                    style="cursor: pointer; background-color: transparent;"
+                                                    placeholder="Seleccione una sala">
                                                 <ul class="dropdown-menu" id="dropdown-sala" style="width: 100%;">
                                                     <li><a href="#!" data-value="G">Sala General</a></li>
                                                     <li><a href="#!" data-value="R">Sala de Referencia</a></li>
@@ -43,20 +72,27 @@
                                                     <li><a href="#!" data-value="X">Sala Infantil</a></li>
                                                 </ul>
                                             </div>
-                                            <input type="hidden" name="sala-reg" id="salaSelect" required>
+                                            <!-- Campo oculto -->
+                                            <input type="text" name="sala-reg" id="salaSelect" class="visually-hidden" required>
+                                            <!-- Mensaje de error -->
+                                            <div class="invalid-feedback bg-danger text-danger p-1 rounded" id="sala-error" style="display: none; margin-top: 5px;">
+                                                <i class="fas fa-exclamation-circle"></i> Por favor, seleccione una sala.
+                                            </div>
                                         </div>
                                     </div>
 
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
-                                            <label class="control-label" id="label-area">Área infantil</label>
+                                            <label class="control-label" id="label-area">Área infantil <span class="text-danger" id="asterisk-area" style="display: none;">*</span> <i class="fa-solid fa-angle-down"></i></label>
                                             <div class="dropdown">
-                                                <div id="area-display-container" class="form-control" data-toggle="dropdown"
-                                                    style="cursor: pointer; height: 34px; padding-top: 7px;">
-                                                    <span id="area-text-content"></span>
+                                                <div id="area-display-container"
+                                                    class="form-control"
+                                                    data-toggle="dropdown"
+                                                    style="cursor: pointer; height: 34px; padding-top: 7px; pointer-events: none; opacity: 0.5;"
+                                                    placeholder="Seleccione un área">
+                                                    <span id="area-text-content">Seleccione un área infantil</span>
                                                 </div>
-
-                                                <ul class="dropdown-menu " id="dropdown-area">
+                                                <ul class="dropdown-menu" id="dropdown-area" style="width: 100%;">
                                                     <li>
                                                         <a href="#!" data-value="Cuento infantil">
                                                             <span style="height: 10px; width: 10px; background-color: #e91e63; display: inline-block; border-radius: 50%; margin-right: 4px;"></span>
@@ -80,7 +116,12 @@
                                                     </li>
                                                 </ul>
                                             </div>
-                                            <input type="hidden" name="area-reg" id="areaSelect">
+                                            <!-- Campo oculto -->
+                                            <input type="text" name="area-reg" id="areaSelect" class="visually-hidden">
+                                            <!-- Mensaje de error -->
+                                            <div class="invalid-feedback bg-danger text-danger p-1 rounded" id="area-error" style="display: none; margin-top: 5px;">
+                                                <i class="fas fa-exclamation-circle"></i> Por favor, seleccione un área infantil.
+                                            </div>
                                         </div>
                                     </div>
 
@@ -92,11 +133,11 @@
                                                 pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s]+"
                                                 title="Solo se permiten letras, números y espacios"
                                                 <?php if (isset($libro)): ?>
-                                                    value="<?= htmlspecialchars($libro->getTitulo()) ?>"
-                                                    readonly
+                                                value="<?= htmlspecialchars($libro->getTitulo()) ?>"
+                                                readonly
                                                 <?php else: ?>
-                                                    value="<?= htmlspecialchars($old['titulo'] ?? '')?>"
-                                                    required
+                                                value="<?= htmlspecialchars($old['titulo'] ?? '') ?>"
+                                                required
                                                 <?php endif; ?>
                                                 aria-describedby="titulo-error"
                                                 onblur="validarTitulo(this)">
@@ -119,13 +160,13 @@
                                                 maxlength="30"
                                                 title="Ej: NH 234 o 120 A563."
                                                 <?php if (isset($libro)): ?>
-                                                    value="<?= htmlspecialchars($libro->getCota()) ?>"
-                                                    readonly
+                                                value="<?= htmlspecialchars($libro->getCota()) ?>"
+                                                readonly
                                                 <?php else: ?>
-                                                    value="<?= htmlspecialchars($old['cota'] ?? '') ?>"
-                                                    required
+                                                value="<?= htmlspecialchars($old['cota'] ?? '') ?>"
+                                                required
                                                 <?php endif; ?>
-                                                
+
                                                 aria-describedby="cota-error"
                                                 onblur="validarCota(this)">
 
@@ -146,10 +187,10 @@
                                                 maxlength="50"
                                                 pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios"
                                                 <?php if (isset($libro)): ?>
-                                                    <?php foreach ($libro->getAutores() as $autor): ?>
-                                                        value="<?= htmlspecialchars($autor->getNombre()) . ' ' ?>"
-                                                    <?php endforeach; ?>
-                                                    readonly
+                                                <?php foreach ($libro->getAutores() as $autor): ?>
+                                                value="<?= htmlspecialchars($autor->getNombre()) . ' ' ?>"
+                                                <?php endforeach; ?>
+                                                readonly
                                                 <?php else: ?>
                                                 value="<?= htmlspecialchars($old['autores'] ?? '') ?>"
                                                 required
@@ -175,11 +216,11 @@
                                                 id="ciudad"
                                                 maxlength="20"
                                                 <?php if (isset($libro)): ?>
-                                                    value="<?= htmlspecialchars($libro->getCiudad()) ?>"
-                                                    readonly
+                                                value="<?= htmlspecialchars($libro->getCiudad()) ?>"
+                                                readonly
                                                 <?php else: ?>
-                                                    value="<?= htmlspecialchars($old['ciudad'] ?? '') ?>"
-                                                    required
+                                                value="<?= htmlspecialchars($old['ciudad'] ?? '') ?>"
+                                                required
                                                 <?php endif; ?>
                                                 title="Solo se permiten letras y espacios, máximo 20 caracteres"
                                                 aria-describedby="ciudad-error"
@@ -271,9 +312,9 @@
                                                 type="text" inputmode="numeric" name="paginas"
                                                 id="paginas-reg" maxlength="4"
                                                 <?php if (isset($libro)): ?>
-                                                    value="<?= htmlspecialchars($libro->getPaginas()) ?>"
+                                                value="<?= htmlspecialchars($libro->getPaginas()) ?>"
                                                 <?php else: ?>
-                                                    value="<?= htmlspecialchars($old['paginas'] ?? '') ?>"
+                                                value="<?= htmlspecialchars($old['paginas'] ?? '') ?>"
                                                 <?php endif; ?>
                                                 required title="Solo se permiten números, entre 1 y 4 dígitos" aria-describedby="paginas-error" onblur="validarPaginas(this)" onkeypress="return isNumberKey(event)">
 
@@ -295,9 +336,9 @@
                                                 name="editorial"
                                                 id="editorial-reg" maxlength="70"
                                                 <?php if (isset($libro)): ?>
-                                                    value="<?= htmlspecialchars($libro->getEditorial() ? $libro->getEditorial()->getNombre() : '') ?>"
+                                                value="<?= htmlspecialchars($libro->getEditorial() ? $libro->getEditorial()->getNombre() : '') ?>"
                                                 <?php else: ?>
-                                                    value="<?= htmlspecialchars($old['editorial'] ?? '') ?>"
+                                                value="<?= htmlspecialchars($old['editorial'] ?? '') ?>"
                                                 <?php endif; ?>
                                                 required title="Solo se permiten letras y espacios, máximo 70 caracteres" aria-describedby="editorial-error" onblur="validarEditorial(this)">
 
@@ -344,11 +385,11 @@
                                             <label class="control-label" for="observaciones-reg">Observaciones:</label>
 
                                             <textarea
-                                                name="observaciones" 
-                                                class="form-control" 
-                                                id="observaciones-reg" 
-                                                rows="4" 
-                                                maxlength="400" 
+                                                name="observaciones"
+                                                class="form-control"
+                                                id="observaciones-reg"
+                                                rows="4"
+                                                maxlength="400"
                                                 onblur="validarObservaciones(this)"><?= htmlspecialchars($old['observaciones'] ?? '') ?></textarea>
 
                                             <div class="invalid-feedback bg-danger text-danger rounded-pill" id="observaciones-error" style="display: none;">
@@ -402,12 +443,11 @@
 
 
     <!--====== Scripts -->
-    
     <?php include VIEW_PATH . "/component/scripts.php"; ?>
     <script src="<?php echo PUBLIC_PATH; ?>/js/validations/book/createvalidation.js"></script>
     <script src=" <?= PUBLIC_PATH ?> /js/modal/confirmation-new-book.js"></script>
 
 
-</body> 
+</body>
 
 </html>

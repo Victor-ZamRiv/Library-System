@@ -1,3 +1,4 @@
+<!-- modal/modal-indicator/visitor-graph.php -->
 <div class="modal fade" id="modalDetalleConsultasGrafico" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -12,25 +13,24 @@
                     <div class="col-sm-4">
                         <div class="well well-sm text-center">
                             <h5 class="text-uppercase">Total Periodo</h5>
-                            <h3 class="text-primary">210</h3>
+                            <h3 class="text-primary" id="modal-total-periodo">--</h3>
                         </div>
                     </div>
                     <div class="col-sm-4">
                         <div class="well well-sm text-center">
                             <h5 class="text-uppercase">Más concurrido</h5>
-                            <h3 class="text-success">Jueves</h3>
+                            <h3 class="text-success" id="modal-dia-mas-concurrido">--</h3>
                         </div>
                     </div>
                     <div class="col-sm-4">
                         <div class="well well-sm text-center">
                             <h5 class="text-uppercase">Tendencia</h5>
-                            <h3 class="text-warning"><i class="fa-solid fa-arrow-up"></i> 12%</h3>
+                            <h3 class="text-warning" id="modal-tendencia">--</h3>
                         </div>
                     </div>
                 </div>
-
                 <div class="table-responsive">
-                    <table class="table table-hover table-striped table-bordered">
+                    <table class="table table-hover table-striped table-bordered" id="tabla-detalle-modal">
                         <thead>
                             <tr class="info">
                                 <th>Periodo / Día</th>
@@ -41,32 +41,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Lunes</td>
-                                <td>10</td>
-                                <td>30</td>
-                                <td><strong>40</strong></td>
-                                <td>19%</td>
-                            </tr>
-                            <tr>
-                                <td>Martes</td>
-                                <td>15</td>
-                                <td>30</td>
-                                <td><strong>45</strong></td>
-                                <td>21%</td>
-                            </tr>
-                            <tr>
-                                <td>Miércoles</td>
-                                <td>8</td>
-                                <td>30</td>
-                                <td><strong>38</strong></td>
-                                <td>18%</td>
-                            </tr>
-                            </tbody>
+                            <tr><td colspan="5" class="text-center">Cargando...</td></tr>
+                        </tbody>
                         <tfoot>
                             <tr class="active">
                                 <th colspan="3" class="text-right">TOTAL ACUMULADO:</th>
-                                <th colspan="2" class="text-primary">123 Obras</th>
+                                <th colspan="2" class="text-primary" id="modal-total-acumulado">--</th>
                             </tr>
                         </tfoot>
                     </table>
@@ -74,7 +54,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default btn-raised" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary btn-raised"><i class="fa-solid fa-file-pdf"></i> Exportar PDF</button>
+                <button type="button" class="btn btn-primary btn-raised" onclick="window.location.href='<?= BASE_URL ?>/reportes/consultas-pdf?periodo=' + periodoActual"><i class="fa-solid fa-file-pdf"></i> Exportar PDF</button>
             </div>
         </div>
     </div>

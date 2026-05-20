@@ -11,9 +11,22 @@
 
 <!DOCTYPE html>
 <html lang="es">
-<?php include VIEW_PATH . "/component/heat.php";
-?>
-
+<?php include VIEW_PATH . "/component/heat.php";?>
+<style>
+    .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+        /* Esto es clave: permite que el navegador lo encuentre pero no lo muestre */
+        opacity: 0;
+        pointer-events: none;
+    }
+</style>
 <body>
 
     <?php include VIEW_PATH . "/component/sidebar.php"; ?>
@@ -44,7 +57,15 @@
                                         <div class="form-group label-floating">
                                             <label class="control-label"><span class="text-danger">*</span> Sala <i class="fa-solid fa-angle-down"></i></label>
                                             <div class="dropdown">
-                                                <input type="text" id="sala-display" class="form-control" readonly data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer; background-color: transparent;">
+                                                <input type="text"
+                                                    id="sala-display"
+                                                    class="form-control"
+                                                    readonly
+                                                    data-toggle="dropdown"
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false"
+                                                    style="cursor: pointer; background-color: transparent;"
+                                                    placeholder="Seleccione una sala">
                                                 <ul class="dropdown-menu" id="dropdown-sala" style="width: 100%;">
                                                     <li><a href="#!" data-value="G">Sala General</a></li>
                                                     <li><a href="#!" data-value="R">Sala de Referencia</a></li>
@@ -52,20 +73,27 @@
                                                     <li><a href="#!" data-value="X">Sala Infantil</a></li>
                                                 </ul>
                                             </div>
-                                            <input type="hidden" name="sala-reg" id="salaSelect" required>
+                                            <!-- Campo oculto -->
+                                            <input type="text" name="sala-reg" id="salaSelect" class="visually-hidden" required>
+                                            <!-- Mensaje de error -->
+                                            <div class="invalid-feedback bg-danger text-danger p-1 rounded" id="sala-error" style="display: none; margin-top: 5px;">
+                                                <i class="fas fa-exclamation-circle"></i> Por favor, seleccione una sala.
+                                            </div>
                                         </div>
                                     </div>
 
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
-                                            <label class="control-label" id="label-area">Área infantil</label>
+                                            <label class="control-label" id="label-area">Área infantil <span class="text-danger" id="asterisk-area" style="display: none;">*</span> <i class="fa-solid fa-angle-down"></i></label>
                                             <div class="dropdown">
-                                                <div id="area-display-container" class="form-control" data-toggle="dropdown"
-                                                    style="cursor: pointer; height: 34px; padding-top: 7px;">
-                                                    <span id="area-text-content"></span>
+                                                <div id="area-display-container"
+                                                    class="form-control"
+                                                    data-toggle="dropdown"
+                                                    style="cursor: pointer; height: 34px; padding-top: 7px; pointer-events: none; opacity: 0.5;"
+                                                    placeholder="Seleccione un área">
+                                                    <span id="area-text-content">Seleccione un área infantil</span>
                                                 </div>
-
-                                                <ul class="dropdown-menu " id="dropdown-area">
+                                                <ul class="dropdown-menu" id="dropdown-area" style="width: 100%;">
                                                     <li>
                                                         <a href="#!" data-value="Cuento infantil">
                                                             <span style="height: 10px; width: 10px; background-color: #e91e63; display: inline-block; border-radius: 50%; margin-right: 4px;"></span>
@@ -89,7 +117,12 @@
                                                     </li>
                                                 </ul>
                                             </div>
-                                            <input type="hidden" name="area-reg" id="areaSelect">
+                                            <!-- Campo oculto -->
+                                            <input type="text" name="area-reg" id="areaSelect" class="visually-hidden">
+                                            <!-- Mensaje de error -->
+                                            <div class="invalid-feedback bg-danger text-danger p-1 rounded" id="area-error" style="display: none; margin-top: 5px;">
+                                                <i class="fas fa-exclamation-circle"></i> Por favor, seleccione un área infantil.
+                                            </div>
                                         </div>
                                     </div>
 
@@ -426,6 +459,7 @@
         </div>
 
     </section>
+ 
     <?php include VIEW_PATH . "/modal/confirmation_delete_copy.php"; ?>
     <?php include VIEW_PATH . "/component/scripts.php"; ?>
     <script src="<?php echo PUBLIC_PATH; ?>/js/validations/book/createvalidation.js"></script>

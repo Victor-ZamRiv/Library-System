@@ -94,14 +94,16 @@ class AdministradorRepository extends BaseRepository implements IAdministradorRe
 
     public function update(Administrador $Administrador): bool {
         $sql = "UPDATE administradores 
-                SET ID_Persona = :idPersona, Nombre_Usuario = :nombreUsuario, ContrasenaHash = :contrasena, Rol = :rol, Activo = :activo
-                WHERE ID_Administrador = :id";
+                SET ID_Persona = :idPersona, Nombre_Usuario = :nombreUsuario, ContrasenaHash = :contrasena, 
+                    Rol = :rol, RespuestaHash = :respuestaHash, Activo = :activo
+                WHERE ID_Admin = :id";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             ':idPersona' => $Administrador->getIdPersona(),
             ':nombreUsuario' => $Administrador->getNombreUsuario(),
             ':contrasena' => $Administrador->getContrasenaHash(),
             ':rol' => $Administrador->getRol(),
+            ':respuestaHash' => $Administrador->getRespuestaHash(),
             ':activo' => $Administrador->isActivo() ? 1 : 0,
             ':id' => $Administrador->getIdAdministrador()
         ]);

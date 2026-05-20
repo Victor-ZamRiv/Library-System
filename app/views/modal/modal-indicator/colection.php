@@ -1,7 +1,8 @@
 <div class="modal fade" id="modalColeccion" tabindex="-1" role="dialog" aria-labelledby="modalColeccionLabel">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header" style="background-color: #d9534f; color: white;">
+            <!-- ID para reescribir dinámicamente el color de fondo del encabezado -->
+            <div class="modal-header" id="modalColeccionHeader" style="color: white;">
                 <button type="button" class="close" data-dismiss="modal" style="color: white; opacity: 1;"><span>&times;</span></button>
                 <h4 class="modal-title" id="modalColeccionLabel">
                     <i class="fa-solid fa-archive"></i> Estado de Actualización de la Colección
@@ -13,16 +14,21 @@
                     <div class="col-md-6">
                         <h4>Déficit de Actualización</h4>
                         <p>Este indicador mide el porcentaje de títulos nuevos adquiridos en el último año frente a la meta de renovación bibliográfica anual.</p>
-                        <div class="well well-sm" style="border-left: 5px solid #d9534f;">
-                            <i class="fa-solid fa-circle-exclamation text-danger"></i> <strong>Alerta:</strong> El 65% de la colección tiene más de 10 años sin actualización en áreas críticas.
+                        <!-- ID para cambiar dinámicamente el color del borde izquierdo y adaptar la alerta -->
+                        <div class="well well-sm">
+                            <strong>Fórmula:</strong> <br>
+                            (Ejemplares registrados en Sala Estatal / Total de ejemplares) x 100
                         </div>
                     </div>
                     <div class="col-md-6 text-center">
-                        <div style="padding: 20px; border: 2px dashed #d9534f; border-radius: 10px; background-color: #fdf7f7;">
-                            <h2 style="color: #d9534f; margin-top: 0;">35%</h2>
-                            <p class="text-muted">Nivel de Renovación Actual</p>
+                        <!-- ID para alterar el color de los bordes y el fondo de la caja del indicador -->
+                        <div id="modalColeccionContenedorPorcentaje" style="padding: 20px; border: 2px dashed #ddd; border-radius: 10px;">
+                            <!-- ID para renderizar el porcentaje real -->
+                            <h2 id="modalColeccionPorcentaje" style="margin-top: 0; font-weight: bold;">--%</h2>
+                            <p class="text-muted" style="margin-bottom: 5px;">Nivel de Renovación Actual (<span id="modalColeccionEstadoText">--</span>)</p>
                             <div class="progress" style="margin-bottom: 0;">
-                                <div class="progress-bar progress-bar-danger" style="width: 35%"></div>
+                                <!-- ID para empujar la barra con el porcentaje real y aplicar la clase Bootstrap correspondiente -->
+                                <div id="modalColeccionBarra" class="progress-bar" style="width: 0%"></div>
                             </div>
                         </div>
                     </div>
@@ -37,7 +43,7 @@
                             <tr class="active">
                                 <th>Sala</th>
                                 <th>Títulos Totales</th>
-                                <th>Novedades (2024-25)</th>
+                                <th>Novedades (Recientes)</th>
                                 <th>Estado</th>
                                 <th>Acción Requerida</th>
                             </tr>

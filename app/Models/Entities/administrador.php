@@ -46,6 +46,7 @@ class Administrador extends Persona {
     public function getPersona(): ?Persona { return $this->persona; }
 
     // Setters
+    public function setIdAdmin(?int $idAdmin): void { $this->idAdmin = $idAdmin; }
     public function setNombreUsuario(string $nombreUsuario): void { $this->nombreUsuario = $nombreUsuario; }
     public function setContrasenaHash(string $hash): void { $this->contrasenaHash = $hash; }
     public function setRol(string $rol): void { $this->rol = $rol; }
@@ -53,7 +54,6 @@ class Administrador extends Persona {
     public function setIdPregunta(?int $idPregunta): void { $this->idPregunta = $idPregunta; }
     public function setRespuestaHash(?string $hash): void { $this->respuestaHash = $hash; }
     public function setPersona(Persona $persona): void { $this->persona = $persona; }
-
     
 }
 

@@ -1,0 +1,118 @@
+.ficha-bibliografica {
+        background-color: #fff;
+        border: 2px solid #333;
+        padding: 0;
+        font-family: 'Courier New', Courier, monospace;
+        /* Fuente estilo máquina de escribir */
+        color: #000;
+        max-width: 800px;
+        margin: 20px auto;
+        text-transform: uppercase;
+        /* La mayoría de las fichas usan mayúsculas */
+    }
+
+    .ficha-row {
+        display: flex;
+        border-bottom: 1px solid #333;
+    }
+
+    .ficha-row:last-child {
+        border-bottom: none;
+    }
+
+    .ficha-item {
+        padding: 8px;
+        border-right: 1px solid #333;
+    }
+
+    .ficha-item:last-child {
+        border-right: none;
+    }
+
+    .label-ficha {
+        font-weight: bold;
+        font-size: 0.85em;
+        margin-right: 5px;
+    }
+
+    .content-ficha {
+        font-size: 1.1em;
+        text-decoration: underline;
+        /* Simula la línea donde se escribe */
+    }
+
+    /* Estilo específico para la COTA (el recuadro lateral) */
+    .cota-box {
+        width: 150px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border-right: 2px solid #333;
+    }
+
+    /* Ocultar por defecto para que no se vea en la web */
+    .etiqueta-lomo-oculta {
+        display: none;
+    }
+
+    @media print {
+
+        /* 1. Ocultar elementos de la interfaz que no deben imprimirse */
+        .dashboard-contentPage>.container-fluid:first-of-type,
+        /* El header "Información Libro" */
+        .btn,
+        /* Los botones de acción */
+        .navbar,
+        /* Navbar si existe */
+        .sidebar {
+            /* Sidebar */
+            display: none !important;
+        }
+
+        /* 2. Hacemos visibles solo la ficha y el lomo */
+        .ficha-bibliografica,
+        .etiqueta-lomo-oculta {
+            visibility: visible !important;
+            display: block !important;
+            margin: 0 !important;
+            position: static !important;
+            float: none !important;
+        }
+
+        /* 3. Estilos de la Ficha al imprimir */
+        .ficha-bibliografica {
+            width: 400px !important;
+            height: 290px !important;
+            border: 2px solid #000 !important;
+            padding: 5px !important;
+            font-family: 'Courier New', Courier, monospace !important;
+            font-size: 10px !important;
+            margin-bottom: 20px !important;
+            /* Espacio antes del lomo */
+        }
+
+        /* 4. Estilos del Lomo al imprimir */
+        .etiqueta-lomo-oculta {
+            width: 180px;
+            height: 110px;
+            border: 1px solid #000 !important;
+            padding: 35px !important;
+            font-family: 'Courier New', Courier, monospace !important;
+            font-size: 12px !important;
+
+            /* Propiedades para centrar */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        /* 5. Ajustes de página para impresión */
+        @page {
+            size: auto;
+            margin: 10mm;
+        }
+    }
