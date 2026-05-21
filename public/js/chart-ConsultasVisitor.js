@@ -66,8 +66,6 @@
                 data.tabla.forEach(item => {
                     const row = `<tr>
                         <td>${item.dia}</td>
-                        <td>0</td> <!-- Consultas niños (si no tienes, dejar 0 o calcular) -->
-                        <td>0</td> <!-- Consultas adultos -->
                         <td><strong>${item.total}</strong></td>
                         <td>${Math.round((item.total / data.totalAcumulado) * 100)}%</td>
                     </tr>`;

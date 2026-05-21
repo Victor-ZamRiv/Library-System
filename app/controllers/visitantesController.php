@@ -36,6 +36,7 @@ class VisitantesController extends BaseController
         }
         return $this->render('visitors/visitor-info', [
             'visitante' => $detalle['visitante'],
+            'administrador' => $detalle['administrador'],
             'consultas' => $detalle['consultas']
         ]);
     }

@@ -2,13 +2,13 @@
 
 namespace App\Models\Services;
 
-use App\Models\Repositories\AuditRepository;
+use App\Contracts\IAuditRepository;
 
 class AuditService
 {
-    private AuditRepository $auditRepo;
+    private IAuditRepository $auditRepo;
 
-    public function __construct(AuditRepository $auditRepo)
+    public function __construct(IAuditRepository $auditRepo)
     {
         $this->auditRepo = $auditRepo;
     }

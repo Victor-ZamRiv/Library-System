@@ -6,15 +6,18 @@ use App\Core\BaseController;
 use App\Contracts\IActividadRepository;
 use App\Contracts\ILogroRepository;
 use App\Models\Entities\Actividad;
+use App\Models\Services\AuditService;
 
 class ActividadController extends BaseController {
 
     private IActividadRepository $repo;
     private ILogroRepository $logroRepo;
+    private AuditService $audit;
 
-    public function __construct(IActividadRepository $repo, ILogroRepository $logroRepo) {
+    public function __construct(IActividadRepository $repo, ILogroRepository $logroRepo, AuditService $audit) {
         $this->repo = $repo;
         $this->logroRepo = $logroRepo;
+        $this->audit = $audit;
         $this->authenticate();
         $this->middlewareRol(['Jefe de sala', 'Director'], 'Actividades');
     }
@@ -66,6 +69,15 @@ class ActividadController extends BaseController {
             );
 
             $idActividad = $this->repo->insert($actividad);
+            $this->audit->registrarCambio(
+                'historial_actividad',
+                $idActividad,
+                $this->input('idAdmin'),
+                [],
+                $actividad->toArray(),
+                'INSERT'
+            );
+
             if (!$idActividad) {
                 throw new \RuntimeException("No se pudo registrar la actividad");
             }
@@ -77,7 +89,7 @@ class ActividadController extends BaseController {
             $_SESSION['old_data'] = $_POST;
             http_response_code(500);
             return $this->render('errors/error', [
-                'mensaje' => "Ocurrió un error inesperado al registrar el libro.",
+                'mensaje' => "Ocurrió un error inesperado al registrar la actividad.",
                 'detalle' => $e->getMessage()
             ]);
 
@@ -112,6 +124,9 @@ class ActividadController extends BaseController {
             return;
         }
 
+        $old = $actividad->toArray();
+
+
         $actividad->setOrganizador($this->input('organizador', $actividad->getOrganizador()));
         $actividad->setCategoria($this->input('categoria', $actividad->getCategoria()));
         $actividad->setEstado($this->input('estado', $actividad->getEstado()));
@@ -120,6 +135,17 @@ class ActividadController extends BaseController {
         $actividad->setFecha($this->input('fecha', $actividad->getFecha()));
 
         if ($this->repo->update($actividad)) {
+            $new = $this->repo->find($id)->toArray();
+
+            $this->audit->registrarCambio(
+                'historial_actividad',
+                $id,
+                $_SESSION['administrador']['id'] ?? null,
+                $old,
+                $new,
+                'UPDATE'
+            );
+
             $_SESSION['success'] = "Actividad actualizada correctamente.";
         } else {
             $_SESSION['error'] = "No se pudo actualizar la actividad.";

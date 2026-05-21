@@ -81,8 +81,13 @@ class VisitanteService
         try {
             $this->visitanteRepo->insert($visitante);
             foreach ($consultas as $consulta) {
-                if ($this->consultaRepo->findBySalaFechaTurno($consulta->getIdSala(), $consulta->getFecha(), $consulta->getTurno())) {
-                    throw new \Exception("Ya existe un registro de consultas para esta sala, fecha y turno.");
+                if ($this->consultaRepo->existsBySalaFechaTurnoArea(
+                    $consulta->getIdSala(),
+                    $consulta->getFecha(),
+                    $consulta->getTurno(),
+                    $consulta->getIdArea()
+                )) {
+                    throw new \Exception("Ya existe un registro de consultas para el área {$consulta->getIdArea()} en esta sala, fecha y turno.");
                 }
                 $this->consultaRepo->insert($consulta);
             }

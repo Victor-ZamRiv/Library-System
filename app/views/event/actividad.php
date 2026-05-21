@@ -32,7 +32,8 @@ include VIEW_PATH . "/component/heat.php";
                     <h3 class="text-center text-titles">Formulario de Actividades</h3>
                     <hr>
 
-                    <form action="?" method="POST" id="form-registro-actividad">
+                    <form action="<?= BASE_URL ?>/actividad/store" method="POST" id="form-registro-actividad">
+                        <input type="hidden" name="idAdmin" value="<?= $_SESSION['administrador']['id'] ?>">
                         <div class="row">
                             <div class="col-xs-12 col-sm-6">
                                 <div class="form-group label-floating">
@@ -79,6 +80,17 @@ include VIEW_PATH . "/component/heat.php";
                                         <option value="Pendiente">Pendiente</option>
                                         <option value="Cancelado">Cancelado</option>
                                     </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class= "row">
+                            <div class="col-xs-12 col-sm-6">
+                                <div class="form-group label-floating">
+                                    <label class="control-label"><span class="text-danger">*</span> Organizador:</label>
+                                    <input type="text" class="form-control" name="organizador" id="organizador" placeholder="Nombre del organizador" required>
+                                    <div class="invalid-feedback bg-danger text-danger rounded-pill" id="org-error" style="display: none; padding: 5px 10px; font-size: 12px; margin-top: 5px;">
+                                        <i class="fas fa-exclamation-circle"></i> Solo letras, números y espacios.
+                                    </div>
                                 </div>
                             </div>
                         </div>

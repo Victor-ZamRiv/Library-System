@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 03-05-2026 a las 10:41:57
+-- Tiempo de generación: 21-05-2026 a las 01:50:00
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -45,7 +45,8 @@ CREATE TABLE `actividades` (
 --
 
 INSERT INTO `actividades` (`ID_Actividad`, `ID_Admin`, `Organizador`, `Categoria`, `Descripcion`, `Asistentes`, `Estado`, `Fecha`, `Fecha_Registro`, `Activo`) VALUES
-(4, 1, 'División de cultura', 'Educativa', 'Se realizó una actividad educativa con niños de la comunidad', 23, 'Completado', '2026-01-21', NULL, 1);
+(4, 1, 'División de cultura', 'Educativa', 'Se realizó una actividad educativa con niños de la comunidad', 32, 'Completado', '2026-04-30', NULL, 1),
+(5, 1, 'Biblioteca Pública A.Z.B', 'Reunión', 'Reunión para planificación del mes de junio', 12, 'Pendiente', '2026-05-22', '2026-05-20 23:47:03', 1);
 
 -- --------------------------------------------------------
 
@@ -59,17 +60,19 @@ CREATE TABLE `administradores` (
   `Nombre_Usuario` varchar(50) NOT NULL,
   `ContrasenaHash` varchar(255) NOT NULL,
   `Rol` varchar(30) NOT NULL,
-  `Activo` tinyint(1) NOT NULL DEFAULT 1,
   `ID_Pregunta` int(11) DEFAULT NULL,
-  `RespuestaHash` varchar(250) DEFAULT NULL
+  `RespuestaHash` varchar(250) DEFAULT NULL,
+  `Activo` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Volcado de datos para la tabla `administradores`
 --
 
-INSERT INTO `administradores` (`ID_Admin`, `ID_Persona`, `Nombre_Usuario`, `ContrasenaHash`, `Rol`, `Activo`, `ID_Pregunta`, `RespuestaHash`) VALUES
-(1, 1, 'VictorZR', '$2y$10$Hk2E9b3D1CJvJwwG8xusOeXSWln23qTsCArlLB/87J4npLqlYSvg6', 'Director', 1, NULL, NULL);
+INSERT INTO `administradores` (`ID_Admin`, `ID_Persona`, `Nombre_Usuario`, `ContrasenaHash`, `Rol`, `ID_Pregunta`, `RespuestaHash`, `Activo`) VALUES
+(1, 1, 'VictorZR', '$2y$10$fpcduv5ALCBdD.emBf.m7uQAxcGErP88Ew1MWAALqJxuce31djgGq', 'Director', 1, '$2y$10$Tw9nq58ZSFJziMZugfxBr.GwoQIaN5fms3oGCxm61xZnjFOI3HzGi', 1),
+(3, 14, 'admin', '$2y$10$JU0MPFJbuB226Jt0kCt06u2hCUkwpP3cQK5W05JXsa6wY0gdfIGZm', 'Bibliotecario', 1, '$2y$10$Tw9nq58ZSFJziMZugfxBr.GwoQIaN5fms3oGCxm61xZnjFOI3HzGi', 1),
+(5, 17, 'Administrador', '$2y$10$mLbd5feLfRI5uHormip6uu864c7s.fYz4P2niIqk.5i20wpVthR0S', 'Bibliotecario', 2, '$2y$10$NRk.ojKOoZUGXxMLQN.8ie0eT9hzQ5LGN/OEYt1RgwlVV5SsKzMEC', 1);
 
 -- --------------------------------------------------------
 
@@ -88,6 +91,17 @@ CREATE TABLE `areas_de_conocimiento` (
 --
 
 INSERT INTO `areas_de_conocimiento` (`ID_Area`, `Nombre_Area`, `ID_Clasificacion`) VALUES
+('000', 'Generalidades', NULL),
+('100', 'Filosofia', NULL),
+('200', 'Religion', NULL),
+('300', 'Ciencias sociales', NULL),
+('400', 'Lenguas e idiomas', NULL),
+('500', 'Ciencias básicas', NULL),
+('600', 'Tecnología', NULL),
+('700', 'Arte y recreación', NULL),
+('800', 'Literatura', NULL),
+('900', 'Historia y Geografía', NULL),
+('Biog', 'Biografías', NULL),
 ('N', 'Novela', 1),
 ('NV', 'Novela Venezolana', 1);
 
@@ -168,9 +182,36 @@ CREATE TABLE `consultas_area_diarias` (
   `ID_Area` varchar(5) NOT NULL,
   `Fecha` date NOT NULL,
   `Cantidad_Consultada` int(11) NOT NULL,
+  `Turno` varchar(7) NOT NULL,
   `ID_Admin` int(11) NOT NULL,
   `Activo` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Volcado de datos para la tabla `consultas_area_diarias`
+--
+
+INSERT INTO `consultas_area_diarias` (`ID_Consulta_Area`, `ID_Sala`, `ID_Area`, `Fecha`, `Cantidad_Consultada`, `Turno`, `ID_Admin`, `Activo`) VALUES
+(2, 'R', '000', '2026-04-06', 2, '', 1, 1),
+(3, 'R', '800', '2026-04-06', 6, '', 1, 1),
+(4, 'G', '000', '2026-04-17', 4, '', 1, 1),
+(5, 'G', '300', '2026-04-17', 6, '', 1, 1),
+(6, 'G', '900', '2026-04-17', 2, '', 1, 1),
+(7, 'G', 'Biog', '2026-04-17', 1, '', 1, 1),
+(8, 'R', '200', '2026-05-17', 2, '', 1, 1),
+(9, 'G', '000', '2026-05-18', 5, '', 1, 1),
+(10, 'G', '300', '2026-05-18', 6, '', 1, 1),
+(11, 'G', '900', '2026-05-18', 2, '', 1, 1),
+(12, 'SE', '000', '2026-05-18', 3, '', 1, 1),
+(13, 'SE', '300', '2026-05-18', 2, '', 1, 1),
+(18, 'SE', '300', '2026-05-19', 4, '', 1, 1),
+(19, 'G', '000', '2026-05-19', 3, '', 1, 1),
+(20, 'G', '300', '2026-05-19', 4, '', 1, 1),
+(21, 'G', 'NV', '2026-05-19', 2, '', 1, 1),
+(22, 'G', '300', '2026-05-20', 3, 'Tarde', 1, 1),
+(23, 'G', '400', '2026-05-20', 1, 'Tarde', 1, 1),
+(24, 'G', '800', '2026-05-20', 2, 'Tarde', 1, 1),
+(28, 'R', '300', '2026-05-20', 3, 'Mañana', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -192,6 +233,22 @@ CREATE TABLE `conteo_diario_visitantes` (
   `ID_Admin` int(11) NOT NULL,
   `Activo` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Volcado de datos para la tabla `conteo_diario_visitantes`
+--
+
+INSERT INTO `conteo_diario_visitantes` (`ID_Conteo`, `ID_Sala`, `Fecha`, `Niños_Hombres`, `Niños_Mujeres`, `Adolescentes_Hombres`, `Adolescentes_Mujeres`, `Adultos_Hombres`, `Adultos_Mujeres`, `Turno`, `ID_Admin`, `Activo`) VALUES
+(3, 'R', '2026-04-06', 0, 23, 0, 23, 0, 0, 'Mañana', 1, 1),
+(11, 'G', '2026-04-17', 1, 1, 3, 4, 6, 4, 'Mañana', 1, 1),
+(12, 'R', '2026-05-17', 0, 0, 0, 0, 1, 2, 'Tarde', 1, 1),
+(13, 'G', '2026-05-18', 0, 0, 5, 3, 2, 4, 'Mañana', 1, 1),
+(15, 'SE', '2026-05-18', 0, 0, 3, 2, 2, 1, 'Mañana', 1, 1),
+(16, 'G', '2026-05-20', 1, 2, 4, 3, 1, 1, 'Mañana', 1, 1),
+(17, 'SE', '2026-05-19', 0, 0, 0, 0, 2, 2, 'Tarde', 1, 1),
+(18, 'G', '2026-05-19', 0, 0, 1, 4, 2, 3, 'Tarde', 1, 1),
+(24, 'G', '2026-05-20', 0, 0, 2, 2, 3, 1, 'Tarde', 1, 1),
+(28, 'R', '2026-05-20', 0, 0, 0, 0, 2, 1, 'Mañana', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -258,7 +315,9 @@ INSERT INTO `ejemplares` (`ID_Ejemplar`, `ID_Libro`, `Numero_Ejemplar`, `Estado`
 (40, 48, 1, 'Disponible', 1),
 (41, 39, 3, 'En Reparación', 0),
 (42, 51, 1, 'Disponible', 1),
-(43, 51, 2, 'Disponible', 1);
+(43, 51, 2, 'Disponible', 1),
+(44, 56, 1, 'Disponible', 1),
+(45, 56, 2, 'Disponible', 1);
 
 -- --------------------------------------------------------
 
@@ -271,6 +330,15 @@ CREATE TABLE `ejemplar_prestamo` (
   `ID_Prestamo` int(11) NOT NULL,
   `ID_Ejemplar` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Volcado de datos para la tabla `ejemplar_prestamo`
+--
+
+INSERT INTO `ejemplar_prestamo` (`ID_Prestamo_Ejemplar`, `ID_Prestamo`, `ID_Ejemplar`) VALUES
+(4, 4, 18),
+(5, 5, 20),
+(6, 6, 18);
 
 -- --------------------------------------------------------
 
@@ -443,7 +511,7 @@ CREATE TABLE `libros` (
 
 INSERT INTO `libros` (`ID_Libro`, `Titulo`, `ID_Editorial`, `ID_Area`, `ID_Sala`, `Cota`, `Edicion`, `Ciudad`, `ISBN`, `Paginas`, `volumen`, `Observaciones`, `Anio_Publicacion`, `Fecha_registro`, `Activo`) VALUES
 (25, 'Cien años de soledad', 2, 'N', 'R', 'N G455', 0, '', '123-5435-42-X', 354, NULL, '', '2008', '2025-12-29 06:08:29', 1),
-(27, 'Cien años de soledad', 2, 'N', 'R', 'N G452', 0, '', '123-5435-42-9', 354, NULL, '', '2008', '2025-12-29 06:10:08', 1),
+(27, 'Cien años de soledad', 2, 'N', 'G', 'N G452', 2, 'Bogota', '123-5435-42-9', 354, NULL, '', '2008', '2025-12-29 06:10:08', 1),
 (28, 'Cien años de soledad', 2, 'N', 'R', 'N G466', 0, '', '123-5435-42-5', 354, NULL, '', '2008', '2026-01-05 07:05:00', 1),
 (29, 'Cien años de soledad', 2, 'N', 'R', 'N G465', 0, '', '123-5435-42-2', 354, NULL, '', '2008', '2026-01-05 07:33:12', 1),
 (30, 'Cien años de soledad', 2, 'N', 'G', 'N M465', 0, '', '123-5435-42-1', 354, NULL, '', '2008', '2026-01-06 19:59:13', 1),
@@ -457,7 +525,8 @@ INSERT INTO `libros` (`ID_Libro`, `Titulo`, `ID_Editorial`, `ID_Area`, `ID_Sala`
 (44, 'Cien años de soledad', 2, 'N', 'R', 'N G021', 6, 'Bogota', '222-5405-49-4', 354, NULL, '', '2008', '2026-01-12 06:31:48', 1),
 (45, 'Cien años de soledad', 2, 'N', 'G', 'N G543', 6, 'Bogota', '222-5405-49-6', 354, NULL, '', '2008', '2026-01-16 04:40:25', 1),
 (48, 'Cien años de soledad', 7, 'N', 'R', '', 0, '', NULL, 0, NULL, NULL, NULL, '2026-01-21 23:34:37', 1),
-(51, 'NARUTO', 2, 'N', 'G', 'N M542', 6, 'Tokio', '123-5435-22-9', 354, NULL, '', '2008', '2026-02-13 09:50:32', 1);
+(51, 'NARUTO', 2, 'N', 'G', 'N M542', 6, 'Tokio', '123-5435-22-9', 354, NULL, '', '2008', '2026-02-13 09:50:32', 1),
+(56, 'Cien años de soledad', 2, 'N', 'R', 'N G4522008', 6, 'Bogota', '177-5435-42-X', 354, NULL, '', '2008', '2026-05-06 12:57:53', 1);
 
 -- --------------------------------------------------------
 
@@ -477,7 +546,7 @@ CREATE TABLE `libros_autores` (
 
 INSERT INTO `libros_autores` (`ID_Libro_Autor`, `ID_Libro`, `ID_Autor`) VALUES
 (9, 25, 1),
-(10, 27, 1),
+(76, 27, 1),
 (11, 28, 1),
 (12, 29, 1),
 (13, 30, 1),
@@ -490,7 +559,8 @@ INSERT INTO `libros_autores` (`ID_Libro_Autor`, `ID_Libro`, `ID_Autor`) VALUES
 (20, 43, 1),
 (21, 44, 1),
 (22, 45, 1),
-(75, 51, 2);
+(75, 51, 2),
+(77, 56, 1);
 
 -- --------------------------------------------------------
 
@@ -512,7 +582,7 @@ CREATE TABLE `logros` (
 --
 
 INSERT INTO `logros` (`ID_Logro`, `ID_Admin`, `Descripcion`, `Involucrados`, `Fecha`, `Activo`) VALUES
-(1, NULL, 'Se recuperó un aire acondicionado para la sala general', 'Equipo de mantenimiento', '2026-01-22', 1);
+(1, NULL, 'Se recuperó un aire acondicionado para la sala Estatal', 'Equipo de mantenimiento', '2026-01-22', 1);
 
 -- --------------------------------------------------------
 
@@ -528,8 +598,16 @@ CREATE TABLE `multas` (
   `Fecha_Cancelacion` date DEFAULT NULL,
   `Estado` enum('Pendiente','Pagada','Cancelada') NOT NULL,
   `Fecha_Generacion` timestamp NOT NULL DEFAULT current_timestamp(),
-  `Activo` tinyint(1) NOT NULL
+  `Activo` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Volcado de datos para la tabla `multas`
+--
+
+INSERT INTO `multas` (`ID_Multa`, `ID_Prestamo`, `ID_Admin`, `Monto`, `Fecha_Cancelacion`, `Estado`, `Fecha_Generacion`, `Activo`) VALUES
+(1, 4, 1, 0.50, '2026-05-06', 'Pagada', '2026-05-06 05:34:46', 1),
+(2, 6, 1, 0.50, NULL, 'Pendiente', '2026-05-06 06:15:22', 1);
 
 -- --------------------------------------------------------
 
@@ -551,10 +629,12 @@ CREATE TABLE `persona` (
 --
 
 INSERT INTO `persona` (`ID_Persona`, `Cedula`, `Nombre`, `Apellido`, `Telefono`, `Activo`) VALUES
-(1, '27458925', 'Victor Alfredo', 'Zambrano Rivero', NULL, 1),
+(1, '27458925', 'Victor Alfredo', 'Zambrano Rivero', '04248630743', 1),
 (7, '27458926', 'José Manuel', 'Perez Brito', '04127896543', 1),
 (9, '26458922', 'José Luis', 'Perez Brito', '04127896543', 1),
-(11, '25458922', 'Maria Alejandra', 'Rodríguez Brito', '04127896543', 1);
+(11, '25458922', 'Maria Alejandra', 'Rodríguez Brito', '04127896543', 1),
+(14, '26458944', 'José Luis', 'Perez Brito', '04248630743', 0),
+(17, '26458942', 'José Luis', 'Perez Brito', '04248630743', 0);
 
 -- --------------------------------------------------------
 
@@ -591,9 +671,19 @@ CREATE TABLE `prestamos` (
   `Fecha_Entrega` date NOT NULL,
   `Fecha_Recepcion_Estipulada` date NOT NULL,
   `Fecha_Recepcion_Real` date DEFAULT NULL,
+  `Renovaciones` int(11) NOT NULL DEFAULT 0,
   `Estado_Entrega` enum('Pendiente','Devuelto','Vencido','Perdido') NOT NULL,
   `Activo` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Volcado de datos para la tabla `prestamos`
+--
+
+INSERT INTO `prestamos` (`ID_Prestamo`, `ID_Lector`, `ID_Admin`, `Fecha_Entrega`, `Fecha_Recepcion_Estipulada`, `Fecha_Recepcion_Real`, `Renovaciones`, `Estado_Entrega`, `Activo`) VALUES
+(4, 1, 1, '2026-05-04', '2026-05-05', '2026-05-06', 0, 'Vencido', 1),
+(5, 2, 1, '0000-00-00', '2026-05-20', '2026-05-06', 0, 'Devuelto', 1),
+(6, 1, 1, '2026-05-06', '2026-05-05', '2026-05-06', 0, 'Vencido', 1);
 
 -- --------------------------------------------------------
 
@@ -613,10 +703,10 @@ CREATE TABLE `salas` (
 --
 
 INSERT INTO `salas` (`ID_Sala`, `Nombre`, `Capacidad`, `Disponible`) VALUES
-('G', 'Sala General', 20, 1),
-('R', 'Sala de Referencia', 20, 0),
-('SE', 'Sala Estatal', 20, 0),
-('X', 'Sala Infantil', 20, 0);
+('G', 'Sala General', 30, 1),
+('R', 'Sala de Referencia', 20, 1),
+('SE', 'Sala Estatal', 20, 1),
+('X', 'Sala Infantil', 20, 1);
 
 -- --------------------------------------------------------
 
@@ -720,8 +810,8 @@ ALTER TABLE `consultas_area_diarias`
 --
 ALTER TABLE `conteo_diario_visitantes`
   ADD PRIMARY KEY (`ID_Conteo`),
-  ADD UNIQUE KEY `UQ_Conteo_Dia_Sala` (`ID_Sala`,`Fecha`),
-  ADD KEY `ID_Admin` (`ID_Admin`);
+  ADD UNIQUE KEY `UQ_Conteo_Dia_Sala` (`ID_Sala`,`Fecha`,`Turno`) USING BTREE,
+  ADD KEY `conteo_diario_visitantes_ibfk_2` (`ID_Admin`);
 
 --
 -- Indices de la tabla `editoriales`
@@ -894,13 +984,13 @@ ALTER TABLE `tipos_de_daño`
 -- AUTO_INCREMENT de la tabla `actividades`
 --
 ALTER TABLE `actividades`
-  MODIFY `ID_Actividad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `ID_Actividad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `administradores`
 --
 ALTER TABLE `administradores`
-  MODIFY `ID_Admin` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ID_Admin` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `area_color`
@@ -930,13 +1020,13 @@ ALTER TABLE `configuraciones_sistema`
 -- AUTO_INCREMENT de la tabla `consultas_area_diarias`
 --
 ALTER TABLE `consultas_area_diarias`
-  MODIFY `ID_Consulta_Area` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Consulta_Area` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT de la tabla `conteo_diario_visitantes`
 --
 ALTER TABLE `conteo_diario_visitantes`
-  MODIFY `ID_Conteo` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Conteo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT de la tabla `editoriales`
@@ -948,13 +1038,13 @@ ALTER TABLE `editoriales`
 -- AUTO_INCREMENT de la tabla `ejemplares`
 --
 ALTER TABLE `ejemplares`
-  MODIFY `ID_Ejemplar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `ID_Ejemplar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT de la tabla `ejemplar_prestamo`
 --
 ALTER TABLE `ejemplar_prestamo`
-  MODIFY `ID_Prestamo_Ejemplar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `ID_Prestamo_Ejemplar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `estado_cuantificable`
@@ -1008,13 +1098,13 @@ ALTER TABLE `lectores`
 -- AUTO_INCREMENT de la tabla `libros`
 --
 ALTER TABLE `libros`
-  MODIFY `ID_Libro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `ID_Libro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT de la tabla `libros_autores`
 --
 ALTER TABLE `libros_autores`
-  MODIFY `ID_Libro_Autor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
+  MODIFY `ID_Libro_Autor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 
 --
 -- AUTO_INCREMENT de la tabla `logros`
@@ -1026,13 +1116,13 @@ ALTER TABLE `logros`
 -- AUTO_INCREMENT de la tabla `multas`
 --
 ALTER TABLE `multas`
-  MODIFY `ID_Multa` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Multa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `persona`
 --
 ALTER TABLE `persona`
-  MODIFY `ID_Persona` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `ID_Persona` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `preguntas_seguridad`
@@ -1044,7 +1134,7 @@ ALTER TABLE `preguntas_seguridad`
 -- AUTO_INCREMENT de la tabla `prestamos`
 --
 ALTER TABLE `prestamos`
-  MODIFY `ID_Prestamo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `ID_Prestamo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `tipos_de_clasificacion`

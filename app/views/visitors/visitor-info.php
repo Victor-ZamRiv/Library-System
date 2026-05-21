@@ -56,7 +56,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <p><strong>Registrado por:</strong> Administrador ID: <?= $visitante->getIdAdmin() ?></p>
+                                <p><strong>Registrado por:</strong> <?= htmlspecialchars($administrador->getPersona()->getNombre()) ?></p>
                             </div>
                         </div>
                     </div>

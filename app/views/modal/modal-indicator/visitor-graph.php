@@ -34,18 +34,16 @@
                         <thead>
                             <tr class="info">
                                 <th>Periodo / Día</th>
-                                <th>Consultas Niños</th>
-                                <th>Consultas Adultos</th>
                                 <th>Total Obras</th>
                                 <th>% Participación</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr><td colspan="5" class="text-center">Cargando...</td></tr>
+                            <tr><td colspan="3" class="text-center">Cargando...</td></tr>
                         </tbody>
                         <tfoot>
                             <tr class="active">
-                                <th colspan="3" class="text-right">TOTAL ACUMULADO:</th>
+                                <th colspan="1" class="text-right">TOTAL ACUMULADO:</th>
                                 <th colspan="2" class="text-primary" id="modal-total-acumulado">--</th>
                             </tr>
                         </tfoot>
@@ -54,7 +52,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default btn-raised" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary btn-raised" onclick="window.location.href='<?= BASE_URL ?>/reportes/consultas-pdf?periodo=' + periodoActual"><i class="fa-solid fa-file-pdf"></i> Exportar PDF</button>
+                <button type="button" class="btn btn-primary btn-raised" onclick="descargarPDF('DetalleVisita')">
+                    <i class="fa-solid fa-file-pdf"></i> Exportar PDF
+                </button>            
             </div>
         </div>
     </div>

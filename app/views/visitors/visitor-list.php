@@ -179,6 +179,11 @@
     <?php include VIEW_PATH . "/modal/confirmation-delete-visitor.php"; ?>
     <?php include VIEW_PATH . "/component/scripts.php"; ?>
     <?php include VIEW_PATH . "/component/chart-graph.php"; ?>
+
+    <script src="<?= PUBLIC_PATH ?>/js/pdf/jsPDF.js"></script>
+    <script src="<?= PUBLIC_PATH ?>/js/pdf/jspdf-autotable.js"></script>
+    <script src="<?= PUBLIC_PATH ?>/js/pdf/html2canvas.js"></script>
+
     
     <!-- Script modificado para ApexCharts con datos reales -->
 </body>

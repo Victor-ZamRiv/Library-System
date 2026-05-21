@@ -47,6 +47,27 @@
     }
 })();
 
+function obtenerRangoFechas() {
+    // Primero intenta desde los inputs de filtro (si existen)
+    let desde = document.querySelector('#filtro-desde')?.value || document.querySelector('input[name="desde"]')?.value;
+    let hasta = document.querySelector('#filtro-hasta')?.value || document.querySelector('input[name="hasta"]')?.value;
+    if (desde && hasta) {
+        return { desde, hasta };
+    }
+    // Si no, intenta desde el período actual de la gráfica (puedes leer el botón activo)
+    let periodoTexto = document.querySelector('.btn-group .btn.active')?.innerText || 'Mes';
+    // Calcula fechas según período (simulación)
+    let hoy = new Date();
+    let desdeDate = new Date();
+    if (periodoTexto === 'Semana') desdeDate.setDate(hoy.getDate() - 7);
+    else if (periodoTexto === 'Mes') desdeDate.setMonth(hoy.getMonth() - 1);
+    else if (periodoTexto === 'Trimestre') desdeDate.setMonth(hoy.getMonth() - 3);
+    return {
+        desde: desdeDate.toISOString().split('T')[0],
+        hasta: hoy.toISOString().split('T')[0]
+    };
+}
+
 async function descargarPDF(tipo) {
     // 2. Mostrar Cargador
     const loader = document.createElement('div');
@@ -137,7 +158,14 @@ async function descargarPDF(tipo) {
             'Rotacion': { titulo: "INFORME DETALLADO: ÍNDICE DE ROTACIÓN", chartId: "#chartModalRotacion", chartVar: typeof chartModalRotacion !== 'undefined' ? chartModalRotacion : null, tablaBodyId: "tablaRotacionCuerpo", headers: [['Categoría', 'Inventario', 'Préstamos', 'Rotación']], hasChart: true },
             'Salud': { titulo: "INFORME: SALUD FÍSICA DE LA COLECCIÓN", tablaBodyId: "tablaSaludCuerpo", headers: [['Sala', 'Total Libros', 'Buen Estado', 'En Reparación', 'Salud Física']], hasChart: false },
             'AsistenciaEstatal': { titulo: "REPORTE DE ASISTENCIA: SALA ESTATAL", tablaBodyId: "tablaAsistenciaEstatalCuerpo", headers: [['Tipo de Usuario', 'Nro. de Visitas', 'Permanencia Promedio', 'Tendencia']], hasChart: false },
-            'Coleccion': { titulo: "ESTADO DE ACTUALIZACIÓN DE LA COLECCIÓN", tablaBodyId: "tablaColeccionCuerpo", headers: [['Sala', 'Títulos Totales', 'Novedades (2024-25)', 'Estado', 'Acción Requerida']], hasChart: false }
+            'Coleccion': { titulo: "ESTADO DE ACTUALIZACIÓN DE LA COLECCIÓN", tablaBodyId: "tablaColeccionCuerpo", headers: [['Sala', 'Títulos Totales', 'Novedades (2024-25)', 'Estado', 'Acción Requerida']], hasChart: false },
+            'DetalleVisita': {
+                titulo: "REGISTRO DE VISITA Y CONSULTAS",
+                hasChart: true,
+                chartId: "#chartConsultasVisitor",
+                modalContentId: "#modalDetalleConsultasGrafico .modal-body",
+                customCapture: true
+            }
         };
 
         const config = configs[tipo];
@@ -152,60 +180,129 @@ async function descargarPDF(tipo) {
         doc.text("Fecha de emisión: " + new Date().toLocaleString(), 14, 51);
         doc.line(14, 53, 196, 53);
 
-        // --- CAPTURA DE GRÁFICA ---
-        let finalChartY = 53;
-        if (config.hasChart && config.chartId) {
-            const chartElement = document.querySelector(config.chartId);
-            if (chartElement) {
-                await new Promise(resolve => setTimeout(resolve, 800)); 
-                let imgData;
-                if (config.chartVar && typeof config.chartVar.dataURI === 'function') {
-                    const res = await config.chartVar.dataURI();
-                    imgData = res.imgURI;
-                } else {
-                    const canvas = await html2canvas(chartElement, { scale: 2, backgroundColor: "#ffffff", useCORS: true });
-                    imgData = canvas.toDataURL('image/png');
-                }
-                doc.addImage(imgData, 'PNG', 15, 58, 180, 75);
-                finalChartY = 140;
+        let startY = 58; // Posición inicial para el contenido
+
+        // --- LÓGICA ESPECIAL PARA DETALLEVISITA (sin afectar otros) ---
+        if (tipo === 'DetalleVisita' && config.customCapture) {
+        // Rango de fechas
+        const rango = obtenerRangoFechas();
+        doc.setFontSize(10);
+        doc.setTextColor(0,0,0);
+        doc.text(`Período: ${rango.desde} al ${rango.hasta}`, 14, startY);
+        startY += 10;
+
+        // Resumen (tarjetas del modal)
+        const totalPeriodo = document.getElementById('modal-total-periodo')?.innerText || '--';
+        const diaMasConcurrido = document.getElementById('modal-dia-mas-concurrido')?.innerText || '--';
+        const tendencia = document.getElementById('modal-tendencia')?.innerText || '--';
+        doc.setFontSize(11);
+        doc.setFont("helvetica", "bold");
+        doc.text("Resumen del período", 14, startY);
+        startY += 7;
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Día de la semana más concurrido: ${diaMasConcurrido}`, 14, startY + 5);
+        doc.text(`Tendencia: ${tendencia}`, 14, startY + 10);
+        startY += 20;
+
+        // Gráfica
+        const chartElement = document.querySelector(config.chartId);
+        if (chartElement) {
+            await new Promise(resolve => setTimeout(resolve, 500));
+            const canvas = await html2canvas(chartElement, { scale: 2, backgroundColor: "#ffffff", useCORS: true });
+            const imgData = canvas.toDataURL('image/png');
+            doc.addImage(imgData, 'PNG', 15, startY, 180, 75);
+            startY += 85;
+        }
+
+        // Tabla de consultas por día de semana
+        const tablaElement = document.querySelector('#tabla-detalle-modal');
+        if (tablaElement) {
+            const headers = [];
+            const thead = tablaElement.querySelector('thead tr');
+            if (thead) {
+                Array.from(thead.querySelectorAll('th')).forEach(th => headers.push(th.innerText.trim()));
             }
-        } else {
-            finalChartY = 60;
+            const rows = [];
+            const tbody = tablaElement.querySelector('tbody');
+            if (tbody) {
+                Array.from(tbody.querySelectorAll('tr')).forEach(tr => {
+                    const rowData = Array.from(tr.querySelectorAll('td')).map(td => td.innerText.trim());
+                    if (rowData.length) rows.push(rowData);
+                });
+            }
+            const totalAcumulado = document.getElementById('modal-total-acumulado')?.innerText || '';
+            if (rows.length) {
+                doc.autoTable({
+                    head: [headers],
+                    body: rows,
+                    startY: startY,
+                    theme: 'grid',
+                    headStyles: { fillColor: [44, 62, 80], halign: 'center', fontSize: 9 },
+                    styles: { fontSize: 8, cellPadding: 2.5 },
+                    margin: { left: 14, right: 14 }
+                });
+                startY = doc.lastAutoTable.finalY + 10;
+                doc.text(`Total acumulado: ${totalAcumulado}`, 14, startY);
+            }
         }
+    } else {
+            // --- LÓGICA ORIGINAL PARA OTROS REPORTES ---
+            let finalChartY = 53;
+            if (config.hasChart && config.chartId) {
+                const chartElement = document.querySelector(config.chartId);
+                if (chartElement) {
+                    await new Promise(resolve => setTimeout(resolve, 800)); 
+                    let imgData;
+                    if (config.chartVar && typeof config.chartVar.dataURI === 'function') {
+                        const res = await config.chartVar.dataURI();
+                        imgData = res.imgURI;
+                    } else {
+                        const canvas = await html2canvas(chartElement, { scale: 2, backgroundColor: "#ffffff", useCORS: true });
+                        imgData = canvas.toDataURL('image/png');
+                    }
+                    doc.addImage(imgData, 'PNG', 15, 58, 180, 75);
+                    finalChartY = 140;
+                }
+            } else {
+                finalChartY = 60;
+            }
 
-        // --- EXTRACCIÓN DE DATOS ---
-        const rows = [];
-        const tableBody = document.getElementById(config.tablaBodyId);
-        if (tableBody) {
-            Array.from(tableBody.querySelectorAll('tr')).forEach(tr => {
-                const rowData = Array.from(tr.querySelectorAll('td')).map(td => td.innerText.trim());
-                if (rowData.length > 0) rows.push(rowData);
+            // Extraer datos de la tabla estándar
+            const rows = [];
+            const tableBody = document.getElementById(config.tablaBodyId);
+            if (tableBody) {
+                Array.from(tableBody.querySelectorAll('tr')).forEach(tr => {
+                    const rowData = Array.from(tr.querySelectorAll('td')).map(td => td.innerText.trim());
+                    if (rowData.length > 0) rows.push(rowData);
+                });
+            }
+
+            // Renderizar tabla
+            doc.autoTable({
+                head: config.headers,
+                body: rows,
+                startY: finalChartY,
+                theme: 'grid',
+                headStyles: { fillColor: [44, 62, 80], halign: 'center', fontSize: 9 },
+                styles: { fontSize: 8, cellPadding: 2.5 },
+                alternateRowStyles: { fillColor: [245, 245, 245] },
+                margin: { left: 14, right: 14 }
             });
+            startY = doc.lastAutoTable.finalY + 25;
         }
 
-        // --- RENDERIZAR TABLA ---
-        doc.autoTable({
-            head: config.headers,
-            body: rows,
-            startY: finalChartY,
-            theme: 'grid',
-            headStyles: { fillColor: [44, 62, 80], halign: 'center', fontSize: 9 },
-            styles: { fontSize: 8, cellPadding: 2.5 },
-            alternateRowStyles: { fillColor: [245, 245, 245] },
-            margin: { left: 14, right: 14 }
-        });
-
-        // --- SECCIÓN DE FIRMAS Y LOGOS INFERIORES ---
+        // --- SECCIÓN DE FIRMAS Y LOGOS INFERIORES (común a todos) ---
         const pageHeight = doc.internal.pageSize.height;
-        let finalY = doc.lastAutoTable.finalY + 25;
+        let finalY = startY + 10;
         
-        // Control de salto de página: evitar que firmas + logos se corten
+        // Control de salto de página
         if (finalY + 35 > pageHeight) {
             doc.addPage();
             finalY = 30;
         }
         
-        // 1. Renderizar Bloque de Firmas
+        // Bloque de Firmas
         doc.setFontSize(9);
         doc.setTextColor(0);
         doc.text("__________________________", 55, finalY, { align: "center" });
@@ -213,21 +310,17 @@ async function descargarPDF(tipo) {
         doc.text("__________________________", 155, finalY, { align: "center" });
         doc.text("Sello de la Institución", 155, finalY + 5, { align: "center" });
 
-        // 2. Renderizar Logos Inferiores Nuevos
+        // Logos inferiores
         const logosBottomY = pageHeight - 27; 
-
-        // Líneas decorativas de cierre
         doc.setDrawColor(0, 0, 0);
         doc.setLineWidth(0.1);
         doc.line(12, logosBottomY - 4, 198, logosBottomY - 4);
         doc.setLineWidth(0.4);
         doc.line(12, logosBottomY - 2.5, 198, logosBottomY - 2.5);
-
-        // Renderizado usando las variables de las nuevas imágenes cargadas arriba
         if (imgInfIzq) doc.addImage(imgInfIzq, 'PNG', 12, logosBottomY, 22, 22);
         if (imgInfDer) doc.addImage(imgInfDer, 'PNG', 176, logosBottomY, 22, 22);
 
-        // Pie de página institucional centrado
+        // Pie de página
         doc.setFont("helvetica", "italic");
         doc.setFontSize(7);
         doc.text("Biblioteca Pública Central 'Armando Zuloaga Blanco' - Estado Sucre", centerX, logosBottomY + 10, { align: "center" });
@@ -237,7 +330,7 @@ async function descargarPDF(tipo) {
 
     } catch (error) {
         console.error("Error al generar PDF:", error);
-        alert("Ocurrió un error al generar el PDF.");
+        alert("Ocurrió un error al generar el PDF: " + error.message);
     } finally {
         const loaderContainer = document.getElementById('pdf-loader-container');
         if (loaderContainer) loaderContainer.remove();

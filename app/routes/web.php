@@ -3,6 +3,12 @@ use App\Core\Router;
 
 $router = new Router();
 
+//rutas indicadores
+$router->get('/dashboard/cobertura', 'DashboardController@ajaxCobertura');
+$router->get('/dashboard/consultas', 'DashboardController@ajaxConsultas');
+$router->get('/dashboard/cumplimiento', 'DashboardController@ajaxCumplimiento');
+$router->get('/dashboard/ocupacion', 'DashboardController@ajaxOcupacion');
+
 //rutas generales
 $router->get('/dashboard', 'DashboardController@index');
 $router->get('/', 'DashboardController@index');
@@ -12,10 +18,14 @@ $router->get('/configuracion', 'ConfiguracionController@index');
 $router->get('/configuracion/sala', 'ConfiguracionController@salaConfiguration');
 $router->post('/configuracion/sala/update', 'ConfiguracionController@updateSalas');
 $router->get('/configuracion/area', 'ConfiguracionController@areaConfiguration');
-$router->get('/history', 'ConfiguracionController@historial');
 $router->get('/configuracion/indicator', 'ConfiguracionController@indicatorConfiguration');
 $router->get('/configuracion/prestamos', 'ConfiguracionController@prestamoConfiguration');
 $router->post('/configuracion/prestamos/update', 'ConfiguracionController@prestamoUpdate');
+
+//rutas historial y auditorias
+$router->get('/historial', 'HistorialController@index');
+$router->get('/historial/show', 'HistorialController@show');
+
 
 // Rutas para libros
 $router->get('/libros', 'LibroController@index');

@@ -76,15 +76,16 @@ class ConsultaRepository extends BaseRepository implements IConsultaRepository{
         return array_map(fn($row) => $this->mapToEntity($row), $rows);
     }
 
-    public function existsBySalaFechaTurnoArea(string $idSala, string $fecha, string $turno, string $idArea): bool {
+    public function existsBySalaFechaTurnoArea(string $idSala, string $fecha, string $turno, string $idArea): bool
+    {
         $sql = "SELECT COUNT(*) FROM consultas_area_diarias 
-                WHERE ID_Sala = :idSala AND Fecha = :fecha AND Turno = :turno AND ID_Area = :idArea";
+                WHERE ID_Sala = :sala AND Fecha = :fecha AND Turno = :turno AND ID_Area = :area";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
-            ':idSala' => $idSala,
+            ':sala' => $idSala,
             ':fecha' => $fecha,
             ':turno' => $turno,
-            ':idArea' => $idArea
+            ':area' => $idArea
         ]);
         return $stmt->fetchColumn() > 0;
     }

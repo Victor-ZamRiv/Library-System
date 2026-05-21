@@ -59,7 +59,6 @@ class AuthService {
 
 
     public function logout(): void {
-        unset($_SESSION['administrador']);
         session_destroy();
     }
 

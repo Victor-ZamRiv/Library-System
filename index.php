@@ -19,6 +19,7 @@ use App\Models\Repositories\EjemplarPrestamoRepository;
 use App\Models\Repositories\MultaRepository;
 use App\Models\Repositories\ConfiguracionRepository;
 use App\Models\Repositories\SalaRepository;
+use App\Models\Repositories\AuditRepository;
 use App\Contracts\ILibroRepository;
 use App\Contracts\IAutorRepository;
 use App\Contracts\IEditorialRepository;
@@ -36,6 +37,7 @@ use App\Contracts\IEjemplarPrestamoRepository;
 use App\Contracts\IMultaRepository;
 use App\Contracts\IConfiguracionRepository;
 use App\Contracts\ISalaRepository;
+use App\Contracts\IAuditRepository;
 use App\Models\Services\AuthService;
 use App\Models\Services\LibroSearchService;
 use App\Models\Services\LibroRegistrationService;
@@ -55,6 +57,9 @@ use App\Models\Services\PrestamoDetailService;
 use App\Models\Services\PrestamoRenovacionService;
 use App\Models\Services\FechaService;
 use App\Models\Services\MultaService;
+use App\Models\Services\AuditService;
+use App\Models\Services\HistorialService;
+use App\Models\Services\IndicadorService;
 
 $router = require __DIR__ . '/app/routes/web.php';
 
@@ -75,6 +80,7 @@ $ejemplarPrestamoRepo = new EjemplarPrestamoRepository($pdo);
 $multaRepo = new MultaRepository($pdo);
 $configuracionRepo = new ConfiguracionRepository($pdo);
 $salaRepo = new SalaRepository($pdo);
+$auditRepo = new AuditRepository($pdo);
 $fechaService = new FechaService();
 
 $container = [
@@ -96,7 +102,7 @@ $container = [
     IMultaRepository::class => $multaRepo,
     IConfiguracionRepository::class => $configuracionRepo,
     ISalaRepository::class => $salaRepo,
-
+    IAuditRepository::class => $auditRepo,
     LibroSearchService::class => new LibroSearchService(
         $libroRepo, 
         $autorRepo
@@ -152,6 +158,8 @@ $container = [
     VisitaDetailService::class => new VisitaDetailService(
         $visitanteRepo,
         $consultaRepo,
+        $administradorRepo,
+        $personaRepo
     ),
     PrestamoRegistrationService::class => new PrestamoRegistrationService(
         $prestamoRepo,
@@ -198,6 +206,18 @@ $container = [
     MultaService::class => new MultaService(
         $multaRepo
     ),
+    AuditService::class => new AuditService(
+        $auditRepo
+    ),
+    HistorialService::class => new HistorialService(
+        $auditRepo,
+        $administradorRepo,
+        $personaRepo
+    ),
+    IndicadorService::class => new IndicadorService(
+        $pdo
+    )
+    
 ];
 
 $uri = str_ireplace(BASE_URL, '', $_SERVER['REQUEST_URI']);
