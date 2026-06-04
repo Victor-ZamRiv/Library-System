@@ -1,130 +1,166 @@
-
 <style>
     /* --- Estilos de Layout y Responsive --- */
     @media (min-width: 768px) {
-        .dropdown:hover > .dropdown-menu { display: block; margin-top: 0; }
-        #quick-search-box {
-            position: absolute; right: 100%; top: 50%;
-            transform: translateY(-50%); padding-right: 10px; z-index: 1100;
+        .dropdown:hover>.dropdown-menu {
+            display: block;
+            margin-top: 0;
         }
-        #input-search-quick { 
-            width: 180px; 
-            background-color: white !important; 
-            color: #333 !important; 
+
+        #quick-search-box {
+            position: absolute;
+            right: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            padding-right: 10px;
+            z-index: 1100;
+        }
+
+        #input-search-quick {
+            width: 180px;
+            background-color: white !important;
+            color: #333 !important;
             border: 1px solid #0056b3 !important;
         }
     }
 
     @media (max-width: 767px) {
         #quick-search-box {
-            position: static !important; transform: none !important;
-            padding: 10px 15px !important; width: 100%; background-color: #f1f1f1;
+            position: static !important;
+            transform: none !important;
+            padding: 10px 15px !important;
+            width: 100%;
+            background-color: #f1f1f1;
         }
-        #input-search-quick { width: 100% !important; height: 40px; }
+
+        #input-search-quick {
+            width: 100% !important;
+            height: 40px;
+        }
     }
 
     /* --- Resaltado Azul --- */
-    .navbar-nav > li.active > a {
-        background-color: #e7f1ff !important; 
+    .navbar-nav>li.active>a {
+        background-color: #e7f1ff !important;
         color: #004085 !important;
         font-weight: 600;
     }
-    .dropdown-menu > li.active > a {
+
+    .dropdown-menu>li.active>a {
         background-color: #0056b3 !important;
         color: #ffffff !important;
     }
-    .fa-chevron-down { transition: transform 0.3s ease; }
-    .open > a > .fa-chevron-down { transform: rotate(-180deg); }
+
+    .fa-chevron-down {
+        transition: transform 0.3s ease;
+    }
+
+    .open>a>.fa-chevron-down {
+        transform: rotate(-180deg);
+    }
 
     /* --- Limpieza de iconos fantasma (Material Icons fix) --- */
     .navbar-nav .dropdown-toggle::after {
         display: none !important;
         content: "" !important;
     }
-    
+
     .navbar-nav .dropdown-toggle {
-        font-size: 0 !important; /* Oculta el texto inyectado "keyboard_arrow..." */
+        font-size: 0 !important;
+        /* Oculta el texto inyectado "keyboard_arrow..." */
     }
-    
-    .navbar-nav .dropdown-toggle i, 
+
+    .navbar-nav .dropdown-toggle i,
     .navbar-nav .dropdown-toggle span {
-        font-size: 14px !important; /* Restablece el tamaño solo para lo que queremos ver */
+        font-size: 14px !important;
+        /* Restablece el tamaño solo para lo que queremos ver */
         display: inline-block;
         vertical-align: middle;
     }
-    .navbar-nav .dropdown-toggle span { margin: 0 5px; }
+
+    .navbar-nav .dropdown-toggle span {
+        margin: 0 5px;
+    }
 </style>
 
 <nav class="navbar navbar-default full-box" style="border: none; border-bottom: 1px solid #e1e1e1; margin-bottom: 0;">
+
     <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-options">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+            <a href="<?= BASE_URL ?>/dashboard" class="navbar-brand btn-menu-dashboard"><i class="fa-solid fa-bars"></i></a>
+        </div>
         <div class="collapse navbar-collapse" id="navbar-options">
             <ul class="nav navbar-nav navbar-right">
-                
+
                 <!-- VISITAS -->
                 <?php if ($styleVisitas == ''): ?>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-dropdown>
-                        <i class="fa-solid fa-users"></i> 
-                        <span>Visitas</span> 
-                        <i class="fa-solid fa-chevron-down"></i>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="<?= BASE_URL ?>/visitantes/registro">Registro de Visitas</a></li>
-                        <li><a href="<?= BASE_URL ?>/visitantes">Gestión de Visitas</a></li>
-                    </ul>
-                </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-dropdown>
+                            <i class="fa-solid fa-users"></i>
+                            <span>Visitas</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="<?= BASE_URL ?>/visitantes/registro">Registro de Visitas</a></li>
+                            <li><a href="<?= BASE_URL ?>/visitantes">Gestión de Visitas</a></li>
+                        </ul>
+                    </li>
                 <?php endif; ?>
 
                 <!-- EVENTOS -->
                 <?php if ($styleEventos == ''): ?>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa-solid fa-calendar"></i> 
-                        <span>Eventos</span>
-                        <i class="fa-solid fa-chevron-down"></i>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="<?= BASE_URL ?>/eventos">Listado de Eventos</a></li>
-                        <li><a href="<?= BASE_URL ?>/actividad/create">Registro de Actividades</a></li>
-                        <li><a href="<?= BASE_URL ?>/logro/create">Registro de Logros</a></li>
-                    </ul>
-                </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa-solid fa-calendar"></i>
+                            <span>Eventos</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="<?= BASE_URL ?>/eventos">Listado de Eventos</a></li>
+                            <li><a href="<?= BASE_URL ?>/actividad/create">Registro de Actividades</a></li>
+                            <li><a href="<?= BASE_URL ?>/logro/create">Registro de Logros</a></li>
+                        </ul>
+                    </li>
                 <?php endif; ?>
 
                 <!-- CATÁLOGO -->
                 <?php if ($styleBiblioteca == ''): ?>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa-solid fa-book"></i> 
-                        <span>Catálogo</span> 
-                        <i class="fa-solid fa-chevron-down"></i>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="<?= BASE_URL ?>/libros/opcion">Registro de Libros</a></li>
-                        <li><a href="<?= BASE_URL ?>/libros">Libros</a></li>
-                    </ul>
-                </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa-solid fa-book"></i>
+                            <span>Catálogo</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="<?= BASE_URL ?>/libros/opcion">Registro de Libros</a></li>
+                            <li><a href="<?= BASE_URL ?>/libros">Libros</a></li>
+                        </ul>
+                    </li>
                 <?php endif; ?>
 
                 <!-- PRÉSTAMOS -->
                 <?php if ($styleBiblioteca == ''): ?>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa-solid fa-bookmark"></i> 
-                        <span>Préstamos</span> 
-                        <i class="fa-solid fa-chevron-down"></i>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="<?= BASE_URL ?>/prestamos">Lista de Préstamos</a></li>
-                        <li><a href="<?= BASE_URL ?>/prestamos/create">Nuevo Préstamo</a></li>                      
-                        <li role="separator" class="divider"></li>
-                        <li><a href="<?= BASE_URL ?>/multas"><i class="fa-solid fa-hand-holding-dollar"></i> Multas</a></li>
-                    </ul>
-                </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa-solid fa-bookmark"></i>
+                            <span>Préstamos</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="<?= BASE_URL ?>/prestamos">Lista de Préstamos</a></li>
+                            <li><a href="<?= BASE_URL ?>/prestamos/create">Nuevo Préstamo</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="<?= BASE_URL ?>/multas"><i class="fa-solid fa-hand-holding-dollar"></i> Multas</a></li>
+                        </ul>
+                    </li>
                 <?php endif; ?>
 
-                <li class="hidden-xs" style="display: flex; align-items: center; padding: 0 15px; height: 50px;">
-                    <img src="<?= PUBLIC_PATH ?>/img/img-login/libro.png" alt="Logo" style="max-height: 40px;">
+                <li class="hidden-xs" style="display: flex; align-items: center; height: 50px;">
+                    <a href="<?= BASE_URL ?>/dashboard" style="display: flex; align-items: center; height: 100%; padding: 0 15px; background: transparent !important; box-shadow: none !important;">
+                        <img src="<?= PUBLIC_PATH ?>/img/img-login/libro.png" alt="Logo" style="max-height: 38px; background: transparent !important; display: block;">
+                    </a>
                 </li>
             </ul>
         </div>
@@ -138,7 +174,7 @@
 
         $('.navbar-nav a').each(function() {
             const href = $(this).attr('href');
-            
+
             if (href && href !== "#") {
                 // Creamos un objeto URL temporal para comparar solo las rutas
                 const linkPath = new URL(href, window.location.origin).pathname;
@@ -146,7 +182,7 @@
                 // Solo marcamos como activo si la ruta coincide exactamente
                 if (currentPath === linkPath) {
                     $(this).closest('li').addClass('active');
-                    
+
                     // Si es un elemento de submenú, marcamos el dropdown padre
                     if ($(this).closest('.dropdown-menu').length) {
                         $(this).closest('.dropdown').addClass('active');

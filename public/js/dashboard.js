@@ -175,4 +175,6 @@
             mapearModal('#modalColeccion', 'indicador-coleccion', 'modalColeccionHeader', 'modalColeccionContenedorPorcentaje', 'modalColeccionPorcentaje', 'modalColeccionEstadoText', 'modalColeccionBarra');
         });
     }
+    
+    
 });

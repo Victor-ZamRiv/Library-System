@@ -1,9 +1,11 @@
- <?php include  VIEW_PATH . "/component/message.php" ?>
+<?php include  VIEW_PATH . "/component/message.php" ?>
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
     <title>Login - Sistema Bibliográfico</title>
+    <link rel="icon" type="image/png" href="/Library_System/public/img/img-login/libro.png">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
@@ -61,9 +63,10 @@
 
                         <div class="input-group password-container">
                             <input type="password" id="password" name="password" placeholder="Contraseña" required maxlength="15">
-                            <button type="button" id="togglePassword" class="toggle-btn" aria-label="Mostrar contraseña">
+                            <!-- Se cambia a span para evitar conflictos de comportamiento con los botones globales -->
+                            <span id="togglePassword" class="toggle-btn" aria-label="Mostrar contraseña">
                                 <i class="fa-solid fa-eye" id="eyeIcon"></i>
-                            </button>
+                            </span>
                         </div>
 
                         <button type="submit" class="btn-sistema btn-access">ACCEDER</button>
@@ -228,8 +231,6 @@
                 return;
             }
 
-            // Nota: la respuesta se enviará al backend junto con la nueva contraseña en el paso final.
-            // Por simplicidad, almacenamos la respuesta y abrimos el modal para la nueva contraseña.
             window.tempAnswer = answer;
             openPasswordModal();
         }
@@ -275,7 +276,6 @@
                 } else {
                     agregarToast({ tipo: 'error', titulo: 'Error', descripcion: data.message });
                     closePasswordModal();
-                    // Opcional: regresar al paso 1
                     flipCard();
                 }
             })

@@ -5,13 +5,17 @@ use App\Models\Entities\Configuracion;
 use App\Models\Entities\Prestamo;
 use App\Contracts\IConfiguracionRepository;
 use App\Contracts\ISalaRepository;
+use App\Models\Services\DashboardConfigService;
+
 class ConfiguracionController extends BaseController {
     private IConfiguracionRepository $configuracionRepo;
     private ISalaRepository $salaRepo;
+    private DashboardConfigService $dashboardConfigService;
 
-    public function __construct(IConfiguracionRepository $configuracionRepo, ISalaRepository $salaRepo) {
+    public function __construct(IConfiguracionRepository $configuracionRepo, ISalaRepository $salaRepo, DashboardConfigService $dashboardConfigService) {
         $this->configuracionRepo = $configuracionRepo;
         $this->salaRepo = $salaRepo;
+        $this->dashboardConfigService = $dashboardConfigService;
         $this->authenticate();
         $this->middlewareRol(['Director'], 'Configuración');
     }
@@ -113,7 +117,16 @@ class ConfiguracionController extends BaseController {
     public function historial(): string {
         return $this->render('history/history');
     }
-    public function indicatorConfiguration(){
-        return $this->render('indicator/indicator-configuration');
+    public function indicadores(): string
+    {
+        $config = $this->dashboardConfigService->getConfig();
+        return $this->render('indicator/indicator-configuration', ['config' => $config]);
+    }
+
+    public function guardarIndicadores(): void
+    {
+        $this->dashboardConfigService->saveConfig($_POST);
+        $_SESSION['success'] = 'Configuración guardada correctamente.';
+        $this->redirect('/configuracion/indicator');
     }
 }

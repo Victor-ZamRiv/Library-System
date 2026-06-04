@@ -98,7 +98,7 @@ class AdministradorController extends BaseController {
                 $this->input('usuario-reg'),
                 password_hash($this->input('password1-reg'), PASSWORD_DEFAULT),
                 $this->input('rol'), // Ej: Director, Jefe de sala, Bibliotecario
-                $this->input('pregunta-seguidad'),
+                $this->input('pregunta-seguridad'),
                 $this->input('respuesta-reg') ? password_hash($this->input('respuesta-reg'), PASSWORD_DEFAULT) : null,
                 true
             );
@@ -112,7 +112,7 @@ class AdministradorController extends BaseController {
         } catch (\RuntimeException $e) {
             http_response_code(500);
             return $this->render('errors/error', [
-                'mensaje' => "Ocurrió un error inesperado al registrar el libro.",
+                'mensaje' => "Ocurrió un error inesperado al registrar el administrador.",
                 'detalle' => $e->getMessage()
             ]);
         } catch (\Exception $e) {

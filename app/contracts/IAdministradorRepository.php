@@ -11,6 +11,7 @@ interface IAdministradorRepository {
     public function updatePassword(int $id, string $hash): bool;
     public function findByUsername(string $username): ?Administrador;
     public function findByEmail(string $email): ?Administrador;
+    public function findByPersonaId(int $idPersona): ?Administrador;
     public function existsUsername(string $username, ?int $excludeId = null): bool;
     public function duplicatePersona(int $idPersona): bool;
     public function search(string $input): array;

@@ -71,7 +71,7 @@
         <ul class="list-unstyled full-box">
             <li><a href="<?= BASE_URL ?>/configuracion/indicator">Indicadores</a></li>
             <li><a href="<?= BASE_URL ?>/configuracion/sala">Salas</a></li>
-            <li><a href="<?= BASE_URL ?>/configuracion/area-conocimiento"> Áreas de Conocimiento</a></li>
+            
             <li><a href="<?= BASE_URL ?>/configuracion/prestamos"> Prestamos</a></li>
             <li><a href="<?= BASE_URL ?>/historial"> Historial</a></li>
         </ul>

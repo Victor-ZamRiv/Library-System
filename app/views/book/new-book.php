@@ -35,7 +35,7 @@
 
         <div class="container-fluid">
             <div class="page-header">
-                <h1 class="text-titles"><i class="fa-solid fa-book-open"></i> Libros <small>Registro de Libros</small></h1>
+                <h1 class="text-titles"><i class="fa-solid fa-book-open"></i> Registro de Libros</h1>
             </div>
         </div>
 

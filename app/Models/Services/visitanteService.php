@@ -79,6 +79,9 @@ class VisitanteService
         // Transacción
         $this->pdo->beginTransaction();
         try {
+            if ($this->visitanteRepo->findBySalaFechaTurno($sala, $fecha, $turno)) {
+                throw new \Exception("Ya existe un registro de visitantes para esta sala, fecha y turno.");
+            }
             $this->visitanteRepo->insert($visitante);
             foreach ($consultas as $consulta) {
                 if ($this->consultaRepo->existsBySalaFechaTurnoArea(

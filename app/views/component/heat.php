@@ -13,6 +13,7 @@
 
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel="icon" type="image/png" href="/Library_System/public/img/img-login/libro.png">
 	<link rel="stylesheet" href="/Library_System/public/css/main.css">
 	<link rel="stylesheet" href="/Library_System/public/fontawesome/fontawesome-free-7.0.1-web/css/all.min.css">
 	<link rel="stylesheet" href="/Library_System/public/css/notification.css">

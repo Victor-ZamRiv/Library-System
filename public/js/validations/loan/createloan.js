@@ -1,38 +1,97 @@
 $(document).ready(function() {
     // --- CONFIGURACIÓN Y CONSTANTES ---
-    const LONGITUD_CARNET = 10;
+    const CARNET_REGEX = /^[0-9]{8}\/[0-9]{2}$/;
     const MAX_LENGTH_COTA = 30;
     const COTA_REGEX = /^(?:[A-Za-z]{1,2}\s[A-Za-z0-9]{1,4}|\d{3}.*\s[A-Za-z0-9]{4})$/;
     const $carnetInput = $('#carnet-reg');
     const cotasSelectors = ['#libro1', '#libro2', '#libro3'];
 
-    // --- 1. VALIDACIÓN EN TIEMPO REAL (CARNET) ---
+    // --- 1. VALIDACIÓN EN TIEMPO REAL CON MÁSCARA FLUIDA (CARNET) ---
     
-    // Restricción: Solo números
-    $carnetInput.on('keypress', function(evt) {
-        const charCode = (evt.which) ? evt.which : evt.keyCode;
-        if (charCode > 31 && (charCode < 48 || charCode > 57)) evt.preventDefault();
-    });
-
-    $carnetInput.on('input blur', function() {
-        let valor = $(this).val().replace(/[^0-9]/g, '');
-        $(this).val(valor);
+    $carnetInput.on('input', function() {
+        // Extraer únicamente los dígitos ingresados
+        let soloNumeros = $(this).val().replace(/[^0-9]/g, '');
         
-        const esValido = valor.length === LONGITUD_CARNET;
-        const $errorDiv = $('#carnet-error');
+        // Limitar la entrada estricta a 10 dígitos numéricos
+        if (soloNumeros.length > 10) {
+            soloNumeros = soloNumeros.substring(0, 10);
+        }
 
-        if (esValido) {
-            $(this).addClass('is-valid').removeClass('is-invalid');
-            $errorDiv.hide();
-            $('#libro1').prop('disabled', false);
+        // Construcción dinámica de la máscara física en el input
+        if (soloNumeros.length > 8) {
+            // Toma los primeros 8 números, inyecta la barra y concatena el resto (máximo 2 más)
+            $(this).val(soloNumeros.substring(0, 8) + '/' + soloNumeros.substring(8));
         } else {
-            $(this).addClass('is-invalid').removeClass('is-valid');
-            if ($errorDiv.length) {
-                $errorDiv.html(`<i class="fas fa-exclamation-circle"></i> El carnet debe tener exactamente ${LONGITUD_CARNET} dígitos.`).show();
-            }
-            deshabilitarTodosLosLibros();
+            $(this).val(soloNumeros);
+        }
+
+        // Validación visual inmediata al completar los 10 dígitos requeridos
+        if (soloNumeros.length === 10) {
+            validarCarnetCompleto($(this));
+        } else {
+            // Mientras no esté completo, mantenemos el estado neutral si no ha salido del input
+            $(this).removeClass('is-valid is-invalid');
+            $('#carnet-error').hide();
         }
     });
+
+    // Evento al perder el foco (blur): Asegura la consistencia estructural del dato
+    $carnetInput.on('blur', function() {
+        let valor = $(this).val().trim();
+        
+        if (valor === "") {
+            $(this).removeClass('is-valid is-invalid');
+            $('#carnet-error').hide();
+            deshabilitarTodosLosLibros();
+            return;
+        }
+
+        // Re-evaluar por completo las reglas semánticas y de negocio
+        validarCarnetCompleto($(this));
+    });
+
+    // Función centralizada para evaluar las reglas del negocio del Carnet
+    function validarCarnetCompleto($input) {
+        const valor = $input.val().trim();
+        const numerosPuros = valor.replace('/', '');
+        const $errorDiv = $('#carnet-error');
+        let mensajeError = "";
+
+        if (numerosPuros.length < 10) {
+            mensajeError = "El carnet debe tener exactamente 10 dígitos (8 identificadores / 2 del año).";
+        } else if (parseInt(numerosPuros, 10) === 0) {
+            mensajeError = "El número de carnet no es válido. No puede estar compuesto únicamente por ceros.";
+        } else {
+            const match = valor.match(CARNET_REGEX);
+            if (match) {
+                const partes = valor.split('/');
+                const anioIngresado = parseInt(partes[1], 10);
+                const anioActual = parseInt(new Date().getFullYear().toString().slice(-2), 10);
+
+                if (anioIngresado > anioActual) {
+                    mensajeError = `El año indicado (${partes[1]}) es inválido. No puede ser mayor al año actual (${anioActual}).`;
+                }
+            } else {
+                mensajeError = "Formato requerido: 8 números seguidos de los 2 dígitos del año (Ej: 00123456/26)";
+            }
+        }
+
+        // Manejo del estado visual en la UI aplicando clases de Bootstrap
+        if (mensajeError !== "") {
+            $input.addClass('is-invalid').removeClass('is-valid');
+            if ($errorDiv.length) {
+                $errorDiv.html(`<i class="fas fa-exclamation-circle"></i> ${mensajeError}`).show();
+            }
+            deshabilitarTodosLosLibros();
+            return false;
+        } else {
+            $input.addClass('is-valid').removeClass('is-invalid');
+            $errorDiv.hide();
+            // Habilita el flujo secuencial de cotas
+            $('#libro1').prop('disabled', false);
+            return true;
+        }
+    }
 
     function deshabilitarTodosLosLibros() {
         $('.cota-input').each(function() {
@@ -59,7 +118,6 @@ $(document).ready(function() {
             }
         }
 
-        // Aplicar estado visual
         if (mensajeError !== '') {
             $input.addClass('is-invalid').removeClass('is-valid');
             $errorDisplay.html(`<i class="fas fa-exclamation-circle"></i> ${mensajeError}`).show();
@@ -90,102 +148,119 @@ $(document).ready(function() {
 
     // --- 3. LÓGICA DE ENVÍO Y PRÉSTAMO (AJAX) ---
 
-$('form').on('submit', function(e) {
-    e.preventDefault();
+    $('form').on('submit', function(e) {
+        e.preventDefault();
 
-    const carnet = $carnetInput.val().trim();
-    
-    if (carnet.length !== LONGITUD_CARNET) {
-        mostrarError('carnet', 'Carnet inválido.');
-        return;
-    }
-
-    let cotasIngresadas = [];
-    let inputsValidos = true;
-
-    // Solo tomamos las cotas de inputs que no están vacíos
-    $('.cota-input').each(function() {
-        const val = $(this).val().trim();
-        if (val !== "") {
-            if ($(this).hasClass('is-invalid')) {
-                inputsValidos = false;
-            } else {
-                cotasIngresadas.push(val);
-            }
+        if (!validarCarnetCompleto($carnetInput)) {
+            mostrarError('carnet', 'Por favor, corrija el formato del carnet.');
+            return;
         }
-    });
 
-    if (cotasIngresadas.length === 0 || !inputsValidos) {
-        alert('Debe ingresar al menos una cota válida y corregir los errores.');
-        return;
-    }
+        const carnet = $carnetInput.val().trim();
+        let inputsValidos = true;
 
-    const $btn = $('button[type="submit"]');
-    const originalText = $btn.text();
-    $btn.text('Validando...').prop('disabled', true);
-
-    // AJAX 1: Validar Lector
-    $.ajax({
-        url: BASE_URL + '/prestamos/check-lector',
-        type: 'POST',
-        data: { carnet: carnet },
-        dataType: 'json',
-        success: function(resLector) {
-            if (!resLector.success) {
-                restaurarBoton($btn, originalText);
-                mostrarError('carnet', resLector.message);
-                return;
+        // Comprobación visual previa
+        $('.cota-input').each(function() {
+            if ($(this).val().trim() !== "" && $(this).hasClass('is-invalid')) {
+                inputsValidos = false;
             }
+        });
 
-            const lectorData = {
-                id: resLector.idLector,
-                nombre: resLector.nombreCompleto,
-                prestamosActivos: resLector.prestamosActivos,
-                limite: resLector.limite
-            };
+        // Contar cotas reales escritas
+        const totalCotas = $('.cota-input').filter(function() {
+            return $(this).val().trim() !== "";
+        }).length;
 
-            // AJAX 2: Validar cada cota
+        if (totalCotas === 0 || !inputsValidos) {
+            alert('Debe ingresar al menos una cota válida y corregir los errores.');
+            return;
+        }
 
-        let librosData = [];
-        let erroresLibros = [];
+        const $btn = $('button[type="submit"]');
+        const originalText = $btn.text();
+        $btn.text('Validando...').prop('disabled', true);
 
-        let peticiones = cotasIngresadas.map((cota, idx) => {
-            return $.ajax({
-                url: BASE_URL + '/prestamos/check-libro',
-                type: 'POST',
-                data: { cota: cota },
-                dataType: 'json'
-            }).done(resLibro => {
-                if (resLibro.success) {
-                    librosData.push({
-                        cota: cota,
-                        titulo: resLibro.titulo,
-                        ejemplares: resLibro.ejemplares
-                    });
-                } else {
-                    erroresLibros.push(`Libro "${cota}": ${resLibro.message}`);
+        // AJAX 1: Validar Lector
+        $.ajax({
+            url: BASE_URL + '/prestamos/check-lector',
+            type: 'POST',
+            data: { carnet: carnet },
+            dataType: 'json',
+            success: function(resLector) {
+                if (!resLector.success) {
+                    restaurarBoton($btn, originalText);
+                    mostrarError('carnet', resLector.message);
+                    return;
                 }
-            }).fail((jqXHR, textStatus) => {
-                erroresLibros.push(`Error de conexión al validar la cota: ${cota}`);
-            });
-        });
 
-        // Esperar a que todas terminen
-        $.when.apply($, peticiones).always(function() {
-            if (erroresLibros.length > 0) {
+                const lectorData = {
+                    id: resLector.idLector,
+                    nombre: resLector.nombreCompleto,
+                    prestamosActivos: resLector.prestamosActivos,
+                    limite: resLector.limite
+                };
+
+                // AJAX 2: Modificado para mapear directamente los objetos Input del DOM
+                let librosData = [];
+                let erroresContados = 0;
+
+                let peticiones = $('.cota-input').filter(function() {
+                    return $(this).val().trim() !== "";
+                }).map(function() {
+                    const $currentInput = $(this);
+                    const cotaValor = $currentInput.val().trim();
+                    const inputId = $currentInput.attr('id');
+
+                    return $.ajax({
+                        url: BASE_URL + '/prestamos/check-libro',
+                        type: 'POST',
+                        data: { cota: cotaValor },
+                        dataType: 'json'
+                    }).done(resLibro => {
+                        if (resLibro.success) {
+                            $currentInput.addClass('is-valid').removeClass('is-invalid');
+                            $('#error-' + inputId).hide();
+
+                            librosData.push({
+                                cota: cotaValor,
+                                titulo: resLibro.titulo,
+                                ejemplares: resLibro.ejemplares
+                            });
+                        } else {
+                            // AQUÍ SE MUESTRA ABAJO: En vez de un alert, inyectamos la alerta rosada usando tu div de error
+                            $currentInput.addClass('is-invalid').removeClass('is-valid');
+                            $('#error-' + inputId).html(`<i class="fas fa-exclamation-circle"></i> ${resLibro.message}`).show();
+                            erroresContados++;
+                        }
+                    }).fail(() => {
+                        $currentInput.addClass('is-invalid').removeClass('is-valid');
+                        $('#error-' + inputId).html(`<i class="fas fa-exclamation-circle"></i> Error de conexión al validar la cota.`).show();
+                        erroresContados++;
+                    });
+                }).get();
+
+                // Esperamos que terminen todas las peticiones asíncronas de los libros
+                $.when.apply($, peticiones).always(function() {
+                    // Restauramos el botón "Siguiente" para que no se quede congelado en "VALIDANDO..."
+                    restaurarBoton($btn, originalText);
+
+                    if (erroresContados > 0) {
+                        gestionarBloqueoSecuencial();
+                    } else {
+                        mostrarSegundoPaso(lectorData, librosData, $btn, originalText);
+                    }
+                });
+            },
+            error: function() {
                 restaurarBoton($btn, originalText);
-                alert("Errores encontrados:\n" + erroresLibros.join('\n'));
-            } else {
-                mostrarSegundoPaso(lectorData, librosData, $btn, originalText);
+                alert('Error de comunicación con el servidor al validar el lector.');
             }
         });
-    }
     });
 
     // --- 4. MODAL Y REGISTRO FINAL ---
 
     function mostrarSegundoPaso(lector, libros, $btn, texto) {
-        // Construir el formulario dinámicamente
         let formHtml = `
             <form id="formRegistroPrestamo" method="POST" action="${BASE_URL}/prestamos/store">
                 <input type="hidden" name="idLector" value="${lector.id}">
@@ -211,7 +286,6 @@ $('form').on('submit', function(e) {
             </form>
         `;
 
-        // Insertar el formulario dentro del body del modal
         const modalHtml = `
             <div class="modal fade" id="modalConfirmarPrestamo" tabindex="-1">
                 <div class="modal-dialog modal-lg">
@@ -231,26 +305,20 @@ $('form').on('submit', function(e) {
             </div>
         `;
 
-        // Eliminar modal existente si lo hay
         $('#modalConfirmarPrestamo').remove();
         $('body').append(modalHtml);
-
-        // Mostrar modal
         $('#modalConfirmarPrestamo').modal('show');
 
-        // Restaurar el botón "Siguiente"
         restaurarBoton($btn, texto);
     }
 
-    // Funciones auxiliares
     function mostrarError(campoId, mensaje) {
         let $errorDiv = (campoId === 'carnet') ? $('#carnet-error') : $('#error-' + campoId);
-        $errorDiv.text(mensaje).show();
-        setTimeout(() => $errorDiv.fadeOut(), 5000);
+        $errorDiv.html(`<i class="fas fa-exclamation-circle"></i> ${mensaje}`).show();
+        setTimeout(() => $errorDiv.fadeOut(), 6000);
     }
 
     function restaurarBoton($btn, texto) {
         $btn.text(texto).prop('disabled', false);
     }
-    });
 });

@@ -37,7 +37,7 @@
 
         <div class="container-fluid">
             <div class="page-header">
-                <h1 class="text-titles"><i class="fa-solid fa-book"></i> Catálago <small>Editar Libro</small></h1>
+                <h1 class="text-titles"><i class="fa-solid fa-book"></i> Editar Libro</h1>
             </div>
         </div>
 
@@ -462,7 +462,8 @@
  
     <?php include VIEW_PATH . "/modal/confirmation_delete_copy.php"; ?>
     <?php include VIEW_PATH . "/component/scripts.php"; ?>
-    <script src="<?php echo PUBLIC_PATH; ?>/js/validations/book/createvalidation.js"></script>
+    <script src="<?php echo PUBLIC_PATH; ?>/js/validations/book/helper-book.js"></script>
+    <script src="<?php echo PUBLIC_PATH; ?>/js/validations/book/init-book-form.js"></script>
     <script src="<?php echo PUBLIC_PATH; ?>/js/modal/specimens.js"></script>
 </body>
 

@@ -7,6 +7,7 @@ interface ILectorRepository {
     public function update(Lector $lector): bool;
     public function find(int $id): ?Lector;
     public function findByCarnet(string $carnet): ?Lector;
+    public function findByPersonaId(int $idPersona): ?Lector;
     public function all(): array;
     public function deactivate(int $id): void;
     public function search(string $input): array;

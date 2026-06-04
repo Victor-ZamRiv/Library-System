@@ -1,8 +1,69 @@
 <!DOCTYPE html>
 <html lang="es">
 
-<title>Editar Lector</title>
-<?php include VIEW_PATH . "/component/heat.php" ?>
+<head>
+    <title>Editar Lector</title>
+    <?php include VIEW_PATH . "/component/heat.php" ?>
+    <style>
+        /* Alineación de teléfonos en una sola línea */
+        .phone-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .phone-group .select-prefix {
+            width: 35% !important;
+            margin-right: 5px;
+        }
+
+        .phone-group .input-number-main {
+            width: 65% !important;
+        }
+
+        /* Alineación Perfecta de Cédula en una sola línea */
+        .cedula-group {
+            display: flex;
+            align-items: flex-end; /* Fuerza la coincidencia en el borde inferior */
+            gap: 10px;
+        }
+
+        .cedula-group .select-nacionalidad {
+            width: 20% !important;
+            border: none !important;
+            border-bottom: 1px solid #d2d2d2 !important;
+            padding-bottom: 5px;
+            background: transparent;
+            height: 35px !important;
+        }
+
+        .cedula-group .input-cedula-main {
+            width: 80% !important;
+            height: 35px !important;
+        }
+
+        .form-group input:disabled,
+        .form-group select:disabled {
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        .form-group {
+            pointer-events: auto;
+        }
+
+        /* Si el label está DESPUÉS del input en el HTML */
+        .is-invalid~label,
+        .is-invalid+label {
+            color: #dc3545 !important;
+        }
+
+        /* Estructura tradicional donde el label está ANTES del input con pseudo-clase :has() */
+        .mb-3:has(.is-invalid) label,
+        .form-group:has(.is-invalid) label {
+            color: #dc3545 !important;
+        }
+    </style>
+</head>
 
 <body>
     <?php include VIEW_PATH . "/component/sidebar.php" ?>
@@ -12,11 +73,52 @@
 
         <div class="container-fluid">
             <div class="page-header">
-                <h1 class="text-titles"> <i class="fa-solid fa-user-pen"></i> Lectores <small> Editar Lector</small></h1>
+                <h1 class="text-titles"> <i class="fa-solid fa-user-pen"></i> Editar Lector</h1>
             </div>
         </div>
         <?php include VIEW_PATH . "/component/readerbar.php" ?>
-        <?php //var_dump($lector);
+
+        <?php
+        // Función para teléfonos
+        function limpiarYSepararTelefono($telRaw) {
+            $telRaw = trim($telRaw ?? '');
+            $telRaw = str_replace('-', '', $telRaw);
+
+            if (empty($telRaw)) {
+                return ['pref' => '0414', 'num' => ''];
+            }
+            
+            if (strlen($telRaw) >= 11) {
+                return [
+                    'pref' => substr($telRaw, 0, 4),
+                    'num'  => substr($telRaw, 4)
+                ];
+            }
+            
+            return ['pref' => '0414', 'num' => $telRaw];
+        }
+
+        // NUEVA FUNCIÓN: Separa la nacionalidad (V- / E-) del número de cédula para la edición
+        function separarCedula($cedulaRaw) {
+            $cedulaRaw = trim($cedulaRaw ?? '');
+            
+            if (strpos($cedulaRaw, 'E-') === 0) {
+                return [
+                    'pref' => 'E-',
+                    'num' => substr($cedulaRaw, 2)
+                ];
+            }
+            
+            // Por defecto asumimos Venezolano si empieza por V- o si es solo número
+            if (strpos($cedulaRaw, 'V-') === 0) {
+                return [
+                    'pref' => 'V-',
+                    'num' => substr($cedulaRaw, 2)
+                ];
+            }
+            
+            return ['pref' => 'V-', 'num' => $cedulaRaw];
+        }
         ?>
 
         <div class="container-fluid">
@@ -36,87 +138,88 @@
                                     <div class="col-xs-6">
                                         <div class="form-group label-floating">
                                             <label class="control-label" for="carnet-reg"><span class="text-danger">*</span> N° de Carnet</label>
-                                            <input class="form-control" type="text" name="carnet-reg" id="carnet-reg" required
-                                                pattern="[0-9X/-]{1,30}" minlength="10" maxlength="10"
-                                                placeholder="XXXXXXXX/XX" title="N° de Carnet: 10 dígitos en formato XXXXXXXX/XX"
-                                                value="<?php echo $lector->getCarnet(); ?>"
-                                                onblur="if (!this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('carnet-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('carnet-error').style.display = 'none'; }">
-                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="carnet-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Por favor, ingrese un N° de Carnet válido de 10 dígitos.
-                                            </div>
+                                            <input class="form-control" type="text" name="carnet" id="carnet-reg" value="<?php echo $lector->getCarnet(); ?>" data-original="<?php echo $lector->getCarnet(); ?>" required>
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="carnet-error"></div>
                                         </div>
                                     </div>
+                                    
                                     <div class="col-xs-6">
                                         <div class="form-group label-floating">
                                             <label class="control-label" for="cedula-reg"><span class="text-danger">*</span> Cédula</label>
-                                            <input class="form-control" type="text" name="cedula-reg" id="cedula-reg" required
-                                                pattern="[0-9-]{1,30}" minlength="6" maxlength="8"
-                                                title="Solo números y guiones (máximo 30 caracteres)"
-                                                value="<?php echo $lector->getPersona()->getCedula(); ?>"
-                                                onblur="if (!this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('cedula-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('cedula-error').style.display = 'none'; }">
-                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="cedula-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Por favor, ingrese una Cédula válida (solo números, entre 6 y 8 dígitos).
+                                            
+                                            <div class="cedula-group">
+                                                <?php 
+                                                    $cedData = separarCedula($lector->getPersona()->getCedula());
+                                                    $prefCed = $cedData['pref'];
+                                                    $numCed = $cedData['num'];
+                                                ?>
+                                                <select class="form-control select-nacionalidad" id="prefijo-cedula">
+                                                    <option value="V-" <?php if($prefCed == 'V-') echo 'selected'; ?>>V-</option>
+                                                    <option value="E-" <?php if($prefCed == 'E-') echo 'selected'; ?>>E-</option>
+                                                </select>
+                                                <input class="form-control input-cedula-main" type="text" id="cedula-reg" value="<?php echo $numCed; ?>" data-original="<?php echo $numCed; ?>" required maxlength="8" placeholder="12345678">
                                             </div>
+
+                                            <input type="hidden" name="cedula" id="cedula-final" value="<?php echo $lector->getPersona()->getCedula(); ?>" data-original="<?php echo $lector->getPersona()->getCedula(); ?>">
+                                            
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="cedula-error"></div>
                                         </div>
                                     </div>
 
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
                                             <label class="control-label" for="nombre-reg"><span class="text-danger">*</span> Nombres</label>
-                                            <input class="form-control" type="text" name="nombre-reg" id="nombre-reg" required
-                                                pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{1,30}" maxlength="30"
-                                                title="Solo letras y espacios (máximo 30 caracteres)"
-                                                value="<?php echo $lector->getPersona()->getNombre(); ?>"
-                                                onblur="if (!this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('nombre-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('nombre-error').style.display = 'none'; }">
-                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="nombre-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Por favor, ingrese Nombres válidos.
-                                            </div>
+                                            <input class="form-control" type="text" name="nombre-reg" id="nombre-reg" value="<?php echo $lector->getPersona()->getNombre(); ?>" data-original="<?php echo $lector->getPersona()->getNombre(); ?>" required>
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="nombre-error"></div>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
                                             <label class="control-label" for="apellido-reg"><span class="text-danger">*</span> Apellidos</label>
-                                            <input class="form-control" type="text" name="apellido-reg" id="apellido-reg" required
-                                                pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{1,30}" maxlength="30"
-                                                title="Solo letras y espacios (máximo 30 caracteres)"
-                                                value="<?php echo $lector->getPersona()->getApellido(); ?>"
-                                                onblur="if (!this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('apellido-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('apellido-error').style.display = 'none'; }">
-                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="apellido-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Por favor, ingrese Apellidos válidos.
-                                            </div>
+                                            <input class="form-control" type="text" name="apellido-reg" id="apellido-reg" value="<?php echo $lector->getPersona()->getApellido(); ?>" data-original="<?php echo $lector->getPersona()->getApellido(); ?>" required>
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="apellido-error"></div>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
-                                        <div class="form-group label-floating">
+                                        <div class="form-group">
                                             <label class="control-label" for="sexo-reg"><span class="text-danger">*</span> Sexo</label>
-                                            <select class="form-control" name="sexo-reg" id="sexo-reg" required>
-                                                <option value="m" <?php if ($lector->getSexo() == 'm') echo 'selected'; ?>>Masculino</option>
-                                                <option value="f" <?php if ($lector->getSexo() == 'f') echo 'selected'; ?>>Femenino</option>
+                                            <select class="form-control" name="sexo" id="sexo-reg" data-original="<?php echo strtolower($lector->getSexo()); ?>" required>
+                                                <option value="m" <?php if (strtolower($lector->getSexo()) == 'm') echo 'selected'; ?>>Masculino</option>
+                                                <option value="f" <?php if (strtolower($lector->getSexo()) == 'f') echo 'selected'; ?>>Femenino</option>
                                             </select>
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="sexo-error"></div>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
                                             <label class="control-label" for="direccion-reg"><span class="text-danger">*</span> Dirección</label>
-                                            <input class="form-control" type="text" name="direccion-reg" id="direccion-reg" required
-                                                maxlength="100" title="Dirección (máximo 100 caracteres)"
-                                                value="<?php echo $lector->getDireccion(); ?>"
-                                                onblur="if (!this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('direccion-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('direccion-error').style.display = 'none'; }">
-                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="direccion-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Por favor, ingrese una Dirección (máximo 100 caracteres).
-                                            </div>
+                                            <input class="form-control" type="text" name="direccion" id="direccion-reg" value="<?php echo $lector->getDireccion(); ?>" data-original="<?php echo $lector->getDireccion(); ?>" required>
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="direccion-error"></div>
                                         </div>
                                     </div>
+                                    
                                     <div class="col-xs-12 col-sm-6">
-                                        <div class="form-group label-floating">
-                                            <label class="control-label" for="telefono-reg">Teléfono</label>
-                                            <input class="form-control" type="text" name="telefono-reg" id="telefono-reg"
-                                                pattern="[0-9]{11}" maxlength="11" placeholder="XXXXXXXXXXX" title="Solo números (11 caracteres)"
-                                                value="<?php echo $lector->getPersona()->getTelefono(); ?>"
-                                                onblur="if (this.value !== '' && !this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('telefono-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('telefono-error').style.display = 'none'; }">
-                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="telefono-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Ingrese un Teléfono válido (11 dígitos).
+                                        <div class="form-group">
+                                            <label class="control-label"><span class="text-danger">*</span> Teléfono Personal</label>
+                                            <div class="phone-group">
+                                                <?php 
+                                                    $telPersData = limpiarYSepararTelefono($lector->getPersona()->getTelefono());
+                                                    $prefPers = $telPersData['pref'];
+                                                    $numPers = $telPersData['num'];
+                                                    $telPersOriginalLimpio = $prefPers . $numPers;
+                                                ?>
+                                                <select class="form-control select-prefix" id="pref-reg">
+                                                    <option value="0414" <?php if($prefPers == '0414') echo 'selected'; ?>>0414</option>
+                                                    <option value="0424" <?php if($prefPers == '0424') echo 'selected'; ?>>0424</option>
+                                                    <option value="0416" <?php if($prefPers == '0416') echo 'selected'; ?>>0416</option>
+                                                    <option value="0426" <?php if($prefPers == '0426') echo 'selected'; ?>>0426</option>
+                                                    <option value="0412" <?php if($prefPers == '0412') echo 'selected'; ?>>0412</option>
+                                                    <option value="0422" <?php if($prefPers == '0422') echo 'selected'; ?>>0422</option>
+                                                </select>
+                                                <input type="text" class="form-control input-number-main" id="num-reg" maxlength="7" placeholder="1234567" value="<?php echo $numPers; ?>" required>
                                             </div>
+                                            <input type="hidden" name="telefono-reg" id="telefono-reg" value="<?php echo $telPersOriginalLimpio; ?>" data-original="<?php echo $telPersOriginalLimpio; ?>">
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="telefono-error"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -126,44 +229,46 @@
                         <br>
 
                         <fieldset>
-                            <legend> &nbsp; Información Laboral</legend>
+                            <legend> &nbsp; Información Laboral (Opcional)</legend>
                             <div class="container-fluid">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
                                             <label class="control-label" for="profesion-reg">Profesión</label>
-                                            <input class="form-control" type="text" name="profesion-reg" id="profesion-reg"
-                                                pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{1,50}" maxlength="50"
-                                                title="Solo letras y espacios (máximo 50 caracteres)"
-                                                value="<?php echo $lector->getProfesion(); ?>"
-                                                onblur="if (this.value !== '' && !this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('profesion-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('profesion-error').style.display = 'none'; }">
-                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="profesion-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Ingrese una Profesión válida.
-                                            </div>
+                                            <input class="form-control" type="text" name="profesion-reg" id="profesion-reg" value="<?php echo $lector->getProfesion(); ?>" data-original="<?php echo $lector->getProfesion(); ?>">
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="profesion-error"></div>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
-                                            <label class="control-label" for="direccion-profesion-reg">Dirección Profesión</label>
-                                            <input class="form-control" type="text" name="direccion-profesion-reg" id="direccion-profesion-reg"
-                                                pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9 ]{1,100}" maxlength="100"
-                                                value="<?php echo $lector->getDireccionProfesion(); ?>"
-                                                onblur="if (this.value !== '' && !this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('direccion-profesion-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('direccion-profesion-error').style.display = 'none'; }">
-                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="direccion-profesion-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Ingrese una Dirección de Profesión válida.
-                                            </div>
+                                            <label class="control-label" for="direccion-profesion-reg">Dirección Laboral</label>
+                                            <input class="form-control" type="text" name="direccion-profesion-reg" id="direccion-profesion-reg" value="<?php echo $lector->getDireccionProfesion(); ?>" data-original="<?php echo $lector->getDireccionProfesion(); ?>">
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="direccion-profesion-error"></div>
                                         </div>
                                     </div>
+                                    
                                     <div class="col-xs-12 col-sm-6">
-                                        <div class="form-group label-floating">
-                                            <label class="control-label" for="telefono-profesion-reg">Teléfono Profesión</label>
-                                            <input class="form-control" type="text" name="telefono-profesion-reg" id="telefono-profesion-reg"
-                                                pattern="[0-9]{11}" maxlength="11"
-                                                value="<?php echo $lector->getTelefonoProfesion(); ?>"
-                                                onblur="if (this.value !== '' && !this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('telefono-profesion-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('telefono-profesion-error').style.display = 'none'; }">
-                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="telefono-profesion-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Ingrese un Teléfono de Profesión válido.
+                                        <div class="form-group">
+                                            <label class="control-label">Teléfono Profesión</label>
+                                            <div class="phone-group">
+                                                <?php 
+                                                    $telProfData = limpiarYSepararTelefono($lector->getTelefonoProfesion());
+                                                    $prefProf = $telProfData['pref'];
+                                                    $numProf = $telProfData['num'];
+                                                    $telProfOriginalLimpio = !empty($numProf) ? $prefProf . $numProf : "";
+                                                ?>
+                                                <select class="form-control select-prefix" id="pref-prof">
+                                                    <option value="0414" <?php if($prefProf == '0414') echo 'selected'; ?>>0414</option>
+                                                    <option value="0424" <?php if($prefProf == '0424') echo 'selected'; ?>>0424</option>
+                                                    <option value="0416" <?php if($prefProf == '0416') echo 'selected'; ?>>0416</option>
+                                                    <option value="0426" <?php if($prefProf == '0426') echo 'selected'; ?>>0426</option>
+                                                    <option value="0412" <?php if($prefProf == '0412') echo 'selected'; ?>>0412</option>
+                                                    <option value="0422" <?php if($prefProf == '0422') echo 'selected'; ?>>0422</option>
+                                                </select>
+                                                <input type="text" class="form-control input-number-main" id="num-prof" maxlength="7" value="<?php echo $numProf; ?>">
                                             </div>
+                                            <input type="hidden" name="telefono-profesion-reg" id="telefono-profesion-reg" value="<?php echo $telProfOriginalLimpio; ?>" data-original="<?php echo $telProfOriginalLimpio; ?>">
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="telefono-profesion-error"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -173,55 +278,71 @@
                         <br>
 
                         <fieldset>
-                            <legend> &nbsp; Referencias</legend>
+                            <legend> &nbsp; Referencias (Opcional)</legend>
                             <div class="container-fluid">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
                                             <label class="control-label" for="referencia-legal-personal-reg">Referencia Legal</label>
-                                            <input class="form-control" type="text" name="referencia-legal-personal-reg" id="referencia-legal-personal-reg"
-                                                pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{1,100}" maxlength="100"
-                                                value="<?php echo $lector->getRefLegal(); ?>"
-                                                onblur="if (this.value !== '' && !this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('referencia-legal-personal-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('referencia-legal-personal-error').style.display = 'none'; }">
-                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="referencia-legal-personal-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Ingrese una Referencia Legal válida.
-                                            </div>
+                                            <input class="form-control" type="text" name="refLegal" id="referencia-legal-personal-reg" value="<?php echo $lector->getRefLegal(); ?>" data-original="<?php echo $lector->getRefLegal(); ?>">
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="referencia-legal-personal-error"></div>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
                                             <label class="control-label" for="referencia-personal-reg">Referencia Personal</label>
-                                            <input class="form-control" type="text" name="referencia-personal-reg" id="referencia-personal-reg"
-                                                pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{1,100}" maxlength="100"
-                                                value="<?php echo $lector->getRefPersonal(); ?>"
-                                                onblur="if (this.value !== '' && !this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('referencia-personal-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('referencia-personal-error').style.display = 'none'; }">
-                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="referencia-personal-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Ingrese una Referencia Personal válida.
-                                            </div>
+                                            <input class="form-control" type="text" name="refPersonal" id="referencia-personal-reg" value="<?php echo $lector->getRefPersonal(); ?>" data-original="<?php echo $lector->getRefPersonal(); ?>">
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="referencia-personal-error"></div>
                                         </div>
                                     </div>
+                                    
                                     <div class="col-xs-12 col-sm-6">
-                                        <div class="form-group label-floating">
-                                            <label class="control-label" for="telefono-referencia-legal-reg">Teléfono Referencia Legal</label>
-                                            <input class="form-control" type="text" name="telefono-referencia-legal-reg" id="telefono-referencia-legal-reg"
-                                                pattern="[0-9]{11}" maxlength="11"
-                                                value="<?php echo $lector->getRefLegalTel(); ?>"
-                                                onblur="if (this.value !== '' && !this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('telefono-referencia-legal-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('telefono-referencia-legal-error').style.display = 'none'; }">
-                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="telefono-referencia-legal-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Ingrese un Teléfono de Referencia Legal válido.
+                                        <div class="form-group">
+                                            <label class="control-label">Teléfono Ref. Legal</label>
+                                            <div class="phone-group">
+                                                <?php 
+                                                    $telRefLData = limpiarYSepararTelefono($lector->getRefLegalTel());
+                                                    $prefRefL = $telRefLData['pref'];
+                                                    $numRefL = $telRefLData['num'];
+                                                    $telRefLOriginalLimpio = !empty($numRefL) ? $prefRefL . $numRefL : "";
+                                                ?>
+                                                <select class="form-control select-prefix" id="pref-ref-l">
+                                                    <option value="0414" <?php if($prefRefL == '0414') echo 'selected'; ?>>0414</option>
+                                                    <option value="0424" <?php if($prefRefL == '0424') echo 'selected'; ?>>0424</option>
+                                                    <option value="0416" <?php if($prefRefL == '0416') echo 'selected'; ?>>0416</option>
+                                                    <option value="0426" <?php if($prefRefL == '0426') echo 'selected'; ?>>0426</option>
+                                                    <option value="0412" <?php if($prefRefL == '0412') echo 'selected'; ?>>0412</option>
+                                                    <option value="0422" <?php if($prefRefL == '0422') echo 'selected'; ?>>0422</option>
+                                                </select>
+                                                <input type="text" class="form-control input-number-main" id="num-ref-l" maxlength="7" value="<?php echo $numRefL; ?>">
                                             </div>
+                                            <input type="hidden" name="refLegalTel" id="telefono-ref-legal-reg" value="<?php echo $telRefLOriginalLimpio; ?>" data-original="<?php echo $telRefLOriginalLimpio; ?>">
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="telefono-ref-legal-error"></div>
                                         </div>
                                     </div>
+                                    
                                     <div class="col-xs-12 col-sm-6">
-                                        <div class="form-group label-floating">
-                                            <label class="control-label" for="telefono-referencia-personal-reg">Teléfono Referencia Personal</label>
-                                            <input class="form-control" type="text" name="telefono-referencia-personal-reg" id="telefono-referencia-personal-reg"
-                                                pattern="[0-9]{11}" maxlength="11"
-                                                value="<?php echo $lector->getRefPersonalTel(); ?>"
-                                                onblur="if (this.value !== '' && !this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('telefono-referencia-personal-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('telefono-referencia-personal-error').style.display = 'none'; }">
-                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="telefono-referencia-personal-error" style="display: none;">
-                                                <i class="fas fa-exclamation-circle"></i> Ingrese un Teléfono de Referencia Personal válido.
+                                        <div class="form-group">
+                                            <label class="control-label">Teléfono Ref. Personal</label>
+                                            <div class="phone-group">
+                                                <?php 
+                                                    $telRefPData = limpiarYSepararTelefono($lector->getRefPersonalTel());
+                                                    $prefRefP = $telRefPData['pref'];
+                                                    $numRefP = $telRefPData['num'];
+                                                    $telRefPOriginalLimpio = !empty($numRefP) ? $prefRefP . $numRefP : "";
+                                                ?>
+                                                <select class="form-control select-prefix" id="pref-ref-p">
+                                                    <option value="0414" <?php if($prefRefP == '0414') echo 'selected'; ?>>0414</option>
+                                                    <option value="0424" <?php if($prefRefP == '0424') echo 'selected'; ?>>0424</option>
+                                                    <option value="0416" <?php if($prefRefP == '0416') echo 'selected'; ?>>0416</option>
+                                                    <option value="0426" <?php if($prefRefP == '0426') echo 'selected'; ?>>0426</option>
+                                                    <option value="0412" <?php if($prefRefP == '0412') echo 'selected'; ?>>0412</option>
+                                                    <option value="0422" <?php if($prefRefP == '0422') echo 'selected'; ?>>0422</option>
+                                                </select>
+                                                <input type="text" class="form-control input-number-main" id="num-ref-p" maxlength="7" value="<?php echo $numRefP; ?>">
                                             </div>
+                                            <input type="hidden" name="refPersonalTel" id="telefono-ref-personal-reg" value="<?php echo $telRefPOriginalLimpio; ?>" data-original="<?php echo $telRefPOriginalLimpio; ?>">
+                                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="telefono-ref-personal-error"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -240,8 +361,10 @@
         </div>
     </section>
 
+    
+    <?php include VIEW_PATH . "/modal/confirmation-reader-edit.php" ?>
     <?php include VIEW_PATH . "/component/scripts.php" ?>
+    
     <script src="<?= PUBLIC_PATH ?>/js/validations/reader/createvalidation.js"></script>
 </body>
-
 </html>

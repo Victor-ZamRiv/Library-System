@@ -11,13 +11,12 @@
 	<!-- Content page-->
 	<section class="full-box dashboard-contentPage">
 		<!-- NavBar -->
-
 		<?php include VIEW_PATH . "/component/navbar.php" ?>
 
 		<!-- Content page -->
 		<div class="container-fluid">
 			<div class="page-header">
-				<h1 class="text-titles"> Usuarios <small>Lista de Usuarios</small></h1>
+				<h1 class="text-titles"> <i class="fa-solid fa-users"></i> Lista de Usuarios</h1>
 			</div>
 		</div>
 		<?php include VIEW_PATH . "/component/userbar.php" ?>
@@ -40,6 +39,10 @@
 							<div class="col-xs-12 col-md-6 text-right">
 								<br>
 								<button type="submit" class="btn btn-info btn-raised btn-sm"><i class="zmdi zmdi-search"></i> Buscar</button>
+								<button type="button" class="btn btn-warning btn-raised btn-sm" data-toggle="modal" data-target="#disabledUsersModal"><i class="fa-solid fa-ban"></i> Suspendidos</button>
+								<button type="button" class="btn btn-success btn-raised btn-sm" onclick="descargarPDF('Usuarios');">
+									<i class="fa-solid fa-file-pdf"></i>IMPRIMIR HABILITADOS
+								</button>
 							</div>
 						</form>
 					</div>
@@ -54,49 +57,41 @@
 									<th class="text-center">Nombres</th>
 									<th class="text-center">Apellidos</th>
 									<th class="text-center">Teléfono</th>
-									<th class="text-center">Ver más</th>
-									<th class="text-center">Eliminar</th>
+
+									<th class="text-center">Suspender</th>
 								</tr>
 							</thead>
-							<tbody>
-								
-									<?php if (empty($administradores)): ?>
+							<!-- SE AGREGÓ EL ID REQUERIDO POR PDF-GENERATOR.JS -->
+							<tbody id="tablaUsuariosCuerpo">
+
+								<?php if (empty($administradores)): ?>
 									<tr>
 										<td colspan="7">No se encontraron administradores.</td>
 									</tr>
-									<?php else: ?>
-										<?php foreach ($administradores as $admin): ?>
+								<?php else: ?>
+									<?php foreach ($administradores as $admin): ?>
 										<tr>
 											<td><?= htmlspecialchars($admin->getNombreUsuario()) ?></td>
 											<td><?= htmlspecialchars($admin->getPersona()->getCedula()) ?></td>
 											<td><?= htmlspecialchars($admin->getPersona()->getNombre()) ?></td>
 											<td><?= htmlspecialchars($admin->getPersona()->getApellido()) ?></td>
 											<td><?= htmlspecialchars($admin->getPersona()->getTelefono()) ?></td>
-
 											<td>
-												<a href="user-info.php" class="btn btn-success btn-raised btn-sm">
-
-													<i class="fa-solid fa-info"></i>
-												</a>
-											</td>
-										<?php if ($admin->getIdAdministrador() != $_SESSION['administrador']['id']): ?>
-											<td>
-												<a href="#!" class="btn btn-danger btn-raised btn-sm"
-													data-toggle="modal"
-													data-target="#confirmDeleteUserModal"
-
-
-													data-id="<?= $admin->getIdAdministrador() ?>"
-
-
-													data-nombre="<?= htmlspecialchars($admin->getNombreUsuario()) ?>"><i class="fa-solid fa-trash"></i>
-												</a>
+												<?php if ($admin->getIdAdministrador() != $_SESSION['administrador']['id']): ?>
+													<button class="btn btn-danger btn-raised btn-sm"
+														data-toggle="modal"
+														data-target="#confirmDeleteUserModal"
+														data-id="<?= $admin->getIdAdministrador() ?>"
+														data-nombre="<?= htmlspecialchars($admin->getNombreUsuario()) ?>">
+														<i class="fa-solid fa-ban"></i>
+													</button>
+												<?php else: ?>
+													<span class="label label-default">Actual</span>
+												<?php endif; ?>
 											</td>
 										</tr>
-										<?php endif; ?>
-										<?php endforeach; ?>
-									<?php endif; ?>
-								</tr>
+									<?php endforeach; ?>
+								<?php endif; ?>
 
 							</tbody>
 						</table>
@@ -112,33 +107,35 @@
 			</div>
 		</div>
 
-
 	</section>
 
 	<?php include VIEW_PATH . "/modal/confirmation-delete-user.php" ?>
+	<?php include VIEW_PATH . "/modal/enable-user.php" ?>
 
 	<!--====== Scripts -->
-
 	<?php include VIEW_PATH . "/component/scripts.php" ?>
-
+	<script src="<?= PUBLIC_PATH ?>/js/pdf-generator.js"></script>
+	<script src="<?= PUBLIC_PATH ?>/js/pdf/html2canvas.js"></script>
+	<script src="<?= PUBLIC_PATH ?>/js/pdf/jsPDF.js"></script>
+	<script src="<?= PUBLIC_PATH ?>/js/pdf/jspdf-autotable.js"></script>
 
 	<script>
 		$(document).ready(function() {
 			$('#confirmDeleteUserModal').on('show.bs.modal', function(event) {
 				var button = $(event.relatedTarget); // Botón que activó el modal
-				var userId = button.data('id'); // Extraer info de atributos data-*
-				var userName = button.data('nombre');
+				var userId = button.data('id'); // Extraer el ID
+				var username = button.data('nombre'); // Extrae el nombre de usuario que alteramos arriba
 
 				var modal = $(this);
-				modal.find('#modalUserName').text(userName);
+				// Inyecta el nombre de usuario en el contenedor del modal
+				modal.find('#modalUserName').text(username);
 
-				// Ajusta esta URL según tu sistema de rutas (ejemplo: administradores/delete/ID)
+				// Ajusta la URL de redirección para la suspensión
 				var deleteUrl = '<?= BASE_URL ?>/administradores/delete?id=' + userId;
 				modal.find('#confirmDeleteBtn').attr('href', deleteUrl);
 			});
 		});
 	</script>
-
 </body>
 
 </html>

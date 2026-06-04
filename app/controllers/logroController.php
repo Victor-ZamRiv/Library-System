@@ -5,16 +5,13 @@ namespace App\Controllers;
 use App\Core\BaseController;
 use App\Contracts\ILogroRepository;
 use App\Models\Entities\Logro;
-use App\Models\Services\auditService;
 
 class LogroController extends BaseController {
 
     private ILogroRepository $repo;
-    private auditService $auditService;
 
-    public function __construct(ILogroRepository $repo, auditService $auditService) {
+    public function __construct(ILogroRepository $repo, ) {
         $this->repo = $repo;
-        $this->auditService = $auditService;
         $this->authenticate();
         $this->middlewareRol(['Jefe de sala', 'Director'], 'Logros');
     }
@@ -55,14 +52,6 @@ class LogroController extends BaseController {
             );
 
             $idLogro = $this->repo->insert($logro);
-            $this->auditService->registrarCambio(
-                'historial_logro',
-                $idLogro,
-                $this->input('idAdmin'),
-                [],
-                $logro->toArray(),
-                'INSERT'
-            );
 
             $_SESSION['success'] = "Logro registrado con éxito.";
             //$this->redirect("/logro/show?id=" . $idLogro);
@@ -93,7 +82,6 @@ class LogroController extends BaseController {
         $id = (int)$this->input('id', 0);
         $logro = $this->repo->find($id);
 
-        $old = $logro ? $logro->toArray() : [];
 
         if (!$logro) {
             $_SESSION['error'] = "El logro no existe.";
@@ -106,14 +94,7 @@ class LogroController extends BaseController {
         $logro->setFecha($this->input('fecha', $logro->getFecha()));
 
         if ($this->repo->update($logro)) {
-            $this->auditService->registrarCambio(
-                'historial_logro',
-                $id,
-                $this->input('idAdmin'),
-                $old,
-                $logro->toArray(),
-                'UPDATE'
-            );
+            
             $_SESSION['success'] = "Logro actualizado correctamente.";
         } else {
             $_SESSION['old'] = $_POST;

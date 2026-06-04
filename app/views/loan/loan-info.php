@@ -80,7 +80,7 @@
                             <!-- ENCABEZADO INSTITUCIONAL -->
                             <div class="row institucion-header">
                                 <div class="col-xs-2 text-center">
-                                    <img src="<?php echo PUBLIC_PATH; ?>/img/img-login/gobernacion1.png" alt="Logo" style="width: 80px; height: auto;">
+                                    <img src="<?php echo PUBLIC_PATH; ?>/img/img-login/gober.png" alt="Logo" style="width: 80px; height: auto;">
                                 </div>
 
                                 <div class="col-xs-8 text-center">

@@ -34,7 +34,6 @@ body {
     top: 10px;
     right: 10px;
 
-
     padding: 10px;
     height: auto;
     width: 180px;
@@ -66,13 +65,16 @@ body {
    ========================================= */
 .login-container {
     display: flex;
-    width: 500px;
+    width: 100%; /* Fluido */
+    max-width: 500px; /* Tope máximo para escritorio */
     height: 620px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-    border-radius: 75px 75px 75px 75px;
+    border-radius: 75px;
     overflow: hidden;
     position: relative;
     z-index: 1;
+    perspective: 1000px; /* Configuración 3D integrada aquí */
+    background: transparent;
 }
 
 .form-section {
@@ -98,18 +100,16 @@ body {
 }
 
 /* =========================================
-   CAMPOS DE ENTRADA (MODIFICADO)
+   CAMPOS DE ENTRADA
    ========================================= */
 .input-group {
     margin-bottom: 20px;
     position: relative;
 }
 
-/* Contenedor para que el input y el botón se peguen */
 .password-container {
     display: flex;
     align-items: stretch;
-    /* Asegura que tengan la misma altura */
 }
 
 .input-group input,
@@ -125,28 +125,19 @@ body {
     transition: all 0.3s ease;
 }
 
-/* Ajuste específico para el input de password para que se una al cuadrado */
 .password-container input {
     flex: 1;
-    /* Toma todo el espacio disponible */
     border-radius: 10px 0 0 10px;
-    /* Redondeado solo a la izquierda */
     border-right: none;
-    /* Elimina la línea divisoria central */
 }
 
-/* Estilo del botón transformado en CUADRADO */
 .toggle-btn {
     position: static;
-    /* Quitamos el absolute */
     transform: none;
-    /* Quitamos el centrado manual */
     width: 55px;
-    /* Ancho fijo para que sea cuadrado */
     background: #ffffff;
     border: 2px solid #d1d8e0;
     border-radius: 0 10px 10px 0;
-    /* Redondeado solo a la derecha */
     cursor: pointer;
     color: #666;
     font-size: 1.1rem;
@@ -155,16 +146,13 @@ body {
     justify-content: center;
     transition: all 0.3s ease;
     flex-shrink: 0;
-    /* Evita que el botón se encoja */
 }
 
-/* Efecto Focus sincronizado */
-.password-container:focus-within input {
-    border-color: #4c99af;
-}
-
+.password-container:focus-within input,
 .password-container:focus-within .toggle-btn {
     border-color: #4c99af;
+}
+.password-container:focus-within .toggle-btn {
     color: #4c99af;
 }
 
@@ -176,7 +164,7 @@ body {
 /* =========================================
    BOTONES
    ========================================= */
-button,
+.btn-sistema,
 .btn-forgot {
     width: 100%;
     padding: 15px;
@@ -190,7 +178,6 @@ button,
     box-sizing: border-box;
 }
 
-/* Botón ACCEDER */
 .btn-access {
     background-color: transparent;
     color: #4c99af;
@@ -207,27 +194,25 @@ button,
     transform: translateY(-2px);
 }
 
-/* Botón RECUPERAR */
 .forgot-password-container {
     margin-top: 15px;
 }
 
 .btn-forgot {
-    background-color: transparent;
-    color: #666;
-    border: 1px solid #ccc;
+    border: none;
+    background: none;
+    text-decoration: underline;
+    color: #4c99af;
+    cursor: pointer;
     font-size: 14px;
-    font-weight: 500;
+    padding: 10px;
 }
 
 .btn-forgot:hover {
-    background-color: #f8f9fa;
-    border-color: #999;
     color: #333;
     transform: translateY(-1px);
 }
 
-/* Pie de página dentro de la caja */
 .footer-text {
     margin-top: 30px;
     font-size: 13px;
@@ -236,35 +221,8 @@ button,
 }
 
 /* =========================================
-   RESPONSIVE (MÓVILES)
+   EFECTO 3D (CARAS DEL LOGIN)
    ========================================= */
-@media (max-width: 768px) {
-    .header-slogan {
-        position: static;
-        width: 100%;
-        margin-bottom: 20px;
-        background-color: rgba(0, 0, 0, 0.3);
-    }
-
-    .login-container {
-        width: 95%;
-        height: auto;
-        border-radius: 30px;
-    }
-
-    .form-section {
-        padding: 40px 20px;
-    }
-}
-
-/* Configuración del contenedor para 3D */
-.login-container {
-    perspective: 1000px;
-    /* Necesario para el efecto de profundidad */
-    background: transparent;
-    /* El fondo lo darán las caras */
-}
-
 .card-inner {
     position: relative;
     width: 100%;
@@ -273,7 +231,6 @@ button,
     transform-style: preserve-3d;
 }
 
-/* Clase que activaremos con JS */
 .is-flipped {
     transform: rotateY(180deg);
 }
@@ -284,27 +241,16 @@ button,
     width: 100%;
     height: 100%;
     -webkit-backface-visibility: hidden;
-    /* Safari */
     backface-visibility: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* La cara trasera empieza girada */
 .recovery-face {
     transform: rotateY(180deg);
 }
 
-/* Ajuste de botones para que parezcan links si lo prefieres */
-.btn-forgot {
-    border: none;
-    background: none;
-    text-decoration: underline;
-    color: #4c99af;
-    cursor: pointer;
-    font-size: 14px;
-}
 #step-1, #step-2 {
     animation: fadeIn 0.5s ease-in-out;
 }
@@ -312,4 +258,45 @@ button,
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================
+   RESPONSIVE (MÓVILES)
+   ========================================= */
+@media (max-width: 768px) {
+    body {
+        flex-direction: column; /* Alinea el slogan arriba y el login abajo */
+        padding: 10px;
+    }
+
+    .header-slogan {
+        position: static; /* Quita el fixed para que fluya con la página */
+        width: 100%;
+        max-width: 350px;
+        margin-bottom: 20px;
+        background-color: rgba(0, 0, 0, 0.5); /* Fondo un poco más oscuro para que contraste */
+        border-radius: 15px;
+        flex-direction: row; /* Pone imagen y texto lado a lado en móvil */
+        justify-content: space-evenly;
+    }
+    
+    .header-slogan img {
+        width: 60px; /* Logo más pequeño en móvil */
+        margin-top: 0;
+    }
+
+    .login-container {
+        width: 100%;
+        height: 550px; /* ¡CRÍTICO! Alto fijo, no 'auto' para que no colapse el 3D */
+        border-radius: 30px;
+    }
+
+    .form-section {
+        padding: 30px 15px;
+    }
+    
+    .login-box h2 {
+        font-size: 28px; /* Título un poco más pequeño para que no estorbe */
+        margin-bottom: 20px;
+    }
 }

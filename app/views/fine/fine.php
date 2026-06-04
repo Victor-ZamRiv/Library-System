@@ -14,7 +14,7 @@
 
         <div class="container-fluid">
             <div class="page-header">
-                <h1 class="text-titles"><i class="fa-solid fa-bookmark"></i> Multas <small>Nueva Multa</small></h1>
+                <h1 class="text-titles"><i class="fa-solid fa-bookmark"></i> Nueva Multa</h1>
             </div>
         </div>
 

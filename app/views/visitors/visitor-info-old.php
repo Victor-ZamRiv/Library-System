@@ -12,7 +12,7 @@
 
         <div class="container-fluid">
             <div class="page-header">
-                <h1 class="text-titles"><i class="fa-solid fa-list-check"></i> Visitas <small> Historial de Registros</small></h1>
+                <h1 class="text-titles"><i class="fa-solid fa-list-check"></i> Historial de Registros</h1>
             </div>
         </div>
 

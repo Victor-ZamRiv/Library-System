@@ -32,7 +32,7 @@
         <!-- Content page -->
         <div class="container-fluid">
             <div class="page-header">
-                <h1 class="text-titles"><i class="fa-solid fa-book"></i> Catálogo <small>Nuevo Libro</small></h1>
+                <h1 class="text-titles"><i class="fa-solid fa-book"></i> Nuevo Libro</h1>
             </div>
         </div>
 
@@ -401,33 +401,7 @@
                             </div>
                         </fieldset>
 
-                        <div class="col-xs-12 col-sm-6">
-                            <div class="form-group label-floating">
-                                <label class="control-label" for="portada-reg">Portada del Libro:</label>
-
-                                <input
-                                    class="form-control"
-                                    type="file"
-                                    name="portada-reg"
-                                    id="portada-reg"
-                                    accept="image/jpeg, image/png"
-
-                                    title="Seleccione un archivo de imagen (JPG o PNG) para la portada."
-                                    aria-describedby="portada-error"
-                                    onchange="validarPortada(this)"
-                                    style="display: none;">
-
-                                <label for="portada-reg" class="btn btn-info btn-raised">
-                                    &nbsp; Seleccionar Portada
-                                </label>
-                                <span id="file-name" style="margin-left: 10px; color: #555;">No se ha seleccionado archivo</span>
-
-                                <div class="invalid-feedback bg-danger text-danger rounded-pill" id="portada-error" style="display: none;">
-                                    <i class="fas fa-exclamation-circle"></i> Por favor, seleccione una portada válida (formato JPG o PNG, máximo 5MB).
-                                </div>
-                            </div>
-                        </div>
-
+                        
 
                         <p class="text-center " style="margin-top: 20px">
                             <button type="submit" class="btn btn-success btn-raised btn-lg" id="btn-enviar-libro"> Guardar</button>
@@ -444,8 +418,84 @@
 
     <!--====== Scripts -->
     <?php include VIEW_PATH . "/component/scripts.php"; ?>
-    <script src="<?php echo PUBLIC_PATH; ?>/js/validations/book/createvalidation.js"></script>
+
+    <script src="<?php echo PUBLIC_PATH; ?>/js/validations/book/helpers-book.js"></script>
+    <script src="<?php echo PUBLIC_PATH; ?>/js/validations/book/init-book-form.js"></script>
+
     <script src=" <?= PUBLIC_PATH ?> /js/modal/confirmation-new-book.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("form-registro-libro");
+    const btnConfirmarEnvio = document.getElementById("btn-confirmar-envio");
+    const resumenContainer = document.getElementById("resumen-datos-libro");
+
+    if (!form) return;
+
+    form.addEventListener("submit", function (e) {
+        // 1. Validar que el formulario de HTML5 y tus validaciones personalizadas pasen
+        if (!form.checkValidity()) {
+            // Si el formulario no es válido, dejamos que el navegador muestre sus errores nativos
+            return; 
+        }
+
+        // 2. Frenar el envío automático del formulario para poder mostrar el modal
+        e.preventDefault();
+
+        // 3. Capturar los valores ingresados en los campos
+        const sala = document.getElementById("sala-display").value || "No seleccionada";
+        const areaInput = document.getElementById("areaSelect").value;
+        const area = areaInput ? areaInput : "No aplica";
+        const titulo = document.getElementById("titulo-reg").value;
+        const cota = document.getElementById("cota").value;
+        const autor = document.getElementById("autor-reg").value;
+        const ciudad = document.getElementById("ciudad").value;
+        const edicion = document.getElementById("edicion").value;
+        const anio = document.getElementById("year-reg").value;
+        const ejemplares = document.getElementById("ejemplares-reg").value;
+        const paginas = document.getElementById("paginas-reg").value;
+        const editorial = document.getElementById("editorial-reg").value;
+        const isbn = document.getElementById("isbn").value;
+        const observaciones = document.getElementById("observaciones-reg").value || "Ninguna";
+
+        // 4. Construir la estructura visual (HTML) dentro del contenedor del modal
+        resumenContainer.innerHTML = `
+            <table class="table table-striped table-bordered" style="margin-bottom: 0;">
+                <tbody>
+                    <tr><th width="30%">Sala:</th><td>${sala}</td></tr>
+                    <tr><th>Área Infantil:</th><td>${area}</td></tr>
+                    <tr><th>Título:</th><td><strong>${titulo}</strong></td></tr>
+                    <tr><th>Cota:</th><td>${cota}</td></tr>
+                    <tr><th>Autor:</th><td>${autor}</td></tr>
+                    <tr><th>Ciudad:</th><td>${ciudad}</td></tr>
+                    <tr><th>Edición:</th><td>${edicion}ª ed.</td></tr>
+                    <tr><th>Año:</th><td>${anio}</td></tr>
+                    <tr><th>Ejemplares:</th><td>${ejemplares}</td></tr>
+                    <tr><th>Páginas:</th><td>${paginas}</td></tr>
+                    <tr><th>Editorial:</th><td>${editorial}</td></tr>
+                    <tr><th>ISBN:</th><td>${isbn}</td></tr>
+                    <tr><th>Observaciones:</th><td>${observaciones}</td></tr>
+                </tbody>
+            </table>
+        `;
+
+        // 5. Levantar el modal de Bootstrap de forma programática
+        $('#modalConfirmacion').modal('show');
+    });
+
+    // 6. Escuchar el clic del botón "Confirmar Registro" dentro del modal
+    if (btnConfirmarEnvio) {
+        btnConfirmarEnvio.addEventListener("click", function () {
+            // Deshabilitamos el botón para evitar doble envío accidental
+            btnConfirmarEnvio.disabled = true;
+            btnConfirmarEnvio.textContent = "Guardando...";
+            
+            // Enviamos el formulario de forma nativa
+            form.submit();
+        });
+    }
+});
+    </script>
+    
 
 
 </body>

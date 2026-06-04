@@ -20,6 +20,7 @@ use App\Models\Repositories\MultaRepository;
 use App\Models\Repositories\ConfiguracionRepository;
 use App\Models\Repositories\SalaRepository;
 use App\Models\Repositories\AuditRepository;
+use App\Models\Repositories\ConfiguracionDashboardRepository;
 use App\Contracts\ILibroRepository;
 use App\Contracts\IAutorRepository;
 use App\Contracts\IEditorialRepository;
@@ -38,6 +39,7 @@ use App\Contracts\IMultaRepository;
 use App\Contracts\IConfiguracionRepository;
 use App\Contracts\ISalaRepository;
 use App\Contracts\IAuditRepository;
+use App\Contracts\IConfiguracionDashboardRepository;
 use App\Models\Services\AuthService;
 use App\Models\Services\LibroSearchService;
 use App\Models\Services\LibroRegistrationService;
@@ -60,6 +62,7 @@ use App\Models\Services\MultaService;
 use App\Models\Services\AuditService;
 use App\Models\Services\HistorialService;
 use App\Models\Services\IndicadorService;
+use App\Models\Services\DashboardConfigService;
 
 $router = require __DIR__ . '/app/routes/web.php';
 
@@ -82,6 +85,7 @@ $configuracionRepo = new ConfiguracionRepository($pdo);
 $salaRepo = new SalaRepository($pdo);
 $auditRepo = new AuditRepository($pdo);
 $fechaService = new FechaService();
+$dashboardConfigRepo = new ConfiguracionDashboardRepository($pdo);
 
 $container = [
     \PDO::class => $pdo,
@@ -103,6 +107,7 @@ $container = [
     IConfiguracionRepository::class => $configuracionRepo,
     ISalaRepository::class => $salaRepo,
     IAuditRepository::class => $auditRepo,
+    IConfiguracionDashboardRepository::class => $dashboardConfigRepo,
     LibroSearchService::class => new LibroSearchService(
         $libroRepo, 
         $autorRepo
@@ -216,7 +221,11 @@ $container = [
     ),
     IndicadorService::class => new IndicadorService(
         $pdo
+    ),
+    DashboardConfigService::class => new DashboardConfigService(
+        $dashboardConfigRepo
     )
+    
     
 ];
 

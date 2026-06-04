@@ -18,7 +18,8 @@ $router->get('/configuracion', 'ConfiguracionController@index');
 $router->get('/configuracion/sala', 'ConfiguracionController@salaConfiguration');
 $router->post('/configuracion/sala/update', 'ConfiguracionController@updateSalas');
 $router->get('/configuracion/area', 'ConfiguracionController@areaConfiguration');
-$router->get('/configuracion/indicator', 'ConfiguracionController@indicatorConfiguration');
+$router->get('/configuracion/indicator', 'ConfiguracionController@indicadores');
+$router->post('/configuracion/indicadores/guardar', 'ConfiguracionController@guardarIndicadores');
 $router->get('/configuracion/prestamos', 'ConfiguracionController@prestamoConfiguration');
 $router->post('/configuracion/prestamos/update', 'ConfiguracionController@prestamoUpdate');
 

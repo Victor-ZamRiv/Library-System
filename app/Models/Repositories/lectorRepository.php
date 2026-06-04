@@ -26,6 +26,13 @@ class LectorRepository extends BaseRepository implements ILectorRepository {
         return $row ? Lector::fromArray($row) : null;
     }
 
+    public function findByPersonaId(int $idPersona): ?Lector {
+        $stmt = $this->pdo->prepare("SELECT * FROM lectores WHERE ID_Persona = :idPersona AND Activo = 1");
+        $stmt->execute([':idPersona' => $idPersona]);
+        $row = $stmt->fetch();
+        return $row ? Lector::fromArray($row) : null;
+    }
+
     public function search($input): array {
         $sql = "SELECT lectores.* FROM lectores
                 JOIN persona ON lectores.ID_Persona = persona.ID_Persona

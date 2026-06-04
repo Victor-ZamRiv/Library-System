@@ -47,6 +47,13 @@ class AdministradorRepository extends BaseRepository implements IAdministradorRe
         return $stmt->fetchColumn() > 0;
     }
 
+    public function findByPersonaId(int $idPersona): ?Administrador {
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE ID_Persona = :idPersona AND Activo = 1");
+        $stmt->execute([':idPersona' => $idPersona]);
+        $row = $stmt->fetch();
+        return $row ? $this->mapToEntity($row) : null;
+    }
+
     public function duplicatePersona(int $idPersona): bool {
         $sql = "SELECT COUNT(*) FROM {$this->table} WHERE ID_Persona = :idPersona";
         $params = [':idPersona' => $idPersona];

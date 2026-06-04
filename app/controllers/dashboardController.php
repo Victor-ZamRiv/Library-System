@@ -2,13 +2,16 @@
 namespace App\Controllers;
 use App\Core\BaseController;
 use App\Models\Services\IndicadorService;
+use App\Models\Services\DashboardConfigService;
 
 class DashboardController extends BaseController {
 
     private IndicadorService $indicadorService;
+    private DashboardConfigService $dashboardConfigService;
 
-    public function __construct(IndicadorService $indicadorService) {
+    public function __construct(IndicadorService $indicadorService, DashboardConfigService $dashboardConfigService) {
         $this->indicadorService = $indicadorService;
+        $this->dashboardConfigService = $dashboardConfigService;
         $this->authenticate();
         $this->middlewareRol(['Director', 'Jefe de sala'], 'Dashboard');
     }
@@ -30,12 +33,24 @@ class DashboardController extends BaseController {
         $razonReferencia = $this->indicadorService->getRazonConsultasReferencia();
         $participacionActividades = $this->indicadorService->getPorcentajeParticipacionActividades();
         $segmentosCobertura = $this->indicadorService->getSegmentosCobertura();
+        $detalleReferencia = $this->indicadorService->getDetalleConsultasReferencia();
+        $totalVisitasEstatal = $this->indicadorService->getTotalVisitasSalaEstatal();
+        $tendenciaAsistencia = $this->indicadorService->getTendenciaAsistenciaEstatal();
+        $iiur = $this->indicadorService->getIndiceIntensidadUsoRecursos();
+        $idcar = $this->indicadorService->getIndiceDeterioroAltaRotacion();
+        $ipe = $this->indicadorService->getTasaProductividadEventos();    
+
 
         // ========== DATOS DESGLOSADOS PARA MODALES ==========
         $rotacionCategorias = $this->indicadorService->getRotacionPorCategorias();
         $estadoFisicoPorSalas = $this->indicadorService->getEstadoFisicoPorSalas();
         $asistenciaEstatalPorTipo = $this->indicadorService->getAsistenciaEstatalPorTipo();
         $necesidadesColeccion = $this->indicadorService->getNecesidadesColeccionPorSalas();
+        $detalleLibrosAltaRotacion = $this->indicadorService->getDetalleLibrosAltaRotacion();
+
+
+        //configuración de qué indicadores mostrar u ocultar
+        $dashboardConfig = $this->dashboardConfigService->getConfig();
 
         // Pasamos todos los datos a la vista
         return $this->render('home/home', [
@@ -49,11 +64,21 @@ class DashboardController extends BaseController {
             'asistenciaEstatal' => $asistenciaEstatal,
             'coleccionEstatal' => $coleccionEstatal,
             'razonReferencia' => $razonReferencia,
+            'totalConsultasMes' => $detalleReferencia['totalConsultasMes'],
+            'usuariosConsultaron' => $detalleReferencia['usuariosConsultaron'],
+            'topTematicas' => $detalleReferencia['topTematicas'],
             'participacionActividades' => $participacionActividades,
             'rotacionCategorias' => $rotacionCategorias,
             'estadoFisicoPorSalas' => $estadoFisicoPorSalas,
             'asistenciaEstatalPorTipo' => $asistenciaEstatalPorTipo,
             'necesidadesColeccion' => $necesidadesColeccion,
+            'totalVisitasEstatal' => $totalVisitasEstatal,
+            'tendenciaAsistencia' => $tendenciaAsistencia,
+            'iiur' => $iiur,
+            'idcar' => $idcar,
+            'detalleLibrosAltaRotacion' => $detalleLibrosAltaRotacion,
+            'ipe' => $ipe,
+            'dashboardConfig' => $dashboardConfig
         ]);
     }
 

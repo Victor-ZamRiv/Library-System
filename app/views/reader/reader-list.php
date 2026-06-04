@@ -4,6 +4,7 @@
 <head>
     <title>Lista de Lectores</title>
     <?php include VIEW_PATH . "/component/heat.php" ?>
+
 </head>
 
 <body>
@@ -13,7 +14,7 @@
         <?php include VIEW_PATH . "/component/navbar.php" ?>
         <div class="container-fluid">
             <div class="page-header">
-                <h1 class="text-titles"> <i class="fa-solid fa-book-open-reader"></i> Lectores <small> Lista de Lectores</small></h1>
+                <h1 class="text-titles"> <i class="fa-solid fa-book-open-reader"></i> Lista de Lectores</h1>
             </div>
         </div>
         <?php include VIEW_PATH . "/component/readerbar.php" ?>
@@ -35,6 +36,11 @@
                             <div class="col-xs-12 col-md-6 text-right">
                                 <br>
                                 <button type="submit" class="btn btn-info btn-raised btn-sm"><i class="zmdi zmdi-search"></i> Buscar</button>
+                                <button type="button" class="btn btn-warning btn-raised btn-sm" data-toggle="modal" data-target="#disabledReadersModal"><i class="fa-solid fa-ban"></i> Suspendidos</button>
+
+                                <button type="button" onclick="descargarPDF('Lectores');" class="btn btn-success btn-raised btn-sm">
+                                    <i class="fa-solid fa-file-pdf"></i>IMPRIMIR HABILITADOS
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -42,7 +48,7 @@
                     <hr>
 
                     <div class="table-responsive">
-                        <table class="table table-hover text-center">
+                        <table id="tabla-lectores-imprimir" class="table table-hover text-center">
                             <thead>
                                 <tr>
                                     <th class="text-center">N° CARNET</th>
@@ -53,7 +59,7 @@
                                     <th class="text-center">ACCIONES</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="tabla-lectores-cuerpo">
                                 <?php foreach ($lectores as $lector): ?>
                                     <tr>
                                         <td><?= $lector->getCarnet() ?></td>
@@ -76,7 +82,7 @@
                                                     data-target="#confirmDeleteModal"
                                                     data-id="<?= $lector->getIdLector() ?>"
                                                     data-nombre="<?= htmlspecialchars($lector->getPersona()->getNombre() . ' ' . $lector->getPersona()->getApellido()) ?>">
-                                                    <i class="fa-solid fa-trash"></i>
+                                                    <i class="fa-solid fa-ban"></i>
                                                 </button>
                                             </form>
                                         </td>
@@ -100,22 +106,25 @@
         </div>
     </section>
 
-    
-
+    <?php include VIEW_PATH . "/modal/enable-reader.php" ?>
     <?php include VIEW_PATH . "/modal/confirmation-delete-reader.php" ?>
 
     <?php include VIEW_PATH . "/component/scripts.php" ?>
+    <script src="<?= PUBLIC_PATH ?>/js/pdf-generator.js"></script>
+    <script src="<?= PUBLIC_PATH ?>/js/pdf/html2canvas.js"></script>
+    <script src="<?= PUBLIC_PATH ?>/js/pdf/jsPDF.js"></script>
+    <script src="<?= PUBLIC_PATH ?>/js/pdf/jspdf-autotable.js"></script>
+
     <script>
         $(document).ready(function() {
             $('#confirmDeleteModal').on('show.bs.modal', function(event) {
-                var button = $(event.relatedTarget); // Botón que abrió el modal
-                var idLector = button.data('id'); // Extraer ID
-                var nombre = button.data('nombre'); // Extraer Nombre
+                var button = $(event.relatedTarget);
+                var idLector = button.data('id');
+                var nombre = button.data('nombre');
 
                 var modal = $(this);
                 modal.find('#nombreLectorModal').text(nombre);
 
-                // Construye la URL de eliminación (ajustada a tu ruta de lectores)
                 var urlEliminar = '<?= BASE_URL ?>/lectores/delete?id=' + idLector;
                 modal.find('#btnConfirmarEliminar').attr('href', urlEliminar);
             });
