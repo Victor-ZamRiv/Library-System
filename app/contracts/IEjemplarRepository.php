@@ -7,5 +7,7 @@ interface IEjemplarRepository {
     public function findByLibro(int $id): array;
     public function find(int $id): ?Ejemplar;
     public function deactivate(int $id): void;
+    public function reactivar(int $id): bool;
+    public function findDescatalogadosPorLibro(int $idLibro): array;
     public function getMaxNumeroEjemplar(int $idLibro): int;
 }

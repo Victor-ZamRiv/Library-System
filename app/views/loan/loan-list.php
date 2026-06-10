@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
+<head>
     <title>Préstamo</title>
-
-<?php include VIEW_PATH . "/component/heat.php"; ?>
-
+    <?php include VIEW_PATH . "/component/heat.php"; ?>
+</head>
 <body>
 
     <?php include VIEW_PATH . "/component/sidebar.php"; ?>
@@ -14,53 +14,69 @@
         <div class="container-fluid ">
             <div class="page-header">
                 <h1 class="text-titles"> </h1>
-                <h1 class="text-titles"><i class="fa-solid fa-bookmark"></i> Préstamo <small>Lista de Préstamos</small></h1>
+                <h1 class="text-titles"><i class="fa-solid fa-bookmark"></i> Lista de Préstamos</h1>
             </div>
         </div>
 
-        <!-- Formulario de búsqueda con dropdown original -->
         <div class="container-fluid text-center" style="max-width: 600px;">
             <div class="d-inline-block" style=" width: 100%;">
                 <div class="card shadow-lg p-3 mb-4 bg-white rounded">
                     <div class="card-body p-0">
-                        <form method="GET" action="">
-                        <div class="d-flex justify-content-center align-items-center p-0 gap-0">
+                        <form method="GET" action="" id="form-filtro-prestamos">
+                            <div class="d-flex justify-content-center align-items-center p-0 gap-0">
 
-                            <div class="flex-grow-1">
-                                <input type="text" class="form-control" placeholder="Buscar préstamo" name="busqueda" id="busqueda" value="<?= htmlspecialchars($termino) ?>">
-                            </div>
+                                <div class="flex-grow-1">
+                                    <input type="text" class="form-control" placeholder="Buscar préstamo" name="busqueda" id="busqueda" value="<?= htmlspecialchars($termino) ?>">
+                                </div>
 
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border-radius: 50px 0 0 50px; min-width: 100px;">
-                                    Criterio <i class="fa-solid fa-caret-down"></i>
+                                <div class="btn-group" id="grupo-criterio-busqueda">
+                                    <button type="button" id="btn-criterio-dropdown" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border-radius: 50px 0 0 50px; min-width: 100px;">
+                                        <?php 
+                                            // Mantiene visualmente el criterio seleccionado tras filtrar
+                                            $textoBtn = 'Criterio';
+                                            if($criterio == 'id') $textoBtn = 'ID Préstamo';
+                                            if($criterio == 'carnet') $textoBtn = 'Carnet';
+                                            if($criterio == 'cota') $textoBtn = 'Cota';
+                                            echo $textoBtn;
+                                        ?> <i class="fa-solid fa-caret-down"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#" data-criterio="id">ID Préstamo</a></li>
+                                        <li><a href="#" data-criterio="carnet">Carnet</a></li>
+                                        <li><a href="#" data-criterio="cota">Cota</a></li>
+                                    </ul>
+                                </div>
+                                <input type="hidden" name="criterio" id="criterio" value="<?= htmlspecialchars($criterio) ?>">
+
+                                <button class="btn btn-success" id="btn-filtrar" type="submit" style="border-radius: 0 50px 50px 0; min-width: 80px;">
+                                    Filtrar
                                 </button>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#" data-criterio="id">ID Préstamo</a></li>
-                                    <li><a href="#" data-criterio="carnet">Carnet</a></li>
-                                    <li><a href="#" data-criterio="cota">Cota</a></li>
-                                </ul>
                             </div>
-                            <input type="hidden" name="criterio" id="criterio" value="<?= $criterio ?>">
-
-                            <a class="btn btn-success" id="btn-filtrar" type="button" style="border-radius: 0 50px 50px 0; min-width: 80px;">
-                                Filtrar
-                            </a>
-                        </div>
                         </form>
                     </div>
                 </div>
             </div>
         </div><br>
 
-        <!-- Tabla de préstamos -->
         <div class="container-fluid">
-            <div class="panel panel-success">
+            <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title"> &nbsp; LISTA DE PRÉSTAMOS</h3>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <h3 class="panel-title" style="line-height: 30px;">
+                                <i class="fa-solid fa-list"></i> &nbsp; LISTA DE PRÉSTAMOS
+                            </h3>
+                        </div>
+                        <div class="col-xs-6 text-right">
+                            <button type="button" onclick="descargarPDF('TablaPrestamos')" class="btn btn-sm btn-raised btn-success">
+                                <i class="fa-solid fa-print"></i> IMPRIMIR REPORTE
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div class="panel-body">
                     <div class="table-responsive">
-                        <table class="table table-hover text-center">
+                        <table id="tabla-prestamos" class="table table-hover text-center">
                             <thead>
                                 <tr>
                                     <th class="text-center">Carnet de usuario</th>
@@ -110,7 +126,6 @@
             </div>
         </div>
 
-        <!-- Paginación -->
         <?php if ($paginacion['ultima'] > 1): ?>
         <nav class="text-center">
             <ul class="pagination pagination-sm">
@@ -142,5 +157,30 @@
     </section>
 
     <?php include VIEW_PATH . "/component/scripts.php"; ?>
+    
+    <script src="<?= PUBLIC_PATH ?>/js/pdf/jsPDF.js"></script>
+    <script src="<?= PUBLIC_PATH ?>/js/pdf/jspdf-autotable.js"></script>
+    <script src="<?= PUBLIC_PATH ?>/js/pdf/html2canvas.js"></script>
+    <script src="<?= PUBLIC_PATH ?>/js/pdf-generator.js"></script>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Limitamos la captura de enlaces exclusivamente al dropdown de Criterio
+        const dropdownItems = document.querySelectorAll('#grupo-criterio-busqueda .dropdown-menu li a');
+        const criterioInput = document.getElementById('criterio');
+        const dropdownButton = document.getElementById('btn-criterio-dropdown');
+
+        dropdownItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const criterioSeleccionado = this.getAttribute('data-criterio');
+                const textoSeleccionado = this.textContent;
+
+                criterioInput.value = criterioSeleccionado;
+                dropdownButton.innerHTML = `${textoSeleccionado} <i class="fa-solid fa-caret-down"></i>`;
+            });
+        });
+    });
+    </script>
 </body>
 </html>

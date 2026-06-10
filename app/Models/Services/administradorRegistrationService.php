@@ -33,13 +33,20 @@ class AdministradorRegistrationService {
             $personaExistente = $this->personaRepo->findByCedula($persona->getCedula());
 
             if ($personaExistente) {
-                $idPersona = $personaExistente->getIdPersona();                
+                $idPersona = $personaExistente->getIdPersona();
+
             } else {
                 // Insertar nueva persona
                 $idPersona = $this->personaRepo->insert($persona);
             }
 
-            if ($this->adminRepo->duplicatePersona($idPersona)) {
+            $existingAdminUsername = $this->adminRepo->findByUsername($admin->getNombreUsuario());
+            if ($existingAdminUsername) {
+                throw new \Exception("El nombre de usuario '{$admin->getNombreUsuario()}' ya está registrado para otro administrador.");
+            }
+
+            $existingAdminByPersona = $this->adminRepo->findByPersonaId($idPersona);
+            if ($existingAdminByPersona) {
                 throw new \Exception("La persona con cédula '{$persona->getCedula()}' ya está registrada como administrador.");
             }
 

@@ -29,7 +29,7 @@ class IndicadorService
         // Población objetivo desde configuración
         $stmt = $this->pdo->prepare("SELECT poblacion_objetivo FROM configuraciones_sistema WHERE ID_Configuracion = 1");
         $stmt->execute();
-        $poblacion = (int) $stmt->fetchColumn() ?: 50000;
+        $poblacion = (int) $stmt->fetchColumn() ?: 500;
         return round(($usuarios / $poblacion) * 100, 2);
     }
 
@@ -114,8 +114,7 @@ class IndicadorService
     /**
      * Porcentaje de asistentes a la sala Estatal (sobre total asistentes)
      */
-    public function getPorcentajeAsistentesSalaEstatal(): float
-    {
+    public function getPorcentajeAsistentesSalaEstatal(): float {
         $fin = date('Y-m-d');
         $inicio = date('Y-m-d', strtotime('-30 days'));
         $sql = "SELECT SUM(Niños_Hombres+Niños_Mujeres+Adolescentes_Hombres+Adolescentes_Mujeres+Adultos_Hombres+Adultos_Mujeres) as total
@@ -134,8 +133,7 @@ class IndicadorService
     /**
      * Porcentaje de colección Estatal
      */
-    public function getPorcentajeColeccionEstatal(): float
-    {
+    public function getPorcentajeColeccionEstatal(): float {
         $stmt = $this->pdo->query("SELECT COUNT(e.ID_Ejemplar) FROM ejemplares e
                                    JOIN libros l ON e.ID_Libro = l.ID_Libro
                                    WHERE l.ID_Sala = 'SE' AND e.Activo = 1");
@@ -148,8 +146,7 @@ class IndicadorService
     /**
      * Razón de consultas de materiales de referencia por usuario activo
      */
-    public function getRazonConsultasReferencia(): float
-    {
+    public function getRazonConsultasReferencia(): float {
         $stmt = $this->pdo->query("SELECT SUM(Cantidad_Consultada) FROM consultas_area_diarias WHERE Activo = 1");
         $totalConsultas = (int) $stmt->fetchColumn();
         $stmt = $this->pdo->query("SELECT COUNT(DISTINCT l.ID_Lector) FROM lectores l
@@ -165,11 +162,166 @@ class IndicadorService
      */
     public function getPorcentajeParticipacionActividades(): float
     {
-        $stmt = $this->pdo->query("SELECT SUM(Asistentes) FROM actividades WHERE Activo = 1");
+        $primerDia = date('Y-m-01');
+        $ultimoDia = date('Y-m-t');
+
+        $stmt = $this->pdo->prepare("SELECT SUM(Asistentes) FROM actividades WHERE Fecha BETWEEN :inicio AND :fin AND Activo = 1");
+        $stmt->execute([':inicio' => $primerDia, ':fin' => $ultimoDia]);
         $totalAsistentes = (int) $stmt->fetchColumn();
+
         $stmt = $this->pdo->query("SELECT COUNT(*) FROM lectores WHERE Estado = 'Activo'");
         $totalLectores = (int) $stmt->fetchColumn();
+
         return $totalLectores > 0 ? round(($totalAsistentes / $totalLectores) * 100, 2) : 0;
+    }
+
+    /**
+     * Índice de Intensidad de Uso de Recursos (IIUR)
+     * Agrupa áreas Dewey por su centena (ej. 810, 820 → 800). Áreas no numéricas se mantienen.
+     */
+    public function getIndiceIntensidadUsoRecursos(): array {
+        $primerDia = date('Y-m-01');
+        $ultimoDia = date('Y-m-t');
+
+        $sqlAreas = "SELECT ID_Area, Nombre_Area FROM areas_de_conocimiento";
+        $stmtAreas = $this->pdo->query($sqlAreas);
+        $areas = $stmtAreas->fetchAll(PDO::FETCH_ASSOC);
+
+        $sqlEjemplares = "SELECT l.ID_Area, COUNT(e.ID_Ejemplar) as total_ejemplares
+                        FROM ejemplares e
+                        JOIN libros l ON e.ID_Libro = l.ID_Libro
+                        WHERE e.Activo = 1 AND l.Activo = 1
+                        GROUP BY l.ID_Area";
+        $stmt = $this->pdo->query($sqlEjemplares);
+        $ejemplaresRaw = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $ejemplaresRaw[$row['ID_Area']] = (int) $row['total_ejemplares'];
+        }
+
+        $sqlConsultas = "SELECT ID_Area, SUM(Cantidad_Consultada) as total_consultas
+                        FROM consultas_area_diarias
+                        WHERE Fecha BETWEEN :inicio AND :fin AND Activo = 1
+                        GROUP BY ID_Area";
+        $stmt = $this->pdo->prepare($sqlConsultas);
+        $stmt->execute([':inicio' => $primerDia, ':fin' => $ultimoDia]);
+        $consultasRaw = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $consultasRaw[$row['ID_Area']] = (int) $row['total_consultas'];
+        }
+
+        $grupos = [];
+        foreach ($areas as $area) {
+            $id = $area['ID_Area'];
+            $base = $this->getDeweyCentena($id);
+            if (!isset($grupos[$base])) {
+                $grupos[$base] = [
+                    'nombre' => $this->getNombreGrupo($base, $area['Nombre_Area'], $id),
+                    'ejemplares' => 0,
+                    'consultas' => 0
+                ];
+            }
+            $grupos[$base]['ejemplares'] += $ejemplaresRaw[$id] ?? 0;
+            $grupos[$base]['consultas'] += $consultasRaw[$id] ?? 0;
+        }
+
+        $desglose = [];
+        $totalConsultasGlobal = 0;
+        $totalEjemplaresGlobal = 0;
+        foreach ($grupos as $base => $data) {
+            $ejemplares = $data['ejemplares'];
+            $consultas = $data['consultas'];
+            $iiur = $ejemplares > 0 ? round($consultas / $ejemplares, 2) : 0;
+            $estado = $this->getEstadoIIUR($iiur);
+            $desglose[] = [
+                'area' => $data['nombre'],
+                'ejemplares' => $ejemplares,
+                'consultas' => $consultas,
+                'iiur' => $iiur,
+                'clase' => $estado['clase'],
+                'texto' => $estado['texto']
+            ];
+            $totalConsultasGlobal += $consultas;
+            $totalEjemplaresGlobal += $ejemplares;
+        }
+
+        $iiurGlobal = $totalEjemplaresGlobal > 0 ? round($totalConsultasGlobal / $totalEjemplaresGlobal, 2) : 0;
+        $estadoGlobal = $this->getEstadoIIUR($iiurGlobal);
+
+        return [
+            'valor' => $iiurGlobal,
+            'clase' => $estadoGlobal['clase'],
+            'texto' => $estadoGlobal['texto'],
+            'desglose' => $desglose
+        ];
+    }
+
+    /*
+    * Índice de Deterioro de Alta Rotación (IDCAR)
+    * Fórmula: (Ejemplares dañados / Total ejemplares de alta rotación) x 100
+    * Se consideran "alta rotación" aquellos ejemplares que han sido prestados al menos 3 veces en el último año.
+    */
+
+    public function getIndiceDeterioroAltaRotacion(int $year = null, int $minPrestamos = 3): array
+    {
+        $year = $year ?? date('Y');
+
+        $sql = "SELECT ep.ID_Ejemplar, COUNT(ep.ID_Prestamo) as total_prestamos
+                FROM ejemplar_prestamo ep
+                JOIN prestamos p ON ep.ID_Prestamo = p.ID_Prestamo
+                WHERE YEAR(p.Fecha_Recepcion_Real) = :year AND p.Activo = 1
+                GROUP BY ep.ID_Ejemplar
+                HAVING total_prestamos >= :min_prestamos";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':year' => $year, ':min_prestamos' => $minPrestamos]);
+        $idsAltaRotacion = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $totalAltaRotacion = count($idsAltaRotacion);
+
+        if ($totalAltaRotacion == 0) {
+            return ['valor' => 0, 'total_alta_rotacion' => 0, 'danados' => 0];
+        }
+
+        $placeholders = implode(',', array_fill(0, $totalAltaRotacion, '?'));
+        $sqlDanados = "SELECT COUNT(*) FROM ejemplares 
+                    WHERE ID_Ejemplar IN ($placeholders) 
+                    AND Estado IN ('Dañado', 'En Reparación')";
+        $stmt = $this->pdo->prepare($sqlDanados);
+        $stmt->execute($idsAltaRotacion);
+        $danados = (int) $stmt->fetchColumn();
+
+        $idcar = round(($danados / $totalAltaRotacion) * 100, 1);
+        return [
+            'valor' => $idcar,
+            'total_alta_rotacion' => $totalAltaRotacion,
+            'danados' => $danados
+        ];
+    }
+
+    /*
+    * Tasa de Productividad de Eventos (IPE)
+    * Fórmula: Total asistentes a eventos / Total eventos realizados
+    */
+
+    public function getTasaProductividadEventos(?string $fechaInicio = null, ?string $fechaFin = null): array
+    {
+        if (!$fechaInicio) $fechaInicio = date('Y-m-01');
+        if (!$fechaFin) $fechaFin = date('Y-m-t');
+
+        $sql = "SELECT SUM(Asistentes) as total_asistentes, COUNT(*) as total_eventos
+                FROM actividades
+                WHERE Fecha BETWEEN :inicio AND :fin AND Activo = 1";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':inicio' => $fechaInicio, ':fin' => $fechaFin]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $totalAsistentes = (int) $row['total_asistentes'];
+        $totalEventos = (int) $row['total_eventos'];
+        $ipe = $totalEventos > 0 ? round($totalAsistentes / $totalEventos, 1) : 0;
+
+        return [
+            'valor' => $ipe,
+            'total_asistentes' => $totalAsistentes,
+            'total_eventos' => $totalEventos
+        ];
     }
 
     // ================= DATOS DESGLOSADOS PARA MODALES =================
@@ -303,16 +455,100 @@ class IndicadorService
         return $result;
     }
 
+    /**
+     * Obtiene detalle de libros con ejemplares de alta rotación (≥ $minPrestamos préstamos en el año).
+     * @param int $year Año de análisis (por defecto año actual)
+     * @param int $minPrestamos Mínimo de préstamos para considerar alta rotación (por defecto 3)
+     * @return array
+     */
+    public function getDetalleLibrosAltaRotacion(int $year = null, int $minPrestamos = 3): array
+    {
+        $year = $year ?? date('Y');
+
+        $sql = "SELECT 
+                    l.Cota,
+                    l.Titulo,
+                    COUNT(e.ID_Ejemplar) AS total_ejemplares,
+                    SUM(CASE WHEN e.Estado IN ('Dañado', 'En Reparación') THEN 1 ELSE 0 END) AS danados
+                FROM ejemplares e
+                JOIN libros l ON e.ID_Libro = l.ID_Libro
+                WHERE e.Activo = 1
+                    AND l.Activo = 1
+                    AND e.ID_Ejemplar IN (
+                        SELECT ep.ID_Ejemplar
+                        FROM ejemplar_prestamo ep
+                        JOIN prestamos p ON ep.ID_Prestamo = p.ID_Prestamo
+                        WHERE YEAR(p.Fecha_Recepcion_Real) = :year
+                            AND p.Activo = 1
+                        GROUP BY ep.ID_Ejemplar
+                        HAVING COUNT(ep.ID_Prestamo) >= :min_prestamos
+                    )
+                GROUP BY l.ID_Libro
+                ORDER BY l.Cota";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':year' => $year, ':min_prestamos' => $minPrestamos]);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(function($row) {
+            return [
+                'cota' => $row['Cota'],
+                'titulo' => $row['Titulo'],
+                'total_ejemplares' => (int) $row['total_ejemplares'],
+                'danados' => (int) $row['danados']
+            ];
+        }, $rows);
+    }
+
+    /**
+     * Obtiene desglose de actividades por categoría para el mes actual.
+     * @return array
+     */
+    public function getDesgloseActividades(): array
+    {
+        $primerDia = date('Y-m-01');
+        $ultimoDia = date('Y-m-t');
+
+        $sql = "SELECT 
+                    Categoria,
+                    COUNT(*) as eventos_realizados,
+                    SUM(Asistentes) as total_asistentes
+                FROM actividades
+                WHERE Fecha BETWEEN :inicio AND :fin AND Activo = 1
+                GROUP BY Categoria
+                ORDER BY eventos_realizados DESC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':inicio' => $primerDia, ':fin' => $ultimoDia]);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Total general de asistentes (para calcular porcentajes)
+        $totalAsistentesGeneral = array_sum(array_column($rows, 'total_asistentes'));
+
+        $desglose = [];
+        foreach ($rows as $row) {
+            $porcentaje = $totalAsistentesGeneral > 0 ? round(($row['total_asistentes'] / $totalAsistentesGeneral) * 100, 2) : 0;
+            $clase = 'success';
+            if ($porcentaje < 30) $clase = 'danger';
+            elseif ($porcentaje < 70) $clase = 'warning';
+            $desglose[] = [
+                'categoria' => $row['Categoria'],
+                'eventos_realizados' => (int) $row['eventos_realizados'],
+                'total_asistentes' => (int) $row['total_asistentes'],
+                'porcentaje' => $porcentaje,
+                'clase' => $clase,
+                'estado' => ($porcentaje >= 70) ? 'Alta participación' : (($porcentaje >= 30) ? 'Participación moderada' : 'Baja participación')
+            ];
+        }
+
+        return $desglose;
+    }
+
     // ================= SERIES PARA GRÁFICOS (ENDPOINTS AJAX) =================
 
     /**
-     * Series para gráfico de consultas
+     * Datos para gráfico de consultas (promedio de consultas por día/semana/mes)
+     * @param string $periodo 'semana', 'mes', 'trimestre'
+     * @return array ['series' => [...], 'categorias' => [...], 'total' => int, 'pico' => string, 'crecimiento' => string, 'tablaDatos' => array]
      */
-    /**
- * Datos para gráfico de consultas (promedio de consultas por día/semana/mes)
- * @param string $periodo 'semana', 'mes', 'trimestre'
- * @return array ['series' => [...], 'categorias' => [...], 'total' => int, 'pico' => string, 'crecimiento' => string, 'tablaDatos' => array]
- */
     public function getSeriesConsultas(string $periodo): array
     {
         switch ($periodo) {
@@ -451,19 +687,32 @@ class IndicadorService
      */
     public function getSeriesCumplimiento(string $periodo): array
     {
-        // Obtener porcentaje a tiempo y vencido en el período
         $rango = $this->getRangoFechas($periodo);
         $stmt = $this->pdo->prepare("SELECT 
-                                        COUNT(CASE WHEN Estado_Entrega = 'Devuelto' THEN 1 END) as a_tiempo,
-                                        COUNT(CASE WHEN Estado_Entrega = 'Vencido' THEN 1 END) as vencido
-                                     FROM prestamos
-                                     WHERE Fecha_Recepcion_Real BETWEEN :inicio AND :fin AND Activo = 1");
+                                        COUNT(CASE WHEN Estado_Entrega = 'Devuelto' THEN 1 END) as devueltos,
+                                        COUNT(CASE WHEN Estado_Entrega = 'Vencido' THEN 1 END) as vencidos,
+                                        SUM(Renovaciones) as renovaciones,
+                                        COUNT(*) as total_prestamos
+                                    FROM prestamos
+                                    WHERE Fecha_Recepcion_Real BETWEEN :inicio AND :fin AND Activo = 1");
         $stmt->execute([':inicio' => $rango['inicio'], ':fin' => $rango['fin']]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $total = $row['a_tiempo'] + $row['vencido'];
-        $porcATiempo = $total > 0 ? round(($row['a_tiempo'] / $total) * 100, 2) : 0;
+
+        $devueltos = (int) $row['devueltos'];
+        $vencidos = (int) $row['vencidos'];
+        $renovaciones = (int) $row['renovaciones'];
+        $total = (int) $row['total_prestamos'];
+
+        $porcATiempo = $total > 0 ? round(($devueltos / $total) * 100, 2) : 0;
         $porcVencido = 100 - $porcATiempo;
-        return ['series' => [$porcATiempo, $porcVencido], 'datos_adicionales' => ['libros' => $porcATiempo . '%', 'audio' => '88%', 'inter' => '72%', 'bloqueados' => 12]];
+
+        return [
+            'series' => [$porcATiempo, $porcVencido],
+            'total_prestamos' => $total,
+            'devueltos' => $devueltos,
+            'vencidos' => $vencidos,
+            'renovaciones' => $renovaciones
+        ];
     }
 
     /**
@@ -538,6 +787,9 @@ class IndicadorService
         ];
     }
 
+
+        // ================= Extras para modales =================
+
     /**
      * Obtiene segmentos de cobertura por grupo etario (basado en visitantes)
      * Retorna array con: segmento, total_registrados, nuevos_mes, tendencia
@@ -599,7 +851,104 @@ class IndicadorService
         return 'Baja';
     }
 
+    /**
+     * Obtiene datos detallados para el modal de Consultas de Referencia
+     * @return array ['razon' => float, 'totalConsultasMes' => int, 'usuariosConsultaron' => int, 'topTematicas' => array]
+     */
+    public function getDetalleConsultasReferencia(): array
+    {
+        // Obtener el mes actual
+        $primerDiaMes = date('Y-m-01');
+        $ultimoDiaMes = date('Y-m-t');
+
+        // Total de consultas en el mes
+        $stmt = $this->pdo->prepare("SELECT SUM(Cantidad_Consultada) FROM consultas_area_diarias 
+                                    WHERE Fecha BETWEEN :inicio AND :fin AND Activo = 1");
+        $stmt->execute([':inicio' => $primerDiaMes, ':fin' => $ultimoDiaMes]);
+        $totalConsultasMes = (int) $stmt->fetchColumn();
+
+        // Usuarios que realizaron consultas (lectores con préstamos activos o que aparecen en visitas? 
+        // Asumimos que son lectores que han tomado préstamos en el mes, como proxy)
+        $stmt = $this->pdo->prepare("SELECT COUNT(DISTINCT l.ID_Lector) FROM lectores l
+                                    JOIN prestamos p ON l.ID_Lector = p.ID_Lector
+                                    WHERE p.Fecha_Recepcion_Real BETWEEN :inicio AND :fin AND p.Activo = 1 AND l.Estado = 'Activo'");
+        $stmt->execute([':inicio' => $primerDiaMes, ':fin' => $ultimoDiaMes]);
+        $usuariosConsultaron = (int) $stmt->fetchColumn();
+
+        // Razón (consultas por usuario)
+        $razon = $usuariosConsultaron > 0 ? round($totalConsultasMes / $usuariosConsultaron, 2) : 0;
+
+        // Top temáticas consultadas (agrupar por área, sumar consultas, ordenar descendente)
+        $sql = "SELECT a.Nombre_Area as area, SUM(c.Cantidad_Consultada) as consultas
+                FROM consultas_area_diarias c
+                JOIN areas_de_conocimiento a ON c.ID_Area = a.ID_Area
+                WHERE c.Fecha BETWEEN :inicio AND :fin AND c.Activo = 1
+                GROUP BY c.ID_Area
+                ORDER BY consultas DESC
+                LIMIT 5";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':inicio' => $primerDiaMes, ':fin' => $ultimoDiaMes]);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        $topTematicas = [];
+        foreach ($rows as $row) {
+            // Simular eficiencia de respuesta (puedes calcular con base en tiempo de respuesta real si lo tienes)
+            $eficiencia = rand(80, 100); // placeholder, idealmente se calcularía con datos reales
+            $topTematicas[] = [
+                'area' => $row['area'],
+                'consultas' => (int) $row['consultas'],
+            ];
+        }
+
+        return [
+            'razon' => $razon,
+            'totalConsultasMes' => $totalConsultasMes,
+            'usuariosConsultaron' => $usuariosConsultaron,
+            'topTematicas' => $topTematicas
+        ];
+    }
+
     // ================= AUXILIARES =================
+
+    /**
+     * Total de asistentes a la Sala Estatal en el mes actual
+     */
+    public function getTotalVisitasSalaEstatal(): int
+    {
+        $primerDiaMes = date('Y-m-01');
+        $ultimoDiaMes = date('Y-m-t');
+        $sql = "SELECT SUM(Niños_Hombres+Niños_Mujeres+Adolescentes_Hombres+Adolescentes_Mujeres+Adultos_Hombres+Adultos_Mujeres) as total
+                FROM conteo_diario_visitantes
+                WHERE ID_Sala = 'SE' AND Fecha BETWEEN :inicio AND :fin AND Activo = 1";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':inicio' => $primerDiaMes, ':fin' => $ultimoDiaMes]);
+        return (int) $stmt->fetchColumn();
+    }
+
+    /**
+     * Tendencia de asistencia a Sala Estatal (comparación mes actual vs mes anterior)
+     */
+    public function getTendenciaAsistenciaEstatal(): string
+    {
+        $mesActual = date('Y-m');
+        $mesAnterior = date('Y-m', strtotime('-1 month'));
+        $primerDiaActual = date('Y-m-01');
+        $ultimoDiaActual = date('Y-m-t');
+        $primerDiaAnterior = date('Y-m-01', strtotime('-1 month'));
+        $ultimoDiaAnterior = date('Y-m-t', strtotime('-1 month'));
+
+        $sql = "SELECT SUM(Niños_Hombres+Niños_Mujeres+Adolescentes_Hombres+Adolescentes_Mujeres+Adultos_Hombres+Adultos_Mujeres) as total
+                FROM conteo_diario_visitantes
+                WHERE ID_Sala = 'SE' AND Fecha BETWEEN :inicio AND :fin AND Activo = 1";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':inicio' => $primerDiaActual, ':fin' => $ultimoDiaActual]);
+        $actual = (int) $stmt->fetchColumn();
+        $stmt->execute([':inicio' => $primerDiaAnterior, ':fin' => $ultimoDiaAnterior]);
+        $anterior = (int) $stmt->fetchColumn();
+        if ($anterior == 0) return $actual > 0 ? '+100%' : '0%';
+        $diff = round(($actual - $anterior) / $anterior * 100);
+        return ($diff >= 0 ? '+' : '') . $diff . '%';
+    }
 
     private function diasHabilesEnMes(int $year, int $month): int
     {
@@ -611,6 +960,44 @@ class IndicadorService
             if ((int) $fecha->format('N') < 6) $habiles++;
         }
         return $habiles;
+    }
+
+    /**
+     * Estado del IIUR según rangos
+     * @return array ['clase' => string, 'texto' => string]
+     */
+    private function getEstadoIIUR(float $valor): array
+    {
+        if ($valor >= 2.0) return ['clase' => 'success', 'texto' => 'Óptimo'];
+        if ($valor >= 1.0) return ['clase' => 'warning', 'texto' => 'En proceso'];
+        return ['clase' => 'danger', 'texto' => 'Crítico'];
+    }
+
+    /**
+     * Calcula la centena Dewey para un código de área.
+     */
+    private function getDeweyCentena(string $areaId): string
+    {
+        if (is_numeric($areaId) && strlen($areaId) >= 3) {
+            return substr($areaId, 0, 1) . '00';
+        }
+        return $areaId;
+    }
+
+    /**
+     * Devuelve el nombre del grupo para mostrar en la tabla.
+     */
+    private function getNombreGrupo(string $base, string $nombreOriginal, string $idOriginal): string
+    {
+        if (is_numeric($base)) {
+            $stmt = $this->pdo->prepare("SELECT Nombre_Area FROM areas_de_conocimiento WHERE ID_Area = :area");
+            $stmt->execute([':area' => $base]);
+            $nombre = $stmt->fetchColumn();
+            if ($nombre) return $nombre . " ($base)";
+            else return "Área $base";
+        } else {
+            return $nombreOriginal . " ($idOriginal)";
+        }
     }
 
     private function getRangoFechas(string $periodo): array

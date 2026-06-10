@@ -73,6 +73,32 @@ class EjemplarRepository extends BaseRepository implements IEjemplarRepository {
             ':id' => $ejemplar->getIdEjemplar()
         ]);
     }
+
+    /**
+     * Obtiene los ejemplares descatalogados (Activo = 0) de un libro específico.
+     * @param int $idLibro
+     * @return Ejemplar[]
+     */
+    public function findDescatalogadosPorLibro(int $idLibro): array
+    {
+        $sql = "SELECT * FROM {$this->table} WHERE ID_Libro = :idLibro AND Activo = 0";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':idLibro' => $idLibro]);
+        $rows = $stmt->fetchAll();
+        return array_map(fn($row) => $this->mapToEntity($row), $rows);
+    }
+
+    /**
+     * Reactiva un ejemplar (cambia Activo a 1 y Estado a 'Disponible').
+     * @param int $idEjemplar
+     * @return bool
+     */
+    public function reactivar(int $idEjemplar): bool
+    {
+        $sql = "UPDATE {$this->table} SET Activo = 1, Estado = 'Disponible' WHERE ID_Ejemplar = :id";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([':id' => $idEjemplar]);
+    }
     
     public function deactivate(int $ejemplarId): void {
         $sql = "UPDATE ejemplares SET Activo = 0 WHERE ID_Ejemplar = :id";

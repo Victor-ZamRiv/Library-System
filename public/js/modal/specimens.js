@@ -52,24 +52,41 @@ function mostrarModalEliminar(id, code, button) {
 }
 
 function ejecutarEliminacionEjemplar() {
-  if (ejemplarIdToDelete !== null && rowElementToDelete !== null) {
-    // Oculta visualmente
-    rowElementToDelete.style.display = 'none';
+    if (ejemplarIdToDelete !== null && rowElementToDelete !== null) {
+        // Obtener motivo seleccionado
+        const motivoSelect = document.getElementById('motivo-descatalogar');
+        const motivo = motivoSelect ? motivoSelect.value : 'No especificado';
 
-    // Agrega hidden para el backend: ejemplares_descatalogar[]
-    const container = document.getElementById('ejemplares-hidden-fields');
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = 'ejemplares_descatalogar[]';
-    input.value = String(ejemplarIdToDelete);
-    container.appendChild(input);
+        // Oculta visualmente la fila
+        rowElementToDelete.style.display = 'none';
 
-    $('#confirmDeleteModal').modal('hide');
-    actualizarTotalEjemplares();
+        // Contenedor para campos ocultos (existe en el formulario)
+        const container = document.getElementById('ejemplares-hidden-fields');
 
-    ejemplarIdToDelete = null;
-    rowElementToDelete = null;
-  }
+        // Campo para el ID del ejemplar a descatalogar
+        let inputId = document.createElement('input');
+        inputId.type = 'hidden';
+        inputId.name = 'ejemplares_descatalogar[]';
+        inputId.value = String(ejemplarIdToDelete);
+        container.appendChild(inputId);
+
+        // Campo para el motivo correspondiente (mismo orden)
+        let inputMotivo = document.createElement('input');
+        inputMotivo.type = 'hidden';
+        inputMotivo.name = 'motivos_descatalogar[]';
+        inputMotivo.value = motivo;
+        container.appendChild(inputMotivo);
+
+        // Cerrar modal
+        $('#confirmDeleteModal').modal('hide');
+
+        // Actualizar contador de ejemplares visibles
+        actualizarTotalEjemplares();
+
+        // Limpiar variables
+        ejemplarIdToDelete = null;
+        rowElementToDelete = null;
+    }
 }
 
 // Captura cambios de estado de ejemplares existentes y los refleja en hidden

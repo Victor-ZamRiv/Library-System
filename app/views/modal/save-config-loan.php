@@ -21,7 +21,7 @@
                             <li>Máximo renovaciones: <strong id="maxRenovacionesResumen"></strong></li>
                         </ul>
                     </div>
-                    <p class="text-warning">Estos valores afectarán a todos los préstamos del sistema.</p>
+                    
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>

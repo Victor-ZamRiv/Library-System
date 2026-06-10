@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header" style="background-color: #2e6da4; color: white;">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal" style="color: white; opacity: 1;"><span>&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel">
                     <i class="fa-solid fa-circle-info"></i> Detalle de Consultas y Obras
                 </h4>

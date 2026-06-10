@@ -14,16 +14,16 @@ class LibroSearchService {
         $this->autorRepo = $autorRepo;
     }
 
-    public function buscar(array $filtros): array {
-        $libros = $this->libroRepo->search($filtros);
-
-        foreach ($libros as $libro) {
-            if ($libro instanceof Libro) {
-                $autores = $this->autorRepo->getAutoresLibro($libro->getIdLibro());
-                $libro->setAutores($autores);
-            }
+    public function buscar(int $pagina, int $porPagina, array $filtros): array
+    {
+        $resultado = $this->libroRepo->search($pagina, $porPagina, $filtros);
+        
+        // Cargar autores para cada libro en $resultado['datos']
+        foreach ($resultado['datos'] as $libro) {
+            $autores = $this->autorRepo->getAutoresLibro($libro->getIdLibro());
+            $libro->setAutores($autores);
         }
-
-        return $libros;
+        
+        return $resultado;
     }
 }

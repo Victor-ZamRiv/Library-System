@@ -34,6 +34,16 @@ class ListLectorService {
         return $lectores;
     }
 
+    public function listarPaginado(int $pagina = 1, int $porPagina = 10, ?string $search = null): array
+    {
+        $resultado = $this->lectorRepo->listarActivosPaginados($pagina, $porPagina, $search);
+        // Cargar persona para cada lector
+        foreach ($resultado['datos'] as $lector) {
+            $lector->setPersona($this->personaRepo->find($lector->getIdPersona()));
+        }
+        return $resultado;
+    }
+
     public function search($input): array {
         $lectores = $this->lectorRepo->search($input);
         foreach ($lectores as $lector) {

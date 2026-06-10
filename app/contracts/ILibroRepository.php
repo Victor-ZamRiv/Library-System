@@ -5,7 +5,7 @@ use App\Models\Entities\Libro;
 
 interface ILibroRepository {
     public function all(): array;
-    public function search(array $filtros): array;
+    public function search(int $pagina, int $porPagina, array $filtros = []): array;
     public function insert(Libro $libro): int;
     public function associateAutor(int $idLibro, int $idAutor): bool;
     public function update(Libro $libro): bool;

@@ -2,23 +2,22 @@
 <html lang="es">
     <link rel="stylesheet" href="<?= PUBLIC_PATH ?>/css/style-book-info.css">
 <style>
-    
+    /* Estilo auxiliar para alinear correctamente el botón en el encabezado */
+    .panel-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 </style>
 <title>Info Libro</title>
-<!-- SideBar -->
 <?php include VIEW_PATH . '/component/heat.php'; ?>
 
 <body>
-    <!-- SideBar -->
     <?php include VIEW_PATH . '/component/sidebar.php'; ?>
 
-    <!-- Content page-->
     <section class="full-box dashboard-contentPage">
-        <!-- NavBar -->
-
         <?php include VIEW_PATH . '/component/navbar.php'; ?>
 
-        <!-- Content page -->
         <div class="container-fluid">
             <div class="page-header">
                 <h1 class="text-titles"><i class=""></i> Información Libro</small></h1>
@@ -27,13 +26,17 @@
 
         <div class="container-fluid">
             <div class="panel panel-info">
-                <div class="panel-heading">
-                    <h3 class="panel-title"><i class="zmdi zmdi-info"></i> &nbsp; <?= htmlspecialchars($libro->getTitulo()) ?></h3>
+                <div class="panel-heading" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <h3 class="panel-title" style="margin: 0;">
+                        <i class="zmdi zmdi-info"></i> &nbsp; <?= htmlspecialchars($libro->getTitulo()) ?>
+                    </h3>
+                    
+                    
                 </div>
+                
                 <div class="panel-body">
                     <div class="ficha-bibliografica">
 
-                        <!-- Fila Superior: Cota, Autor y Título -->
                         <div class="ficha-row">
                             <div class="cota-box ficha-item">
                                 <div class="label-ficha">COTA</div>
@@ -56,14 +59,13 @@
                                 </div>
                                 <div class="ficha-row">
                                     <div class="ficha-item" style="width: 100%; min-height: 60px;">
-                                        <span class="label-ficha">TITULO:</span>
+                                        <span class="label-ficha">TÍTULO:</span>
                                         <span class="content-ficha"><?= htmlspecialchars($libro->getTitulo()) ?></span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Fila Edición y Ciudad -->
                         <div class="ficha-row">
                             <div class="ficha-item" style="flex: 1;">
                                 <span class="label-ficha">EDICIÓN:</span>
@@ -75,7 +77,6 @@
                             </div>
                         </div>
 
-                        <!-- Fila Editorial -->
                         <div class="ficha-row">
                             <div class="ficha-item" style="width: 100%;">
                                 <span class="label-ficha">EDITORIAL:</span>
@@ -83,7 +84,6 @@
                             </div>
                         </div>
 
-                        <!-- Fila Fecha y Páginas/Volumen -->
                         <div class="ficha-row">
                             <div class="ficha-item" style="flex: 1;">
                                 <span class="label-ficha">FECHA:</span>
@@ -95,7 +95,6 @@
                             </div>
                         </div>
 
-                        <!-- Fila ISBN y Ejemplares -->
                         <div class="ficha-row">
                             <div class="ficha-item" style="flex: 1;">
                                 <span class="label-ficha">ISBN:</span>
@@ -113,7 +112,6 @@
                             </div>
                         </div>
 
-                        <!-- Fila Observaciones -->
                         <div class="ficha-row">
                             <div class="ficha-item" style="width: 100%; min-height: 80px;">
                                 <span class="label-ficha">OBSERVACIONES:</span>
@@ -123,9 +121,6 @@
 
                     </div>
 
-
-
-                    <!-- Botones de Acción -->
                     <p class="text-center" style="margin-top: 20px;">
                         <a href="<?= BASE_URL ?>/libros" class="btn btn-secondary btn-raised">Volver</a>
                         <button onclick="window.print();" class="btn btn-info btn-raised">Imprimir Ficha</button>
@@ -143,7 +138,8 @@
 
     </section>
 
-    <!--====== Scripts -->
+    
+
     <?php include VIEW_PATH . '/component/scripts.php'; ?>
 </body>
 

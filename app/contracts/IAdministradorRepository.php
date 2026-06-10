@@ -11,8 +11,13 @@ interface IAdministradorRepository {
     public function updatePassword(int $id, string $hash): bool;
     public function findByUsername(string $username): ?Administrador;
     public function findByEmail(string $email): ?Administrador;
+    public function findByPersonaId(int $idPersona): ?Administrador;
+    public function findInactivos(?string $search = null): array;
     public function existsUsername(string $username, ?int $excludeId = null): bool;
     public function duplicatePersona(int $idPersona): bool;
     public function search(string $input): array;
+    public function listarActivosPaginados(int $pagina, int $porPagina, ?string $search = null): array;
+    public function countInActivos(?string $search = null): int;
     public function deactivate(int $id): void;
+    public function reactivar(int $idAdmin): bool;
 }

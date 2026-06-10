@@ -13,18 +13,23 @@ $router->get('/dashboard/ocupacion', 'DashboardController@ajaxOcupacion');
 $router->get('/dashboard', 'DashboardController@index');
 $router->get('/', 'DashboardController@index');
 
+//rutas para reportes
+$router->get('/reportes/operativo', 'reportController@index');
+$router->get('/reportes/operativo/datos', 'reportController@ajaxDatos');
+
 // Rutas para configuración
 $router->get('/configuracion', 'ConfiguracionController@index');
 $router->get('/configuracion/sala', 'ConfiguracionController@salaConfiguration');
 $router->post('/configuracion/sala/update', 'ConfiguracionController@updateSalas');
 $router->get('/configuracion/area', 'ConfiguracionController@areaConfiguration');
-$router->get('/configuracion/indicator', 'ConfiguracionController@indicatorConfiguration');
+$router->get('/configuracion/indicator', 'ConfiguracionController@indicadores');
+$router->post('/configuracion/indicadores/guardar', 'ConfiguracionController@guardarIndicadores');
 $router->get('/configuracion/prestamos', 'ConfiguracionController@prestamoConfiguration');
 $router->post('/configuracion/prestamos/update', 'ConfiguracionController@prestamoUpdate');
 
 //rutas historial y auditorias
 $router->get('/historial', 'HistorialController@index');
-$router->get('/historial/show', 'HistorialController@show');
+$router->get('/historial/show', 'HistorialController@show'); 
 
 
 // Rutas para libros
@@ -38,6 +43,7 @@ $router->post('/libros', 'LibroController@store');
 $router->get('/libros/show', 'LibroController@show');
 $router->get('/libros/edit', 'LibroController@edit');
 $router->post('/libros/update', 'LibroController@update');
+$router->post('/libros/ejemplar/reactivar', 'LibroController@reactivarEjemplar');
 
 //rutas login/logout
 $router->get('/login', 'AuthController@loginForm');
@@ -56,6 +62,7 @@ $router->get('/administradores/edit', 'AdministradorController@edit');
 $router->post('/administradores/update', 'AdministradorController@update');
 $router->get('/administradores/show', 'AdministradorController@show');
 $router->get('/administradores/delete', 'AdministradorController@delete');
+$router->post('/administradores/reactivar', 'AdministradorController@reactivar');
 
 // Rutas para lectores
 $router->get('/lectores', 'LectorController@list');
@@ -66,6 +73,7 @@ $router->post('/lectores/store', 'LectorController@store');
 $router->get('/lectores/edit', 'LectorController@edit');
 $router->post('/lectores/update', 'LectorController@update');
 $router->get('/lectores/search', 'LectorController@search');
+$router->post('/lectores/reactivar', 'LectorController@reactivar');
 
 // Rutas actividades
 $router->get('/eventos', 'ActividadController@list');

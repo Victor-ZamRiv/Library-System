@@ -11,6 +11,7 @@ class Multa extends baseEntity
     private int $idAdmin;
     private float $monto;
     private ?string $fechaCancelacion; // formato Y-m-d o null
+    private ?string $fechaGeneracion; // formato Y-m-d o null
     private string $estado; // 'Pendiente', 'Pagada', 'Cancelada'
 
     public function __construct(
@@ -19,6 +20,7 @@ class Multa extends baseEntity
         int $idAdmin = 0,
         float $monto = 0.0,
         ?string $fechaCancelacion = null,
+        ?string $fechaGeneracion = null,
         string $estado = 'Pendiente'
     ) {
         $this->idMulta = $idMulta;
@@ -26,6 +28,7 @@ class Multa extends baseEntity
         $this->idAdmin = $idAdmin;
         $this->monto = $monto;
         $this->fechaCancelacion = $fechaCancelacion;
+        $this->fechaGeneracion = $fechaGeneracion;
         $this->estado = $estado;
     }
 
@@ -35,6 +38,7 @@ class Multa extends baseEntity
     public function getIdAdmin(): int { return $this->idAdmin; }
     public function getMonto(): float { return $this->monto; }
     public function getFechaCancelacion(): ?string { return $this->fechaCancelacion; }
+    public function getFechaGeneracion(): ?string { return $this->fechaGeneracion; }
     public function getEstado(): string { return $this->estado; }
 
     // Setters 
@@ -58,7 +62,16 @@ class Multa extends baseEntity
         $this->fechaCancelacion = $fechaCancelacion;
     }
 
+    public function setFechaGeneracion(?string $fechaGeneracion): void
+    {
+        if ($fechaGeneracion !== null && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $fechaGeneracion)) {
+            throw new \InvalidArgumentException("Formato de fecha inválido (YYYY-MM-DD).");
+        }
+        $this->fechaGeneracion = $fechaGeneracion;
+    }
+
     public function setEstado(string $estado): void
+    
     {
         $estadosPermitidos = ['Pendiente', 'Pagada', 'Cancelada'];
         if (!in_array($estado, $estadosPermitidos)) {

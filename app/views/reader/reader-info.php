@@ -82,8 +82,8 @@
             <div class="container-fluid">
                 <div class="page-header">
                     <h1 class="text-titles">
-                        <i class="fa-solid fa-book-open-reader"></i> Lectores
-                        <small> Información del Lector</small>
+                        <i class="fa-solid fa-book-open-reader"></i> Información del Lector
+                        
                     </h1>
                 </div>
 

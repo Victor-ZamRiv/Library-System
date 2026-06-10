@@ -1,18 +1,17 @@
 <?php
-
 return [
     'idLibro' => 'ID del Libro',
     'titulo' => 'Título',
-    'idEditorial' => 'Editorial',
-    'idArea' => 'Área de Conocimiento',
-    'idSala' => 'Sala',
+    'idArea' => 'Área',
     'cota' => 'Cota',
     'edicion' => 'Edición',
     'ciudad' => 'Ciudad',
     'isbn' => 'ISBN',
-    'paginas' => 'Número de Páginas',
+    'paginas' => 'Páginas',
     'volumen' => 'Volumen',
     'observaciones' => 'Observaciones',
     'anioPublicacion' => 'Año de Publicación',
-    'activo' => 'Activo',
+    'editorial_nombre' => 'Editorial',       
+    'sala_nombre' => 'Sala',        
+    'activo_texto' => 'Activo',
 ];

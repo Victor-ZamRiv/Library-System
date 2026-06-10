@@ -25,7 +25,7 @@
 
         <div class="container-fluid">
             <div class="page-header">
-                <h1 class="text-titles"><i class="fa-solid fa-clipboard-list"></i> Visitas <small> Detalle del Registro</small></h1>
+                <h1 class="text-titles"><i class="fa-solid fa-clipboard-list"></i> Detalle del Registro</h1>
             </div>
         </div>
 

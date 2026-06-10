@@ -11,6 +11,9 @@
                     </h4>
                 </div>
                 <div class="modal-body">
+                    <div class="alert alert-danger">
+                        <strong>¡Atención!</strong> Esta configuración determinará exactamente qué indicadores aparecerán en el dashboard principal.
+                    </div>
                     <div class="row">
                         <div class="col-sm-6">
                             <h5><i class="fa-solid fa-eye text-success"></i> <strong>VISIBLES</strong> <span id="contadorVisibles" class="badge badge-success">0</span></h5>
@@ -22,9 +25,7 @@
                         </div>
                     </div>
                     <hr>
-                    <div class="alert alert-warning">
-                        <strong>¡Atención!</strong> Esta configuración determinará exactamente qué indicadores aparecerán en el dashboard principal.
-                    </div>
+                    
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>

@@ -68,7 +68,7 @@ class AuthService {
     }
 
 
-    public function getCurrentUser(): ?array {
+    public function getCurrentUser(): ? array {
         return $_SESSION['administrador'] ?? null;
     }
 

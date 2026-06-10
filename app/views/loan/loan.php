@@ -15,7 +15,7 @@
 
         <div class="container-fluid ">
             <div class="page-header">
-                <h1 class="text-titles"><i class="fa-solid fa-bookmark"></i> Préstamo <small> Registrar Nuevo Préstamo</small></h1>
+                <h1 class="text-titles"><i class="fa-solid fa-bookmark"></i> Registrar Nuevo Préstamo</h1>
             </div>
         </div>
 
@@ -31,7 +31,7 @@
                                 <label for="carnet-reg" class="control-label text-left" style="display: block;">
                                     Carnet del solicitante <span style="color: red;">*</span>:
                                 </label>
-                                <input type="text" class="form-control" name="carnet_solicitante" id="carnet-reg" maxlength="10" required>
+                                <input type="text" class="form-control" name="carnet_solicitante" id="carnet-reg" maxlength="11" required>
 
                                 <div class="invalid-feedback bg-danger text-danger rounded-pill" id="carnet-error" style="display: none; padding: 2px 10px; margin-top: 5px;">
                                     <i class="fas fa-exclamation-circle"></i>

@@ -43,47 +43,70 @@ class LibroRepository extends BaseRepository implements ILibroRepository {
 
     
     
-    public function search(array $filtros): array {
-        $sql = "
-            SELECT DISTINCT l.*
-            FROM libros l
-            LEFT JOIN libros_autores la ON l.ID_Libro = la.ID_Libro
-            LEFT JOIN autores a ON la.ID_Autor = a.ID_Autor
-            WHERE l.Activo = 1
-        ";
+    public function search(int $pagina = 1, int $porPagina = 12, array $filtros = []): array
+    {
+        $offset = ($pagina - 1) * $porPagina;
+        
+        // Base de la consulta (la misma que usas en search)
+        $sql = "SELECT DISTINCT l.* 
+                FROM libros l
+                LEFT JOIN libros_autores la ON l.ID_Libro = la.ID_Libro
+                LEFT JOIN autores a ON la.ID_Autor = a.ID_Autor
+                WHERE l.Activo = 1";
+        
         $params = [];
-
-        // Búsqueda principal
-        if (!empty($filtros['campo']) && !empty($filtros['valor'])) {
+        
+        // Aplicar filtros
+        if (!empty($filtros['valor'])) {
+            $busqueda = '%' . $filtros['valor'] . '%';
             switch ($filtros['campo']) {
                 case 'autor':
                     $sql .= " AND a.Nombre LIKE ?";
-                    $params[] = '%' . $filtros['valor'] . '%';
+                    $params[] = $busqueda;
                     break;
                 case 'titulo':
                     $sql .= " AND l.Titulo LIKE ?";
-                    $params[] = '%' . $filtros['valor'] . '%';
+                    $params[] = $busqueda;
                     break;
                 case 'cota':
                     $sql .= " AND l.Cota LIKE ?";
-                    $params[] = '%' . $filtros['valor'] . '%';
+                    $params[] = $busqueda;
                     break;
             }
         }
-
-        // Filtro por sala
+        
         if (!empty($filtros['sala']) && $filtros['sala'] !== 'todas') {
             $sql .= " AND l.ID_Sala = ?";
             $params[] = $filtros['sala'];
         }
-
-        // Filtro por área de conocimiento
+        
         if (!empty($filtros['area']) && $filtros['area'] !== 'todas') {
             $sql .= " AND l.ID_Area = ?";
             $params[] = $filtros['area'];
         }
-
-        return $this->runFilteredQuery($sql, $params);
+        
+        // Consulta de conteo
+        $countSql = "SELECT COUNT(*) FROM ($sql) AS total";
+        $stmtCount = $this->pdo->prepare($countSql);
+        $stmtCount->execute($params);
+        $total = (int) $stmtCount->fetchColumn();
+        
+        // Consulta de datos con ORDER BY y LIMIT
+        $dataSql = $sql . " ORDER BY l.ID_Libro DESC LIMIT ? OFFSET ?";
+        $allParams = array_merge($params, [$porPagina, $offset]);
+        $stmtData = $this->pdo->prepare($dataSql);
+        $stmtData->execute($allParams);
+        $rows = $stmtData->fetchAll();
+        
+        $libros = array_map(fn($row) => $this->mapToEntity($row), $rows);
+        
+        return [
+            'datos' => $libros,
+            'total' => $total,
+            'pagina' => $pagina,
+            'porPagina' => $porPagina,
+            'ultimaPagina' => ceil($total / $porPagina)
+        ];
     }
 
     public function existsCota(string $cota, ?int $excludeId = null): bool {

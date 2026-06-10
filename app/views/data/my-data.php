@@ -2,6 +2,7 @@
 <html lang="es">
 
 <!-- heat -->
+ <title>Información de Usuario</title>
 <?php
 include VIEW_PATH . "/component/heat.php";
 ?>
@@ -22,7 +23,7 @@ include VIEW_PATH . "/component/heat.php";
 		<!-- Content page -->
 		<div class="container-fluid">
 			<div class="page-header">
-				<h1 class="text-titles"> Información de Usuario</small></h1>
+				<h1 class="text-titles"> <i class="fa-solid fa-clipboard-user"></i> Información de Usuario</h1>
 			</div>
 		</div>
 

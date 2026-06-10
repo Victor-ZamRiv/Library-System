@@ -70,6 +70,14 @@ class VisitanteRepository extends BaseRepository implements IVisitanteRepository
         ]);
     }
 
+    public function findBySalaFechaTurno(string $idSala, string $fecha, string $turno): ?VisitantesRegistro {
+        $sql = "SELECT * FROM conteo_diario_visitantes WHERE ID_Sala = :idSala AND Fecha = :fecha AND Turno = :turno";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':idSala' => $idSala, ':fecha' => $fecha, ':turno' => $turno]);
+        $row = $stmt->fetch();
+        return $row ? $this->mapToEntity($row) : null;
+    }
+
     public function existsBySalaFechaTurno(string $idSala, string $fecha, string $turno): bool {
         $sql = "SELECT COUNT(*) FROM conteo_diario_visitantes 
                 WHERE ID_Sala = :idSala AND Fecha = :fecha AND Turno = :turno";

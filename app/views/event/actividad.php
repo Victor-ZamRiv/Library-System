@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
 
-<title>Registro de Actividad</title>
-<?php
-include VIEW_PATH . "/component/heat.php";
-?>
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Actividad</title>
+    <?php
+    include VIEW_PATH . "/component/heat.php";
+    ?>
+</head>
 
 <body>
 
@@ -20,8 +23,7 @@ include VIEW_PATH . "/component/heat.php";
         <div class="container-fluid">
             <div class="page-header">
                 <h1 class="text-titles">
-                    <i class="fa-solid fa-calendar"></i> Eventos
-                    <small> Registro de Actividades</small>
+                    <i class="fa-solid fa-calendar"></i> Registro de Actividades
                 </h1>
             </div>
         </div>
@@ -39,9 +41,7 @@ include VIEW_PATH . "/component/heat.php";
                                 <div class="form-group label-floating">
                                     <label class="control-label"><span class="text-danger">*</span> Fecha del Evento:</label>
                                     <input type="date" class="form-control" name="fecha" id="fecha" onkeydown="return false" required>
-                                    <div class="invalid-feedback bg-danger text-danger rounded-pill" id="fecha-error" style="display: none; padding: 5px 10px; font-size: 12px; margin-top: 5px;">
-                                        <i class="fas fa-exclamation-circle"></i> Fecha fuera de rango (1 semana atrás hasta 2 meses adelante).
-                                    </div>
+                                    <div class="invalid-feedback bg-danger text-danger rounded-pill" id="fecha-error" style="display: none; padding: 5px 15px; font-size: 12px; margin-top: 5px;"></div>
                                 </div>
                             </div>
 
@@ -56,6 +56,7 @@ include VIEW_PATH . "/component/heat.php";
                                         <option value="Reunión">Reunión / Asamblea</option>
                                         <option value="Otro">Otro</option>
                                     </select>
+                                    <div class="invalid-feedback bg-danger text-danger rounded-pill" id="cat-error" style="display: none; padding: 5px 15px; font-size: 12px; margin-top: 5px;"></div>
                                 </div>
                             </div>
                         </div>
@@ -63,11 +64,9 @@ include VIEW_PATH . "/component/heat.php";
                         <div class="row">
                             <div class="col-xs-12 col-sm-6">
                                 <div class="form-group label-floating">
-                                    <label class="control-label">Número de Asistentes:</label>
-                                    <input type="number" class="form-control" name="asistentes" id="asistentes" placeholder="0">
-                                    <div class="invalid-feedback bg-danger text-danger rounded-pill" id="asist-error" style="display: none; padding: 5px 10px; font-size: 12px; margin-top: 5px;">
-                                        <i class="fas fa-exclamation-circle"></i> Máximo 1000 asistentes.
-                                    </div>
+                                    <label class="control-label"><span class="text-danger">*</span> Número de Asistentes:</label>
+                                    <input type="number" class="form-control" name="asistentes" id="asistentes" placeholder="0" min="1" max="1000" required>
+                                    <div class="invalid-feedback bg-danger text-danger rounded-pill" id="asist-error" style="display: none; padding: 5px 15px; font-size: 12px; margin-top: 5px;"></div>
                                 </div>
                             </div>
 
@@ -83,24 +82,21 @@ include VIEW_PATH . "/component/heat.php";
                                 </div>
                             </div>
                         </div>
-                        <div class= "row">
+                        
+                        <div class="row">
                             <div class="col-xs-12 col-sm-6">
                                 <div class="form-group label-floating">
                                     <label class="control-label"><span class="text-danger">*</span> Organizador:</label>
                                     <input type="text" class="form-control" name="organizador" id="organizador" placeholder="Nombre del organizador" required>
-                                    <div class="invalid-feedback bg-danger text-danger rounded-pill" id="org-error" style="display: none; padding: 5px 10px; font-size: 12px; margin-top: 5px;">
-                                        <i class="fas fa-exclamation-circle"></i> Solo letras, números y espacios.
-                                    </div>
+                                    <div class="invalid-feedback bg-danger text-danger rounded-pill" id="org-error" style="display: none; padding: 5px 15px; font-size: 12px; margin-top: 5px;"></div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group label-floating">
                             <label class="control-label"><span class="text-danger">*</span> Descripción:</label>
-                            <textarea class="form-control" name="descripcion" id="descripcion" rows="4" required></textarea>
-                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="desc-error" style="display: none; padding: 5px 10px; font-size: 12px; margin-top: 5px;">
-                                <i class="fas fa-exclamation-circle"></i> Solo letras, números y espacios.
-                            </div>
+                            <textarea class="form-control" name="descripcion" id="descripcion" rows="4" placeholder="Detalles de la actividad..." required></textarea>
+                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="desc-error" style="display: none; padding: 5px 15px; font-size: 12px; margin-top: 5px;"></div>
                         </div>
 
                         <div class="form-group text-right">
@@ -115,7 +111,7 @@ include VIEW_PATH . "/component/heat.php";
 
     <script src="<?= PUBLIC_PATH ?>/js/validations/event/actividad.js"></script>
     <?php
-    include  VIEW_PATH . "/component/scripts.php";
+    include VIEW_PATH . "/component/scripts.php";
     ?>
 </body>
 

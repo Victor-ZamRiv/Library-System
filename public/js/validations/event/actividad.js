@@ -3,8 +3,15 @@ document.addEventListener("DOMContentLoaded", function() {
     const inputFecha = document.getElementById('fecha');
     const errorFecha = document.getElementById('fecha-error');
     
+    const inputCategoria = document.getElementById('categoria');
+    const errorCategoria = document.getElementById('cat-error');
+
     const inputAsistentes = document.getElementById('asistentes');
     const errorAsistentes = document.getElementById('asist-error');
+
+    const inputOrganizador = document.getElementById('organizador');
+    const errorOrganizador = document.getElementById('org-error');
+
     const inputDesc = document.getElementById('descripcion');
     const errorDesc = document.getElementById('desc-error');
 
@@ -21,29 +28,33 @@ document.addEventListener("DOMContentLoaded", function() {
     maxFecha.setMonth(hoy.getMonth() + 2);
     inputFecha.max = formatFecha(maxFecha);
 
-    // --- Función Genérica para mostrar/ocultar errores ---
-    function toggleError(input, errorElement, show, mensaje) {
+    // --- Control Visual de Feedback ---
+    function toggleError(input, errorElement, show, mensaje = "") {
+        const formGroup = input.closest('.form-group');
         if (show) {
             input.classList.add('is-invalid');
-            if (mensaje) {
-                errorElement.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${mensaje}`;
-            }
+            input.classList.remove('is-valid');
+            if (formGroup) formGroup.classList.add('has-error');
+            errorElement.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${mensaje}`;
             errorElement.style.display = 'block';
         } else {
             input.classList.remove('is-invalid');
             input.classList.add('is-valid');
+            if (formGroup) formGroup.classList.remove('has-error');
             errorElement.style.display = 'none';
+            errorElement.innerHTML = '';
         }
     }
 
-    // --- Validación de Fecha ---
+    // --- Funciones de Validación Individuales ---
+
     function validarFecha() {
         const valor = inputFecha.value;
         const hoySinHora = new Date();
         hoySinHora.setHours(0, 0, 0, 0);
 
         if (valor === "") {
-            toggleError(inputFecha, errorFecha, true, "Por favor, seleccione una fecha.");
+            toggleError(inputFecha, errorFecha, true, "La fecha del evento es obligatoria.");
             return false;
         }
 
@@ -63,18 +74,27 @@ document.addEventListener("DOMContentLoaded", function() {
         return true;
     }
 
-    // --- Validación de Asistentes ---
+    function validarCategoria() {
+        if (inputCategoria.value === "" || inputCategoria.value === null) {
+            toggleError(inputCategoria, errorCategoria, true, "Debe seleccionar una categoría de forma obligatoria.");
+            return false;
+        }
+        toggleError(inputCategoria, errorCategoria, false);
+        return true;
+    }
+
     function validarAsistentes() {
-        const valorRaw = inputAsistentes.value;
-        const valor = parseInt(valorRaw);
+        const valorRaw = inputAsistentes.value.trim();
 
         if (valorRaw === "") {
-            toggleError(inputAsistentes, errorAsistentes, true, "El número de asistentes es requerido.");
+            toggleError(inputAsistentes, errorAsistentes, true, "El número de asistentes es obligatorio.");
             return false;
         }
 
-        if (valor <= 0) {
-            toggleError(inputAsistentes, errorAsistentes, true, "El número debe ser mayor que 0.");
+        const valor = parseInt(valorRaw, 10);
+
+        if (isNaN(valor) || valor < 1) {
+            toggleError(inputAsistentes, errorAsistentes, true, "El número mínimo permitido es 1 asistente.");
             return false;
         }
 
@@ -87,37 +107,102 @@ document.addEventListener("DOMContentLoaded", function() {
         return true;
     }
 
-    // --- Validación de Descripción ---
-    function validarDescripcion() {
-        const regex = /^[a-zA-Z0-9\s.,áéíóúÁÉÍÓÚñÑ]+$/;
-        if (inputDesc.value.trim() === "") {
-            toggleError(inputDesc, errorDesc, true, "La descripción es obligatoria.");
+    function validarOrganizador() {
+        const valor = inputOrganizador.value.trim();
+
+        if (valor === "") {
+            toggleError(inputOrganizador, errorOrganizador, true, "El campo organizador es obligatorio.");
             return false;
         }
-        if (!regex.test(inputDesc.value)) {
-            toggleError(inputDesc, errorDesc, true, "Solo letras, números y espacios.");
+        if (/([a-zA-ZáéíóúÁÉÍÓÚñÑ])\1{2,}/i.test(valor)) {
+            toggleError(inputOrganizador, errorOrganizador, true, "El texto contiene un exceso de letras idénticas seguidas.");
+            return false;
+        }
+        toggleError(inputOrganizador, errorOrganizador, false);
+        return true;
+    }
+
+    function validarDescripcion() {
+        const valor = inputDesc.value.trim();
+
+        if (valor === "") {
+            toggleError(inputDesc, errorDesc, true, "La descripción de la actividad es obligatoria.");
+            return false;
+        }
+        // Validación de caracteres alfabéticos seguidos idénticos (3 o más)
+        if (/([a-zA-ZáéíóúÁÉÍÓÚñÑ])\1{2,}/i.test(valor)) {
+            toggleError(inputDesc, errorDesc, true, "La descripción contiene un exceso de letras idénticas seguidas.");
+            return false;
+        }
+        // Validación de números seguidos idénticos (3 o más)
+        if (/([0-9])\1{2,}/.test(valor)) {
+            toggleError(inputDesc, errorDesc, true, "La descripción contiene un exceso de números idénticos seguidos.");
             return false;
         }
         toggleError(inputDesc, errorDesc, false);
         return true;
     }
 
-    // --- Eventos en tiempo real ---
+    // --- Manejadores de Eventos en tiempo real e interceptores blur ---
+
+    // Fecha
     inputFecha.addEventListener('change', validarFecha);
-    inputAsistentes.addEventListener('input', validarAsistentes);
-    inputDesc.addEventListener('input', validarDescripcion);
+    inputFecha.addEventListener('blur', validarFecha);
 
-    // --- Validar al enviar (Sin Alert) ---
+    // Categoría
+    inputCategoria.addEventListener('change', validarCategoria);
+    inputCategoria.addEventListener('blur', validarCategoria);
+
+    // Número de asistentes
+    inputAsistentes.addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if (this.classList.contains('is-invalid')) validarAsistentes();
+    });
+    inputAsistentes.addEventListener('blur', validarAsistentes);
+
+    // Organizador
+    inputOrganizador.addEventListener('input', function() {
+        this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s,]/g, '');
+        this.value = this.value.replace(/,{2,}/g, ',');
+        if (this.classList.contains('is-invalid')) validarOrganizador();
+    });
+    inputOrganizador.addEventListener('blur', function() {
+        this.value = this.value.trim().replace(/\s+/g, ' ');
+        validarOrganizador();
+    });
+
+    // Descripción (Filtros estrictos para comas, puntos y sus combinaciones)
+    inputDesc.addEventListener('input', function() {
+        // 1. Permitir únicamente letras, números, espacios, puntos y comas
+        this.value = this.value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s,.]/g, '');
+        
+        // 2. Impedir comas seguidas (ej: ,, -> ,)
+        this.value = this.value.replace(/,{2,}/g, ',');
+        
+        // 3. Impedir puntos seguidos (ej: .. -> .)
+        this.value = this.value.replace(/\.{2,}/g, '.');
+        
+        // 4. Impedir combinaciones juntas de punto y coma (ej: ., o ,. -> se reduce al último escrito o carácter simple)
+        this.value = this.value.replace(/\.,/g, ',');
+        this.value = this.value.replace(/,\./g, '.');
+        
+        if (this.classList.contains('is-invalid')) validarDescripcion();
+    });
+    inputDesc.addEventListener('blur', function() {
+        this.value = this.value.trim().replace(/\s+/g, ' ');
+        validarDescripcion();
+    });
+
+    // --- Intercepción Final del Formulario ---
     form.addEventListener('submit', function(e) {
-        // Ejecutamos todas las validaciones
-        const v1 = validarFecha();
-        const v2 = validarAsistentes();
-        const v3 = validarDescripcion();
+        const vFecha = validarFecha();
+        const vCat = validarCategoria();
+        const vAsis = validarAsistentes();
+        const vOrg = validarOrganizador();
+        const vDesc = validarDescripcion();
 
-        // Si alguna falla, cancelamos el envío
-        if (!v1 || !v2 || !v3) {
+        if (!vFecha || !vCat || !vAsis || !vOrg || !vDesc) {
             e.preventDefault();
-            // El usuario verá los mensajes de error bajo cada input
         }
     });
 });

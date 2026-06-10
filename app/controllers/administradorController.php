@@ -10,7 +10,6 @@ use App\Contracts\IPreguntaRepository;
 use App\Models\Entities\Persona;
 use App\Models\Entities\Administrador;
 use Exception;
-use RuntimeException;
 
 class AdministradorController extends BaseController {
 
@@ -31,10 +30,35 @@ class AdministradorController extends BaseController {
         //$this->middlewareRol(['Director','SUPER_ADMIN'], 'Administradores');
     }
 
-    public function list(): string {
-        $administradores = $this->listAdminService->listar();
-        return $this->render('user/user-list', ['administradores' => $administradores]);
+    public function list(): string
+    {
+        $pagina = (int) $this->input('page', 1);
+        $search = $this->input('buscar', '');
+        $porPagina = 10;
+
+        // Activos paginados
+        $resultado = $this->listAdminService->listarPaginado($pagina, $porPagina, $search);
+        // Inactivos (sin paginación)
+        $inactivos = $this->adminRepo->findInactivos($search);
+        $totalInactivos = count($inactivos);
+        foreach ($inactivos as $admin) {
+            $admin->setPersona($this->personaRepo->find($admin->getIdPersona()));
+        }
+
+        return $this->render('user/user-list', [
+            'administradores' => $resultado['datos'],
+            'paginacion' => [
+                'actual' => $resultado['pagina'],
+                'porPagina' => $resultado['porPagina'],
+                'total' => $resultado['total'],
+                'ultima' => $resultado['ultimaPagina']
+            ],
+            'inactivos' => $inactivos,
+            'totalInactivos' => $totalInactivos,
+            'search' => $search
+        ]);
     }
+
 
     public function show(): string {
         $id = (int)$this->input('id', 0);
@@ -98,7 +122,7 @@ class AdministradorController extends BaseController {
                 $this->input('usuario-reg'),
                 password_hash($this->input('password1-reg'), PASSWORD_DEFAULT),
                 $this->input('rol'), // Ej: Director, Jefe de sala, Bibliotecario
-                $this->input('pregunta-seguidad'),
+                $this->input('pregunta-seguridad'),
                 $this->input('respuesta-reg') ? password_hash($this->input('respuesta-reg'), PASSWORD_DEFAULT) : null,
                 true
             );
@@ -112,7 +136,7 @@ class AdministradorController extends BaseController {
         } catch (\RuntimeException $e) {
             http_response_code(500);
             return $this->render('errors/error', [
-                'mensaje' => "Ocurrió un error inesperado al registrar el libro.",
+                'mensaje' => "Ocurrió un error inesperado al registrar el administrador.",
                 'detalle' => $e->getMessage()
             ]);
         } catch (\Exception $e) {
@@ -195,5 +219,22 @@ class AdministradorController extends BaseController {
                 'detalle' => $e->getMessage()
             ]);
         }
+    }
+
+    public function reactivar(): void
+    {
+        $id = (int) $this->input('id');
+        $search = $this->input('search', '');
+        $page = $this->input('page', 1);
+        try {
+            if ($this->adminRepo->reactivar($id)) {
+                $_SESSION['success'] = 'Usuario reactivado correctamente.';
+            } else {
+                $_SESSION['error'] = 'No se pudo reactivar el usuario.';
+            }
+        } catch (\Exception $e) {
+            $_SESSION['error'] = 'Error: ' . $e->getMessage();
+        }
+        $this->redirect('/administradores?buscar=' . urlencode($search) . '&page=' . $page);
     }
 }

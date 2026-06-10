@@ -35,6 +35,15 @@ class ListAdministradorService {
         return $administradores;
     }
 
+    public function listarPaginado(int $pagina = 1, int $porPagina = 10, ?string $search = null): array
+    {
+        $resultado = $this->adminRepo->listarActivosPaginados($pagina, $porPagina, $search);
+        foreach ($resultado['datos'] as $admin) {
+            $admin->setPersona($this->personaRepo->find($admin->getIdPersona()));
+        }
+        return $resultado;
+    }
+
     public function search(string $input): array {
         $administradores = $this->adminRepo->search($input);
 

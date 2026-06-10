@@ -15,6 +15,7 @@ class Lector extends Persona {
     private ?string $refLegalTel;
     private ?string $estado; // Activo, Inactivo, Inhabilitado
     private ?string $vencimientoCarnet;
+    private bool $activo; // Para marcar si el lector está activo o no
     private Persona $persona;
 
     public function __construct(
@@ -31,7 +32,8 @@ class Lector extends Persona {
         ?string $refLegal = null,
         ?string $refLegalTel = null,
         ?string $estado = null,
-        ?string $vencimientoCarnet = null
+        ?string $vencimientoCarnet = null,
+        bool $activo = true
     ) {
         parent::__construct($idPersona); // hereda datos de persona
         $this->idLector = $idLector;
@@ -47,6 +49,7 @@ class Lector extends Persona {
         $this->refLegalTel = $refLegalTel;
         $this->estado = $estado;
         $this->vencimientoCarnet = $vencimientoCarnet;
+        $this->activo = $activo;
     }
 
     // Getters
@@ -63,6 +66,7 @@ class Lector extends Persona {
     public function getRefLegalTel(): ?string { return $this->refLegalTel; }
     public function getEstado(): ?string { return $this->estado; }
     public function getVencimientoCarnet(): ?string { return $this->vencimientoCarnet; }
+    public function isActivo(): bool { return $this->activo; }
     public function getPersona(): Persona { return $this->persona; }
     // Setters
     public function setCarnet(?string $carnet): void { $this->carnet = $carnet; }
@@ -77,6 +81,7 @@ class Lector extends Persona {
     public function setRefLegalTel(?string $refLegalTel): void { $this->refLegalTel = $refLegalTel; }
     public function setEstado(?string $estado): void { $this->estado = $estado; }
     public function setVencimientoCarnet(?string $vencimientoCarnet): void { $this->vencimientoCarnet = $vencimientoCarnet; }
+    public function setActivo(bool $activo): void { $this->activo = $activo; }
     public function setPersona(Persona $persona): void { $this->persona = $persona; }
 
 }

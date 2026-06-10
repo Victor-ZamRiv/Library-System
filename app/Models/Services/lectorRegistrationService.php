@@ -29,14 +29,24 @@ class LectorRegistrationService {
         try {
             $this->pdo->beginTransaction();
 
-            // 1. Verificar si la persona ya existe (ej. por email)
-            $personaExistente = $this->personaRepo->findByEmail($persona->getEmail());
+            // 1. Verificar si la persona ya existe
+            $personaExistente = $this->personaRepo->findByCedula($persona->getCedula());
 
             if ($personaExistente) {
                 $idPersona = $personaExistente->getIdPersona();
             } else {
                 // Insertar nueva persona
                 $idPersona = $this->personaRepo->insert($persona);
+            }
+
+            $existingLector = $this->lectorRepo->findByCarnet($lector->getCarnet());
+            if ($existingLector) {
+                throw new \Exception("El carnet '{$lector->getCarnet()}' ya está registrado para otro lector.");
+            }
+
+            $existingLectorByPersona = $this->lectorRepo->findByPersonaId($idPersona);
+            if ($existingLectorByPersona) {
+                throw new \Exception("La persona con cédula '{$persona->getCedula()}' ya está registrada como lector.");
             }
 
             // 2. Asignar el ID_Persona al lector

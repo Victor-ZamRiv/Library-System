@@ -47,6 +47,13 @@ class AdministradorRepository extends BaseRepository implements IAdministradorRe
         return $stmt->fetchColumn() > 0;
     }
 
+    public function findByPersonaId(int $idPersona): ?Administrador {
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE ID_Persona = :idPersona AND Activo = 1");
+        $stmt->execute([':idPersona' => $idPersona]);
+        $row = $stmt->fetch();
+        return $row ? $this->mapToEntity($row) : null;
+    }
+
     public function duplicatePersona(int $idPersona): bool {
         $sql = "SELECT COUNT(*) FROM {$this->table} WHERE ID_Persona = :idPersona";
         $params = [':idPersona' => $idPersona];
@@ -71,6 +78,88 @@ class AdministradorRepository extends BaseRepository implements IAdministradorRe
 
         return array_map(fn($row) => $this->mapToEntity($row), $rows);
     }
+
+    /**
+     * Obtiene administradores activos paginados (con búsqueda opcional)
+     */
+    // (Versión correcta que ya usaste para lectores)
+public function listarActivosPaginados(int $pagina = 1, int $porPagina = 10, ?string $search = null): array
+{
+    $offset = ($pagina - 1) * $porPagina;
+    $hasSearch = !empty($search);
+    $where = "a.Activo = 1";
+    $params = [];
+    if ($hasSearch) {
+        $where .= " AND (p.Nombre LIKE ? OR p.Apellido LIKE ? OR p.Cedula LIKE ? OR a.Nombre_Usuario LIKE ?)";
+        $like = '%' . $search . '%';
+        $params = [$like, $like, $like, $like];
+    }
+    $countSql = "SELECT COUNT(*) FROM administradores a
+                 JOIN persona p ON a.ID_Persona = p.ID_Persona
+                 WHERE $where";
+    $stmtCount = $this->pdo->prepare($countSql);
+    $stmtCount->execute($params);
+    $total = (int) $stmtCount->fetchColumn();
+
+    $sql = "SELECT a.* FROM administradores a
+            JOIN persona p ON a.ID_Persona = p.ID_Persona
+            WHERE $where
+            ORDER BY a.ID_Admin DESC
+            LIMIT ? OFFSET ?";
+    $stmtData = $this->pdo->prepare($sql);
+    $allParams = array_merge($params, [$porPagina, $offset]);
+    $stmtData->execute($allParams);
+    $rows = $stmtData->fetchAll();
+    $admins = array_map(fn($row) => $this->mapToEntity($row), $rows);
+    return [
+        'datos' => $admins,
+        'total' => $total,
+        'pagina' => $pagina,
+        'porPagina' => $porPagina,
+        'ultimaPagina' => ceil($total / $porPagina)
+    ];
+}
+    /**
+     * Obtiene administradores inactivos (Activo = 0) con búsqueda opcional
+     */
+    public function findInactivos(?string $search = null): array
+    {
+        $hasSearch = !empty($search);
+        $sql = "SELECT a.* FROM administradores a
+                JOIN persona p ON a.ID_Persona = p.ID_Persona
+                WHERE a.Activo = 0";
+        $params = [];
+        if ($hasSearch) {
+            $sql .= " AND (p.Nombre LIKE ? OR p.Apellido LIKE ? OR p.Cedula LIKE ? OR a.Nombre_Usuario LIKE ?)";
+            $like = '%' . $search . '%';
+            $params = [$like, $like, $like, $like];
+        }
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        $rows = $stmt->fetchAll();
+        return array_map(fn($row) => $this->mapToEntity($row), $rows);
+    }
+
+    /**
+     * Cuenta administradores inactivos (para contador)
+     */
+    public function countInactivos(?string $search = null): int
+    {
+        $hasSearch = !empty($search);
+        $sql = "SELECT COUNT(*) FROM administradores a
+                JOIN persona p ON a.ID_Persona = p.ID_Persona
+                WHERE a.Activo = 0";
+        $params = [];
+        if ($hasSearch) {
+            $sql .= " AND (p.Nombre LIKE ? OR p.Apellido LIKE ? OR p.Cedula LIKE ? OR a.Nombre_Usuario LIKE ?)";
+            $like = '%' . $search . '%';
+            $params = [$like, $like, $like, $like];
+        }
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return (int) $stmt->fetchColumn();
+    }
+
 
     public function insert(Administrador $Administrador): int {
         if ($Administrador->getIdAdministrador() !== null) {
@@ -113,6 +202,15 @@ class AdministradorRepository extends BaseRepository implements IAdministradorRe
     {
         $stmt = $this->pdo->prepare("UPDATE administradores SET ContrasenaHash = :hash WHERE ID_Admin = :id");
         return $stmt->execute([':hash' => $hash, ':id' => $id]);
+    }
+    /**
+     * Reactiva un administrador (Activo = 1)
+     */
+    public function reactivar(int $idAdmin): bool
+    {
+        $sql = "UPDATE {$this->table} SET Activo = 1 WHERE ID_Admin = :id";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([':id' => $idAdmin]);
     }
 
     protected function mapToEntity(array $row): object {

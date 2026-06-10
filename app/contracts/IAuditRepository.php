@@ -6,8 +6,10 @@ interface IAuditRepository
 {
     public function insert(string $tablaHistorial, array $data): bool;
     public function getPrimaryKey(string $tabla): string;
-    public function getHistorial(
+    public function getHistorialPaginado(
         string $tabla,
+        int $pagina = 1,
+        int $porPagina = 10,
         ?int $idAdmin = null,
         ?string $tipoCambio = null,
         ?string $desde = null,

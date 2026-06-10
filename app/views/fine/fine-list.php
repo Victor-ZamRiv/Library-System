@@ -14,22 +14,31 @@
 
         <div class="container-fluid">
             <div class="page-header">
-                <h1 class="text-titles"><i class="fa-solid fa-bookmark"></i> Multas <small>Listado de Multas</small></h1>
+                <h1 class="text-titles"><i class="fa-solid fa-bookmark"></i> Listado de Multas</h1>
             </div>
         </div>
 
-
         <div class="container-fluid">
-            <div class="panel panel-success">
+            <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title"><i class="zmdi zmdi-format-list-bulleted"></i> &nbsp; LISTA DE MULTAS</h3>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <h3 class="panel-title" style="line-height: 40px;">
+                                <i class="zmdi zmdi-format-list-bulleted"></i> &nbsp; LISTA DE MULTAS
+                            </h3>
+                        </div>
+                        <div class="col-xs-6 text-right">
+                            <button type="button" onclick="descargarPDF('TablaMultas')" class="btn btn-sm btn-raised btn-success">
+                                <i class="fa-solid fa-print"></i> IMPRIMIR REPORTE
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div class="panel-body">
                     <div class="table-responsive">
-                        <table class="table table-hover text-center">
+                        <table id="tabla-multas" class="table table-hover text-center">
                             <thead>
                                 <tr>
-
                                     <th class="text-center">N° PRÉSTAMO</th>
                                     <th class="text-center">MONTO</th>
                                     <th class="text-center">ESTADO</th>
@@ -37,19 +46,15 @@
                                     <th class="text-center">ACCIONES</th>
                                 </tr>
                             </thead>
+                            <tbody id="tabla-multas-cuerpo">
                             <?php if (empty($multas)): ?>
-                                <tbody>
-                                    <tr>
-                                        <td colspan="5" class="text-center">No hay multas registradas.</td>
-                                    </tr>
-                                </tbody>
+                                <tr>
+                                    <td colspan="5" class="text-center">No hay multas registradas.</td>
+                                </tr>
                             <?php else: ?>
                                 <?php foreach ($multas as $multa): ?>
-                                <tbody>
                                     <tr>
-
                                         <td><?php echo $multa->getIdPrestamo(); ?></td>
-                                    
                                         <td>$<?php echo number_format($multa->getMonto(), 2); ?></td>
                                         <?php if ($multa->getFechaCancelacion()): ?>
                                             <td><span class="label label-success">Pagada</span></td>
@@ -69,9 +74,9 @@
                                             </button>
                                         </td>
                                     </tr>
-                                </tbody>
                                 <?php endforeach; ?>
                             <?php endif; ?>
+                            </tbody>
                         </table>
                     </div>
 
@@ -91,20 +96,23 @@
 
     <?php include VIEW_PATH . "/component/scripts.php" ?>
     <?php include VIEW_PATH . "/modal/pay-fine.php" ?>
-    <script>
-document.addEventListener("DOMContentLoaded", function() {
-    $('.btn-preparar-pago').on('click', function() {
-        // Obtenemos los datos del botón que fue clickeado
-        var idMulta = $(this).data('id');
-        var numPrestamo = $(this).data('numero');
 
-        // Actualizamos el texto del modal
-        $('#numPrestamoModal').text(numPrestamo);
-        // Guardamos el ID de la multa en el campo oculto del formulario
-        $('#idMultaInput').val(idMulta);
+    <script src="<?= PUBLIC_PATH ?>/js/pdf/jsPDF.js"></script>
+    <script src="<?= PUBLIC_PATH ?>/js/pdf/jspdf-autotable.js"></script>
+    <script src="<?= PUBLIC_PATH ?>/js/pdf/html2canvas.js"></script>
+    <script src="<?= PUBLIC_PATH ?>/js/pdf-generator.js"></script>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        $('.btn-preparar-pago').on('click', function() {
+            var idMulta = $(this).data('id');
+            var numPrestamo = $(this).data('numero');
+
+            $('#numPrestamoModal').text(numPrestamo);
+            $('#idMultaInput').val(idMulta);
+        });
     });
-});
-</script>
+    </script>
 </body>
 
 </html>

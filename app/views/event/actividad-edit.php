@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
 
-<title>Editar Actividad</title>
-<?php
-include VIEW_PATH . "/component/heat.php";
-?>
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Actividad</title>
+    <?php
+    include VIEW_PATH . "/component/heat.php";
+    ?>
+</head>
 
 <body>
 
@@ -20,8 +23,7 @@ include VIEW_PATH . "/component/heat.php";
         <div class="container-fluid">
             <div class="page-header">
                 <h1 class="text-titles">
-                    <i class="fa-solid fa-calendar-check"></i> Eventos
-                    <small> Editar Actividad</small>
+                    <i class="fa-solid fa-calendar-check"></i> Editar Actividad
                 </h1>
             </div>
         </div>
@@ -33,18 +35,16 @@ include VIEW_PATH . "/component/heat.php";
                     <hr>
 
                     <form action="<?= BASE_URL ?>/actividad/update" method="POST" id="form-editar-actividad">
-                        <!-- CAMPO OCULTO PARA EL ID -->
                         <input type="hidden" name="id" value="<?= $actividad->getIdActividad() ?>">
 
                         <div class="row">
                             <div class="col-xs-12 col-sm-6">
                                 <div class="form-group label-floating">
                                     <label class="control-label"><span class="text-danger">*</span> Fecha del Evento:</label>
-                                    <!-- VALUE CON LA FECHA -->
                                     <input type="date" class="form-control" name="fecha" id="fecha" 
                                            value="<?= $actividad->getFecha() ?>" onkeydown="return false" required>
-                                    <div class="invalid-feedback bg-danger text-danger rounded-pill" id="fecha-error" style="display: none; padding: 5px 10px; font-size: 12px; margin-top: 5px;">
-                                        <i class="fas fa-exclamation-circle"></i> Fecha fuera de rango.
+                                    <div class="invalid-feedback bg-danger text-danger rounded-pill" id="fecha-error" style="display: none; padding: 5px 15px; font-size: 12px; margin-top: 5px;">
+                                        <i class="fas fa-exclamation-circle"></i> La fecha del evento es obligatoria.
                                     </div>
                                 </div>
                             </div>
@@ -61,6 +61,9 @@ include VIEW_PATH . "/component/heat.php";
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
+                                    <div class="invalid-feedback bg-danger text-danger rounded-pill" id="cat-error" style="display: none; padding: 5px 15px; font-size: 12px; margin-top: 5px;">
+                                        <i class="fas fa-exclamation-circle"></i> Debe seleccionar una categoría de forma obligatoria.
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -68,9 +71,12 @@ include VIEW_PATH . "/component/heat.php";
                         <div class="row">
                             <div class="col-xs-12 col-sm-6">
                                 <div class="form-group label-floating">
-                                    <label class="control-label">Número de Asistentes:</label>
+                                    <label class="control-label"><span class="text-danger">*</span> Número de Asistentes:</label>
                                     <input type="number" class="form-control" name="asistentes" id="asistentes" 
-                                           value="<?= $actividad->getAsistentes() ?>" placeholder="0">
+                                           value="<?= $actividad->getAsistentes() ?>" placeholder="0" min="1" max="1000" required>
+                                    <div class="invalid-feedback bg-danger text-danger rounded-pill" id="asist-error" style="display: none; padding: 5px 15px; font-size: 12px; margin-top: 5px;">
+                                        <i class="fas fa-exclamation-circle"></i> El número de asistentes es obligatorio.
+                                    </div>
                                 </div>
                             </div>
 
@@ -90,10 +96,25 @@ include VIEW_PATH . "/component/heat.php";
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6">
+                                <div class="form-group label-floating">
+                                    <label class="control-label"><span class="text-danger">*</span> Organizador:</label>
+                                    <input type="text" class="form-control" name="organizador" id="organizador" 
+                                           value="<?= method_exists($actividad, 'getOrganizador') ? $actividad->getOrganizador() : '' ?>" placeholder="Nombre del organizador" required>
+                                    <div class="invalid-feedback bg-danger text-danger rounded-pill" id="org-error" style="display: none; padding: 5px 15px; font-size: 12px; margin-top: 5px;">
+                                        <i class="fas fa-exclamation-circle"></i> El campo organizador es obligatorio.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-group label-floating">
                             <label class="control-label"><span class="text-danger">*</span> Descripción:</label>
-                            <!-- EL TEXTAREA NO USA VALUE, SE PONE DENTRO DE LAS ETIQUETAS -->
-                            <textarea class="form-control" name="descripcion" id="descripcion" rows="4" required><?= $actividad->getDescripcion() ?></textarea>
+                            <textarea class="form-control" name="descripcion" id="descripcion" rows="4" placeholder="Detalles de la actividad..." required><?= $actividad->getDescripcion() ?></textarea>
+                            <div class="invalid-feedback bg-danger text-danger rounded-pill" id="desc-error" style="display: none; padding: 5px 15px; font-size: 12px; margin-top: 5px;">
+                                <i class="fas fa-exclamation-circle"></i> La descripción de la actividad es obligatoria.
+                            </div>
                         </div>
 
                         <div class="form-group text-right">
@@ -107,10 +128,10 @@ include VIEW_PATH . "/component/heat.php";
         <br>
     </section>
 
-    <!-- Puedes usar el mismo JS si las validaciones son idénticas -->
     <script src="<?= PUBLIC_PATH ?>/js/validations/event/actividad.js"></script>
     <?php
     include VIEW_PATH . "/component/scripts.php";
     ?>
 </body>
+
 </html>

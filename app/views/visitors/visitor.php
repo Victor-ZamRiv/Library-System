@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 
-<title>Registro de Visitantes</title>
-<?php  include VIEW_PATH . "/component/heat.php"; ?>
+<head>
+    <title>Registro de Visitantes</title>
+    <?php include VIEW_PATH . "/component/heat.php"; ?>
+</head>
 
 <body>
 
@@ -13,7 +15,7 @@
 
         <div class="container-fluid">
             <div class="page-header">
-                <h1 class="text-titles"><i class="fa-solid fa-users"></i> Visitas <small> Registro de Visitas</small></h1>
+                <h1 class="text-titles"><i class="fa-solid fa-users"></i> Registro de Visitas</h1>
             </div>
         </div>
 
@@ -35,31 +37,39 @@
                                         id="fecha-reg"
                                         required
                                         onkeydown="return false">
-                                    <div class="invalid-feedback bg-danger text-danger rounded-pill" id="fecha-error" style="display: none;">
-                                        <i class="fas fa-exclamation-circle"></i> La fecha debe ser hoy o máximo 3 días atrás.
+                                    <div id="fecha-error" class="text-danger" style="display: block; margin-top: 5px; font-size: 0.9em;">
+                                         La fecha debe ser de hoy o máximo 3 días atrás.
                                     </div>
                                 </div>
                             </div>
+
                             <div class="col-xs-12 col-sm-4">
                                 <div class="form-group label-floating">
                                     <label class="control-label"><span class="text-danger">*</span> Sala:</label>
-                                    <select class="form-control" name="sala">
-                                        <option selected disabled>Seleccione una Sala</option>
+                                    <select class="form-control" name="sala" id="sala-reg">
+                                        <option selected disabled value="">Seleccione una Sala</option>
                                         <option value="G">Sala General</option>
                                         <option value="R">Sala de Referencia</option>
                                         <option value="SE">Sala Estatal</option>
                                         <option value="X">Sala Infantil</option>
                                     </select>
+                                    <div class="invalid-feedback bg-danger text-danger rounded-pill" id="sala-error" style="display: none;">
+                                        <i class="fas fa-exclamation-circle"></i> Este campo es obligatorio.
+                                    </div>
                                 </div>
                             </div>
+
                             <div class="col-xs-12 col-sm-4">
                                 <div class="form-group label-floating">
                                     <label class="control-label"><span class="text-danger">*</span> Turno:</label>
-                                    <select class="form-control" name="turno">
-                                        <option selected disabled>Seleccione un Turno</option>
+                                    <select class="form-control" name="turno" id="turno-reg">
+                                        <option selected disabled value="">Seleccione un Turno</option>
                                         <option value="Mañana">Mañana</option>
                                         <option value="Tarde">Tarde</option>
                                     </select>
+                                    <div class="invalid-feedback bg-danger text-danger rounded-pill" id="turno-error" style="display: none;">
+                                        <i class="fas fa-exclamation-circle"></i> Este campo es obligatorio.
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -94,7 +104,7 @@
                         <h4 class="text-titles"><i class="fa-solid fa-book"></i> Obras (Clasificación)</h4>
                         <div class="row">
                             <?php
-                            $categorias = ["000", "100", "200", "300", "400", "500", "600", "700", "800", "900", "N","NV", "Biog"];
+                            $categorias = ["000", "100", "200", "300", "400", "500", "600", "700", "800", "900", "N", "NV", "Biog"];
                             foreach ($categorias as $cat): ?>
                                 <div class="col-xs-4 col-sm-2">
                                     <div class="form-group label-floating">
@@ -133,10 +143,9 @@
         </div>
     </section>
 
-    
     <script src="<?= PUBLIC_PATH ?>/js/validations/visitor/createvisitor.js"></script>
     <?php include VIEW_PATH . "/component/scripts.php"; ?>
-    
+
 </body>
 
 </html>
