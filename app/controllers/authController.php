@@ -50,7 +50,6 @@ class AuthController extends BaseController {
     
     public function logout(): void {
         $this->authService->logout();
-        $_SESSION['success'] = "Sesión cerrada correctamente.";
         $this->redirect("/login");
     }
 
