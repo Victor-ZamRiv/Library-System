@@ -12,20 +12,11 @@ $mostrarFisico = $dashboardConfig->getMostrarEstadoFisico();
 $mostrarAsistencia = $dashboardConfig->getMostrarAsistenciaEstatal();
 $mostrarColeccion = $dashboardConfig->getMostrarColeccion();
 $mostrarActividades = $dashboardConfig->getMostrarActividades();
-<<<<<<< HEAD
-
-// Nuevos indicadores vinculados al control de configuración externo
-=======
->>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
 $mostrarIiur = $dashboardConfig->getMostrarIiur();
 $mostrarIdcar = $dashboardConfig->getMostrarIdcar();
 $mostrarIpe = $dashboardConfig->getMostrarIpe();
 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
 // Agrupaciones lógicas por sección para evaluar estados vacíos
 $seccionUsuariosVacia = (!$mostrarCobertura && !$mostrarReferencia && !$mostrarGraficoConsultas);
 $seccionProcesosVacia = (!$mostrarCumplimiento && !$mostrarOcupacion && !$mostrarRotacion && !$mostrarFisico && !$mostrarAsistencia && !$mostrarColeccion && !$mostrarIiur && !$mostrarIdcar);
@@ -108,11 +99,7 @@ $seccionProcesosVacia = (!$mostrarCumplimiento && !$mostrarOcupacion && !$mostra
                                                     <div class="well well-sm text-center <?= $claseFondo ?>" id="panel-cobertura-usuarios"
                                                         style="position: relative; cursor: pointer; padding: 15px;"
                                                         data-toggle="modal" data-target="#modalDetalleCobertura">
-<<<<<<< HEAD
                                                         <h5 class="text-uppercase text-titles" style="margin: 5px 0 0 0; font-weight: bold; color: #555; font-size: 15px; letter-spacing: 0.5px;">Cobertura de Usuarios</h5>
-=======
-                                                        <h5 class="text-uppercase text-titles" style="margin: 5px 0 0 0; font-weight: bold; color: #555; font-size: 11px; letter-spacing: 0.5px;">Cobertura de Usuarios</h5>
->>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                                                         <h3 id="cobertura-valor" style="margin: 8px 0; font-weight: bold; color: <?= $colorDinamicoCobertura ?> !important; font-size: 32px;"><?= $cobertura ?>%</h3>
                                                         <div style="margin-top: 10px;">
                                                             <span class="label" style="display: inline-block; padding: 6px 20px; font-size: 13px; font-weight: bold; border-radius: 14px; text-transform: uppercase; background-color: <?= $colorDinamicoCobertura ?>; color: white; letter-spacing: 0.5px;">
@@ -140,11 +127,7 @@ $seccionProcesosVacia = (!$mostrarCumplimiento && !$mostrarOcupacion && !$mostra
                                                     <div class="well well-sm text-center <?= $claseFondo ?>" id="panel-consultas-referencia"
                                                         style="position: relative; cursor: pointer; padding: 15px;"
                                                         data-toggle="modal" data-target="#modalDetalleReferencia">
-<<<<<<< HEAD
                                                         <h5 class="text-uppercase text-titles" style="margin: 5px 0 0 0; font-weight: bold; color: #555; font-size: 15px; letter-spacing: 0.5px;">Consultas de Referencia</h5>
-=======
-                                                        <h5 class="text-uppercase text-titles" style="margin: 5px 0 0 0; font-weight: bold; color: #555; font-size: 11px; letter-spacing: 0.5px;">Consultas de Referencia</h5>
->>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                                                         <h3 id="referencia-valor" style="margin: 6px 0 2px 0; font-weight: bold; color: <?= $colorDinamicoReferencia ?> !important; font-size: 32px;"><?= $razonReferencia ?></h3>
                                                         <small class="text-muted" style="font-size: 20px; display: block; margin-bottom: 8px;">Por usuario activo</small>
                                                         <div style="margin-top: 10px;">
@@ -182,11 +165,7 @@ $seccionProcesosVacia = (!$mostrarCumplimiento && !$mostrarOcupacion && !$mostra
                                                 <div style="display: flex; justify-content: space-between; align-items: start; padding: 0 5px; margin-bottom: 10px;">
                                                     <div>
                                                         <br>
-<<<<<<< HEAD
                                                         <h4 class="text-uppercase text-titles" style="margin: 0 0 2px 0; font-weight: bold; color: #555; font-size: 15px; letter-spacing: 0.5px;">
-=======
-                                                        <h4 class="text-uppercase text-titles" style="margin: 0 0 2px 0; font-weight: bold; color: #555; font-size: 11px; letter-spacing: 0.5px;">
->>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                                                             Promedio de Consultas
                                                         </h4>
                                                         <small style="font-size: 13px; color: #888; display: block; line-height: 1.1;">
@@ -204,11 +183,7 @@ $seccionProcesosVacia = (!$mostrarCumplimiento && !$mostrarOcupacion && !$mostra
                                                 <div id="chartConsultas" style="padding: 0 5px; min-height: 160px;"></div>
 
                                                 <div class="text-center" style="margin-top: 12px; border-top: 1px solid #f5f5f5; padding-top: 10px;">
-<<<<<<< HEAD
                                                     <span id="badgeConsultasEstado" class="label" style="display: inline-block; padding: 6px 20px; font-size: 15px; font-weight: bold; border-radius: 14px; text-transform: uppercase; background-color: <?= $colorDinamicoGrafico ?>; color: white; letter-spacing: 0.5px; transition: background-color 0.3s ease;">
-=======
-                                                    <span id="badgeConsultasEstado" class="label" style="display: inline-block; padding: 6px 20px; font-size: 12px; font-weight: bold; border-radius: 14px; text-transform: uppercase; background-color: <?= $colorDinamicoGrafico ?>; color: white; letter-spacing: 0.5px; transition: background-color 0.3s ease;">
->>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                                                         <?= $textoEstadoGrafico ?> (<?= $rendimientoConsultas ?>%)
                                                     </span>
                                                 </div>

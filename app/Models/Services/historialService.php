@@ -57,7 +57,7 @@ class HistorialService
         }
 
         $tabla = $this->modulos[$modulo];
-        $rows = $this->auditRepo->getHistorial($tabla, $idAdmin, $accion, $desde, $hasta);
+        $rows = $this->auditRepo->getHistorialPaginado($tabla, $idAdmin, $accion, $desde, $hasta);
 
         $pk = $this->getPrimaryKey($tabla);
 

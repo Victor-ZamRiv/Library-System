@@ -10,7 +10,6 @@
                 </h4>
             </div>
             <div class="modal-body">
-<<<<<<< HEAD
                 <p class="text-muted">
                     <?php if (!empty($search)): ?>
                         Resultados de búsqueda para "<strong><?= htmlspecialchars($search) ?></strong>" en usuarios inactivos.
@@ -18,9 +17,6 @@
                         A continuación se muestran los usuarios y administradores que actualmente tienen revocado el acceso al sistema.
                     <?php endif; ?>
                 </p>
-=======
-                <p class="text-muted">A continuación se muestran los usuarios y administradores que actualmente tienen revocado el acceso al sistema.</p>
->>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                 
                 <div class="table-responsive">
                     <table class="table table-striped table-hover text-center">
@@ -35,22 +31,12 @@
                             </tr>
                         </thead>
                         <tbody id="tablaUsuariosInhabilitados">
-<<<<<<< HEAD
                             <?php if (empty($inactivos)): ?>
                                 <tr>
                                     <td colspan="6">No hay usuarios suspendidos en este momento.\(td>
                                 </tr>
                             <?php else: ?>
                                 <?php foreach ($inactivos as $suspendido): ?>
-=======
-                            
-                            <?php if (empty($usuariosSuspendidos)): ?>
-                                <tr>
-                                    <td colspan="6">No hay usuarios suspendidos en este momento.</td>
-                                </tr>
-                            <?php else: ?>
-                                <?php foreach ($usuariosSuspendidos as $suspendido): ?>
->>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                                     <tr>
                                         <td><strong><?= htmlspecialchars($suspendido->getNombreUsuario()) ?></strong></td>
                                         <td><?= htmlspecialchars($suspendido->getPersona()->getCedula()) ?></td>
@@ -58,7 +44,6 @@
                                         <td><?= htmlspecialchars($suspendido->getPersona()->getApellido()) ?></td>
                                         <td><?= htmlspecialchars($suspendido->getPersona()->getTelefono()) ?></td>
                                         <td>
-<<<<<<< HEAD
                                             <form method="POST" action="<?= BASE_URL ?>/administradores/reactivar" style="display:inline;">
                                                 <input type="hidden" name="id" value="<?= $suspendido->getIdAdministrador() ?>">
                                                 <input type="hidden" name="search" value="<?= htmlspecialchars($search ?? '') ?>">
@@ -67,29 +52,16 @@
                                                     <i class="fa-solid fa-user-check"></i> Reactivar
                                                 </button>
                                             </form>
-=======
-                                            <a href="<?= BASE_URL ?>/administradores/habilitar?id=<?= $suspendido->getIdAdministrador() ?>" class="btn btn-xs btn-success btn-raised">
-                                                <i class="fa-solid fa-user-check"></i> Reactivar
-                                            </a>
->>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php endif; ?>
-<<<<<<< HEAD
-=======
-                            
->>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                         </tbody>
                     </table>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-<<<<<<< HEAD
-=======
-                
->>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                 <button type="button" onclick="descargarPDF('UsuariosInhabilitados');" class="btn btn-danger btn-raised btn-sm">
                     <i class="fa-solid fa-file-pdf"></i> Imprimir Suspendidos
                 </button>

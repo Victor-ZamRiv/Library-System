@@ -38,14 +38,10 @@ class DashboardConfigService
             isset($data['ind_estado_fisico']),
             isset($data['ind_asistencia_estatal']),
             isset($data['ind_coleccion']),
-<<<<<<< HEAD
             isset($data['ind_actividades']),
             isset($data['ind_iiur']),
             isset($data['ind_idcar']),
             isset($data['ind_ipe'])
-=======
-            isset($data['ind_actividades'])
->>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
         );
         return $this->repo->save($config);
     }

@@ -112,39 +112,25 @@
         fechaInput.setAttribute('max', hoy);
         fechaInput.setAttribute('min', fechaMinima);
 
-<<<<<<< HEAD
         // Control Visual de Feedback estilo Bootstrap e integración con .form-group
-=======
-        // Control Visual de Feedback estilo Bootstrap
->>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
         function asignarFeedback(input, errorDiv, esValido, mensaje = "") {
             const formGroup = input.closest('.form-group');
             if (esValido) {
                 input.classList.remove('is-invalid');
                 input.classList.add('is-valid');
                 if (formGroup) formGroup.classList.remove('has-error');
-<<<<<<< HEAD
                 if (errorDiv) {
                     errorDiv.style.display = 'none';
                     errorDiv.innerHTML = '';
                 }
-=======
-                errorDiv.style.display = 'none';
-                errorDiv.innerHTML = '';
->>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
             } else {
                 input.classList.add('is-invalid');
                 input.classList.remove('is-valid');
                 if (formGroup) formGroup.classList.add('has-error');
-<<<<<<< HEAD
                 if (errorDiv) {
                     errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${mensaje}`;
                     errorDiv.style.display = 'block';
                 }
-=======
-                errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${mensaje}`;
-                errorDiv.style.display = 'block';
->>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
             }
         }
 
@@ -161,11 +147,7 @@
                 return false;
             }
             if (valor < fechaMinima) {
-<<<<<<< HEAD
                 asignarFeedback(fechaInput, errorFecha, false, `La fecha no puede superar los 7 días hábiles de antigüedad (${fechaMinima}).`);
-=======
-                asignarFeedback(fechaInput, errorFecha, false, `La fecha no puede ser mayor a 7 días hábiles de antigüedad (${fechaMinima}).`);
->>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                 return false;
             }
             asignarFeedback(fechaInput, errorFecha, true);
@@ -197,11 +179,7 @@
                 asignarFeedback(descripcionInput, errorDescripcion, false, "La descripción contiene un exceso de letras idénticas seguidas.");
                 return false;
             }
-<<<<<<< HEAD
             // Valida números repetidos consecutivos (3 o más)
-=======
-            // Valida números repetidos consecutivos (3 o más, ej: 111)
->>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
             if (/([0-9])\1{2,}/.test(valor)) {
                 asignarFeedback(descripcionInput, errorDescripcion, false, "La descripción contiene un exceso de números idénticos seguidos.");
                 return false;
@@ -210,7 +188,6 @@
             return true;
         }
 
-<<<<<<< HEAD
         // --- MANIPULADORES DE EVENTOS EN TIEMPO REAL ---
 
         // Bloqueo estricto de escritura para la fecha (Obliga a desplegar el calendario)
@@ -231,16 +208,6 @@
             this.value = this.value.replace(/,{2,}/g, ',');
             this.value = this.value.replace(/\.{2,}/g, '.');
             
-=======
-        // --- MANIPULADORES DE EVENTOS ---
-
-        fechaInput.addEventListener('input', validarFecha);
-        fechaInput.addEventListener('blur', validarFecha);
-
-        // Input de Involucrados
-        involucradosInput.addEventListener('input', function() {
-            this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s,.]/g, '');
->>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
             if (this.classList.contains('is-invalid')) validarInvolucrados();
         });
         involucradosInput.addEventListener('blur', function() {
@@ -248,7 +215,6 @@
             validarInvolucrados();
         });
 
-<<<<<<< HEAD
         // Input de Descripción (Filtros estrictos y avanzados de puntuación)
         descripcionInput.addEventListener('input', function() {
             // 1. Permitir únicamente letras, números, espacios, puntos y comas
@@ -264,11 +230,6 @@
             this.value = this.value.replace(/\.,/g, ',');
             this.value = this.value.replace(/,\./g, '.');
             
-=======
-        // Input de Descripción (Solo letras, números, espacios, puntos y comas)
-        descripcionInput.addEventListener('input', function() {
-            this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s,.]/g, '');
->>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
             if (this.classList.contains('is-invalid')) validarDescripcion();
         });
         descripcionInput.addEventListener('blur', function() {
@@ -285,15 +246,12 @@
             if (!fValida || !iValido || !dValida) {
                 e.preventDefault();
 
-<<<<<<< HEAD
                 // Hace un scroll suave directo hacia el elemento con error
                 const primerError = document.querySelector('.has-error, .is-invalid');
                 if (primerError) {
                     primerError.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
 
-=======
->>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                 if (typeof swal === 'function') {
                     swal({ 
                         title: "¡Verifique los datos!", 
