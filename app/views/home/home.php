@@ -12,6 +12,8 @@ $mostrarFisico = $dashboardConfig->getMostrarEstadoFisico();
 $mostrarAsistencia = $dashboardConfig->getMostrarAsistenciaEstatal();
 $mostrarColeccion = $dashboardConfig->getMostrarColeccion();
 $mostrarActividades = $dashboardConfig->getMostrarActividades();
+
+// Nuevos indicadores vinculados al control de configuración externo
 $mostrarIiur = $dashboardConfig->getMostrarIiur();
 $mostrarIdcar = $dashboardConfig->getMostrarIdcar();
 $mostrarIpe = $dashboardConfig->getMostrarIpe();
