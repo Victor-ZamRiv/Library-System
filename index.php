@@ -68,10 +68,7 @@ use App\Models\Services\AuditService;
 use App\Models\Services\HistorialService;
 use App\Models\Services\IndicadorService;
 use App\Models\Services\DashboardConfigService;
-<<<<<<< HEAD
 use App\Models\Services\ReporteOperativoService;
-=======
->>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
 
 $router = require __DIR__ . '/app/routes/web.php';
 
@@ -233,14 +230,10 @@ $container = [
     ),
     DashboardConfigService::class => new DashboardConfigService(
         $dashboardConfigRepo
-<<<<<<< HEAD
     ),
     ReporteOperativoService::class => new ReporteOperativoService(
         $pdo
-=======
->>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
     )
-    
     
 ];
 
