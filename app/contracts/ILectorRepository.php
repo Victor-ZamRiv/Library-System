@@ -8,7 +8,10 @@ interface ILectorRepository {
     public function find(int $id): ?Lector;
     public function findByCarnet(string $carnet): ?Lector;
     public function findByPersonaId(int $idPersona): ?Lector;
+<<<<<<< HEAD
     public function findInactivos(): array;
+=======
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
     public function all(): array;
     public function deactivate(int $id): void;
     public function reactivar(int $id): bool;

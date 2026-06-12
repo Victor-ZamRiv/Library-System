@@ -99,7 +99,11 @@
             </div>
         </div>
 
+<<<<<<< HEAD
         <div class="container-fluid text-center" style="display:flex; justify-content:center">
+=======
+        <div class="container-fluid text-center">
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
             <div class="d-inline-block" style="max-width: 1200px; width: 100%;">
                 <div class="card shadow-lg p-2 mb-5 bg-white rounded">
                     <div class="card-body">

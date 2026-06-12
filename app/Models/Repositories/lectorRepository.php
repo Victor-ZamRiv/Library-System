@@ -33,6 +33,7 @@ class LectorRepository extends BaseRepository implements ILectorRepository {
         return $row ? Lector::fromArray($row) : null;
     }
 
+<<<<<<< HEAD
     public function findInactivos(): array
     {
         $sql = "SELECT * FROM {$this->table} WHERE Activo = 0";
@@ -42,6 +43,8 @@ class LectorRepository extends BaseRepository implements ILectorRepository {
         return array_map(fn($row) => $this->mapToEntity($row), $rows);
     }
 
+=======
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
     public function search($input): array {
         $sql = "SELECT lectores.* FROM lectores
                 JOIN persona ON lectores.ID_Persona = persona.ID_Persona

@@ -80,7 +80,11 @@
                                 <th>Ejemplares Dañados</th>
                             </tr>
                         </thead>
+<<<<<<< HEAD
                         <tbody id="tablaIdcarCuerpo">
+=======
+                        <tbody>
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                             <?php if (!empty($detalleLibrosAltaRotacion)): ?>
                                 <?php foreach ($detalleLibrosAltaRotacion as $libro): ?>
                                 <tr>

@@ -121,9 +121,15 @@ async function descargarPDF(tipo) {
         const baseUrl = window.BASE_URL || ''; 
         
         const logoIzquierdoUrl = `${baseUrl}/img/img-login/gober.png`; 
+<<<<<<< HEAD
         const logoDerechoUrl = `${baseUrl}/img/img-login/sucre.png`; 
         const logoInferiorIzqUrl = `${baseUrl}/img/img-login/division.png`; 
         const logoInferiorDerUrl = `${baseUrl}/img/img-login/libro.png`; 
+=======
+        const logoDerechoUrl = `${baseUrl}/img/img-login/libro.png`; 
+        const logoInferiorIzqUrl = `${baseUrl}/img/img-login/sucre.png`; 
+        const logoInferiorDerUrl = `${baseUrl}/img/img-login/division.png`; 
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
 
         const cargarImagen = (url) => {
             return new Promise((resolve) => {
@@ -172,6 +178,10 @@ async function descargarPDF(tipo) {
             pdfDoc.line(12, 33.5, 198, 33.5);
         };
 
+<<<<<<< HEAD
+=======
+        // El cintillo principal se dibuja estrictamente al inicio de la primera página
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
         bosquejoCabeceraInstitucional(doc);
 
         const configs = {
@@ -195,18 +205,25 @@ async function descargarPDF(tipo) {
             'TablaPrestamos': { titulo: "REPORTE INSTITUCIONAL: LISTADO GENERAL DE PRÉSTAMOS", tablaBodyId: "tabla-prestamos", headers: [['CARNET LECTOR', 'RESPONSABLE (ADMIN)', 'COTA / EJEMPLAR', 'F. EMISIÓN', 'F. DEVOLUCIÓN', 'ESTADO ACTUAL']], hasChart: false },
             'TablaMultas': { titulo: "REPORTE GENERAL DE MULTAS ASOCIADAS A PRÉSTAMOS", tablaBodyId: "tabla-multas-cuerpo", headers: [['N° PRÉSTAMO', 'MONTO DE MULTA', 'ESTADO ACTUAL', 'FECHA DE CANCELACIÓN']], hasChart: false},
             'Historial': { titulo: "REPORTE INSTITUCIONAL: HISTORIAL DE ACTIVIDAD Y LOGS", tablaBodyId: "tablaHistorialCuerpo", headers: [['USUARIO', 'MÓDULO', 'FECHA / HORA', 'ACCIÓN', 'DESCRIPCIÓN']], hasChart: false },
+<<<<<<< HEAD
             'DetalleModificacion': { titulo: "REPORTE DE AUDITORÍA: DETALLE DE MODIFICACIÓN", headers: [['DATO / CAMPO', 'ESTADO ANTERIOR (ANTES)', 'ESTADO ACTUALIZADO (AHORA)']], hasChart: false },
+=======
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
             'Usuarios': { titulo: "REPORTE INSTITUCIONAL: PERSONAL Y ADMINISTRADORES DEL SISTEMA", tablaBodyId: "tablaUsuariosCuerpo", headers: [['USUARIO', 'CÉDULA', 'NOMBRES', 'APELLIDOS', 'TELÉFONO']], hasChart: false },
             'UsuariosInhabilitados': { titulo: "REPORTE INSTITUCIONAL: USUARIOS DEL SISTEMA SUSPENDIDOS", tablaBodyId: "tablaUsuariosInhabilitados", headers: [['USUARIO', 'CÉDULA', 'NOMBRES', 'APELLIDOS', 'TELÉFONO']], hasChart: false},
             'Idcar': { titulo: "INFORME: ÍNDICE DE DETERIORO (IDCAR)", tablaBodyId: "tablaIdcarCuerpo", headers: [['Cota', 'Título del Libro', 'Total de Ejemplares', 'Ejemplares Dañados']], hasChart: false },
             'Iiur': { titulo: "INFORME: INTENSIDAD DE USO DE RECURSOS (IIUR)", tablaBodyId: "tablaIiurCuerpo", headers: [['Área / Sala', 'Consultas', 'Ejemplares', 'Índice', 'Estado']], hasChart: false },
             'Actividades': { titulo: "INFORME: PARTICIPACIÓN EN ACTIVIDADES", tablaBodyId: "tablaActividadesCuerpo", headers: [['Categoría', 'Eventos Realizados', 'Total Asistentes', 'Participación (%)', 'Estado']], hasChart: false },
+<<<<<<< HEAD
             'Ipe': { titulo: "INFORME: ÍNDICE DE PRODUCTIVIDAD DE EVENTOS (IPE)", tablaBodyId: "tablaIpeCuerpo", headers: [['Concepto', 'Cantidad']], hasChart: false },
             'general': { titulo: "REPORTE INSTITUCIONAL GENERAL", multiTable: true, targetId: "#reporte-contenido" },
             'sala_general': { titulo: "REPORTE SALA GENERAL", multiTable: true, targetId: "#reporte-contenido" },
             'sala_referencia': { titulo: "REPORTE OPERACIONAL - SALA DE REFERENCIA", multiTable: true, targetId: "#reporte-contenido" },
             'sala_infantil': { titulo: "REPORTE OPERACIONAL - SALA INFANTIL", multiTable: true, targetId: "#reporte-contenido" },
             'sala_estatal': { titulo: "REPORTE OPERACIONAL - SALA ESTATAL", multiTable: true, targetId: "#reporte-contenido" },
+=======
+            'Ipe': { titulo: "INFORME: ÍNDICE DE PRODUCTIVIDAD DE EVENTOS (IPE)", tablaBodyId: "tablaIpeCuerpo",headers: [['Categoría', 'Eventos', 'Asistentes', 'Promedio', 'Estado']], hasChart: false},
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
         };
 
         const config = configs[tipo];
@@ -235,6 +252,10 @@ async function descargarPDF(tipo) {
         };
 
         if (config.customResumen) {
+<<<<<<< HEAD
+=======
+            // Lógica Dashboard...
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
             if (document.getElementById('panel-cobertura-usuarios')) {
                 const v = document.getElementById('cobertura-valor')?.innerText || '--';
                 const e = limpiarTextoEstado(document.getElementById('panel-cobertura-usuarios').querySelector('.label'));
@@ -320,6 +341,10 @@ async function descargarPDF(tipo) {
             startY = doc.lastAutoTable.finalY + 15;
 
         } else if (tipo === 'macro') {
+<<<<<<< HEAD
+=======
+            
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
             doc.setFontSize(11);
             doc.setFont("helvetica", "bold");
             doc.setTextColor(31, 78, 121);
@@ -331,9 +356,13 @@ async function descargarPDF(tipo) {
                 { id: 'panel-consultas-referencia', val: 'referencia-valor', badge: '.label', label: 'Consultas de Referencia' },
                 { id: 'panel-grafico-consultas', val: null, badge: '.label', label: 'Promedio de Consultas' },
                 { id: 'indicador-rotacion', val: '.status-label', badge: '#rotacion-estado-badge', label: 'Rotación de Colección' },
+<<<<<<< HEAD
                 { id: 'indicador-fisico', val: '.status-label', badge: '#fisico-estado-badge', label: 'Estado Físico de Materiales' },
                 { id: 'indicador-asistencia', val: '.status-label', badge: '#asistencia-estado-badge', label: 'Asistencia a la Sala Estatal' },
                 { id: 'indicador-coleccion', val: '.status-label', badge: '#coleccion-estado-badge', label: 'Actualización de Colección' }
+=======
+                { id: 'indicador-fisico', val: '.status-label', badge: '#fisico-estado-badge', label: 'Estado Físico de Materiales' }
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
             ];
 
             idsMapeo.forEach(m => {
@@ -349,6 +378,7 @@ async function descargarPDF(tipo) {
                 }
             });
 
+<<<<<<< HEAD
             const cumPanel = document.querySelector('[data-target="#modalDetalleCumplimiento"]');
             if (cumPanel) {
                 const raw = cumPanel.querySelector('.label')?.innerText || '';
@@ -368,12 +398,15 @@ async function descargarPDF(tipo) {
                 resumenRows.push(['Participación en Actividades', v, e]);
             }
 
+=======
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
             doc.autoTable({
                 head: [['Área de Gestión', 'Valor Actual', 'Evaluación']],
                 body: resumenRows,
                 startY: startY + 4,
                 theme: 'grid',
                 headStyles: { fillColor: [31, 78, 121], fontSize: 9 },
+<<<<<<< HEAD
                 styles: { fontSize: 8.5 },
                 didParseCell: function(data) {
                     if (data.column.index === 2 && data.cell.section === 'body') {
@@ -393,6 +426,9 @@ async function descargarPDF(tipo) {
                         }
                     }
                 }
+=======
+                styles: { fontSize: 8.5 }
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
             });
             
             startY = doc.lastAutoTable.finalY + 12;
@@ -400,18 +436,26 @@ async function descargarPDF(tipo) {
             const seccionesMacro = [
                 { id: null, headers: [], titulo: "2. PROMEDIO DE CONSULTAS", chartId: "#panel-grafico-consultas" },
                 { id: 'tablaReporteCuerpo', headers: [['Periodo / Turno', 'Consultas', 'Estado']], titulo: "3. HISTÓRICO: FLUJO DE CONSULTAS", chartId: "#chartModalConsultas" },
+<<<<<<< HEAD
                 { id: 'tbodyDetalleCumplimiento', headers: [['Categoría', 'Total Préstamos', 'A Tiempo', 'Mora Leve', 'Mora Grave']], titulo: "4. SEGUIMIENTO DE CUMILIADAD Y MOROSIDAD", chartId: "#chartPlazos" },
+=======
+                { id: 'tbodyDetalleCumplimiento', headers: [['Categoría', 'Total Préstamos', 'A Tiempo', 'Mora Leve', 'Mora Grave']], titulo: "4. SEGUIMIENTO DE CUMPLIMIENTO Y MOROSIDAD", chartId: "#chartPlazos" },
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                 { id: 'tablaOcupacionCuerpo', headers: [['Sala', 'Capacidad Máxima', 'Ocupación Pico', 'Promedio', 'Estado']], titulo: "5. CAPACIDAD Y OCUPACIÓN DE SALAS", chartId: "#chartOcupacion" },
                 { id: 'tablaCoberturaCuerpo', headers: [['Segmento', 'Total Registrados', 'Nuevos (Mes)', 'Tendencia']], titulo: "6. DESGLOSE: COBERTURA DE USUARIOS" },
                 { id: 'tablaReferenciaCuerpo', headers: [['Área del Conocimiento', 'Consultas', 'Eficiencia de Respuesta']], titulo: "7. DESGLOSE: CONSULTAS DE REFERENCIA" },
                 { id: 'tablaRotacionCuerpo', headers: [['Categoría', 'Inventario', 'Préstamos', 'Rotación']], titulo: "8. DINÁMICA DE ROTACIÓN DE INVENTARIO" },
                 { id: 'tablaSaludCuerpo', headers: [['Sala', 'Total Libros', 'Buen Estado', 'En Reparación', 'Salud Física']], titulo: "9. EVALUACIÓN DE SALUD FÍSICA DEL MATERIAL" },
                 { id: 'tablaAsistenciaEstatalCuerpo', headers: [['Tipo de Usuario', 'Nro. de Visitas', 'Tendencia']], titulo: "10. ASISTENCIA Y VISITAS A SALA ESTATAL" },
+<<<<<<< HEAD
                 { id: 'tablaColeccionCuerpo', headers: [['Sala', 'Títulos Totales', 'Novedades (2024-25)', 'Estado', 'Acción Requerida']], titulo: "11. ACTUALIZACIÓN ACADÉMICA DE LA COLECCIÓN" },
                 { id: 'tablaIdcarCuerpo', headers: [['Cota', 'Título del Libro', 'Total de Ejemplares', 'Ejemplares Dañados']], titulo: "12. ÍNDICE DE DETERIORO (IDCAR)" },
                 { id: 'tablaIiurCuerpo', headers: [['Área / Sala', 'Consultas', 'Ejemplares', 'Índice', 'Estado']], titulo: "13. INTENSIDAD DE USO DE RECURSOS (IIUR)" },
                 { id: 'tablaActividadesCuerpo', headers: [['Categoría', 'Eventos Realizados', 'Total Asistentes', 'Participación (%)', 'Estado']], titulo: "14. PARTICIPACIÓN EN ACTIVIDADES" },
                 { id: 'tablaIpeCuerpo', headers: [['Categoría', 'Eventos', 'Asistentes', 'Promedio', 'Estado']], titulo: "15. ÍNDICE DE PRODUCTIVIDAD DE EVENTOS (IPE)" }
+=======
+                { id: 'tablaColeccionCuerpo', headers: [['Sala', 'Títulos Totales', 'Novedades (2024-25)', 'Estado', 'Acción Requerida']], titulo: "11. ACTUALIZACIÓN ACADÉMICA DE LA COLECCIÓN" }
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
             ];
 
             for (const seccion of seccionesMacro) {
@@ -419,43 +463,89 @@ async function descargarPDF(tipo) {
                 const chartElement = seccion.chartId ? document.querySelector(seccion.chartId) : null;
                 
                 if (tableBody || chartElement) {
+<<<<<<< HEAD
+=======
+                    // --- PRE-CÁLCULO EXACTO DE ESPACIO PARA EVITAR CORTES ---
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                     let estimadoTablaH = 0;
                     let dRows = [];
 
                     if (tableBody) {
                         Array.from(tableBody.querySelectorAll('tr')).forEach(tr => {
+<<<<<<< HEAD
                             const rowData = Array.from(tr.querySelectorAll('td')).map(td => td.textContent.trim());
                             if (rowData.length > 0) dRows.push(rowData);
                         });
                         estimadoTablaH = (dRows.length * 6.5) + 10;
                     }
 
+=======
+                            const rowData = Array.from(tr.querySelectorAll('td')).map(td => td.innerText.trim());
+                            if (rowData.length > 0) dRows.push(rowData);
+                        });
+                        // ~6.5mm por fila de datos + 10mm de cabecera de tabla
+                        estimadoTablaH = (dRows.length * 6.5) + 10;
+                    }
+
+                    // Título de sección (8mm de margen) + Gráfico (82mm si existe) + Tabla
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                     let espacioRequerido = 8 + estimadoTablaH; 
                     if (chartElement) {
                         espacioRequerido += 82; 
                     }
 
+<<<<<<< HEAD
                     if (startY + espacioRequerido > pageUsableHeight) {
                         doc.addPage();
                         startY = 20; 
                     }
 
+=======
+                    // Si el bloque completo supera el espacio usable disponible, forzamos el salto de página
+                    if (startY + espacioRequerido > pageUsableHeight) {
+                        doc.addPage();
+                        // No se vuelve a llamar a la cabecera. Dejamos un margen superior limpio
+                        startY = 20; 
+                    }
+
+                    // Renderizar título seguro
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                     doc.setFontSize(11);
                     doc.setFont("helvetica", "bold");
                     doc.setTextColor(44, 62, 80);
                     doc.text(seccion.titulo, 14, startY);
                     startY += 6;
 
+<<<<<<< HEAD
+=======
+                    // Captura e inyección de gráficos directos de memoria
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                     if (chartElement) {
                         try {
                             let imgData = null;
                             const canvasDirecto = chartElement.querySelector('canvas');
+<<<<<<< HEAD
                             if (canvasDirecto) {
                                 imgData = canvasDirecto.toDataURL('image/png', 1.0);
                             } else {
                                 const canvasH2C = await html2canvas(chartElement, { scale: 2, backgroundColor: "#ffffff", useCORS: true, logging: false });
                                 imgData = canvasH2C.toDataURL('image/png');
                             }
+=======
+                            
+                            if (canvasDirecto) {
+                                imgData = canvasDirecto.toDataURL('image/png', 1.0);
+                            } else {
+                                const canvasH2C = await html2canvas(chartElement, { 
+                                    scale: 2, 
+                                    backgroundColor: "#ffffff", 
+                                    useCORS: true, 
+                                    logging: false 
+                                });
+                                imgData = canvasH2C.toDataURL('image/png');
+                            }
+                            
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                             if (imgData && imgData.length > 50) {
                                 doc.addImage(imgData, 'PNG', 15, startY, 180, 75);
                                 startY += 82; 
@@ -465,13 +555,21 @@ async function descargarPDF(tipo) {
                         }
                     }
 
+<<<<<<< HEAD
+=======
+                    // Renderizar tabla emparejada sin cortes internos flotantes
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                     if (dRows.length > 0) {
                         doc.autoTable({
                             head: seccion.headers,
                             body: dRows,
                             startY: startY,
                             theme: 'grid',
+<<<<<<< HEAD
                             pageBreak: 'avoid',
+=======
+                            pageBreak: 'avoid', // Refuerzo de comportamiento nativo para estructuras rígidas
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                             headStyles: { fillColor: [44, 62, 80], halign: 'center', fontSize: 9 },
                             styles: { fontSize: 8, cellPadding: 2.5 },
                             alternateRowStyles: { fillColor: [245, 245, 245] },
@@ -485,6 +583,10 @@ async function descargarPDF(tipo) {
             }
 
         } else if (tipo === 'DetalleVisita' && config.customCapture) {
+<<<<<<< HEAD
+=======
+            const rango = obtenerRangoFechas();
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
             doc.setFontSize(10);
             doc.setTextColor(0,0,0);
             doc.text(`Período: ${rango.desde} al ${rango.hasta}`, 14, startY);
@@ -508,12 +610,20 @@ async function descargarPDF(tipo) {
                 try {
                     let imgData = null;
                     const canvasDirecto = chartElement.querySelector('canvas');
+<<<<<<< HEAD
+=======
+                    
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                     if (canvasDirecto) {
                         imgData = canvasDirecto.toDataURL('image/png', 1.0);
                     } else {
                         const canvasH2C = await html2canvas(chartElement, { scale: 2, backgroundColor: "#ffffff", useCORS: true, logging: false });
                         imgData = canvasH2C.toDataURL('image/png');
                     }
+<<<<<<< HEAD
+=======
+                    
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                     if (imgData && imgData.startsWith('data:image/') && imgData.length > 50) {
                         doc.addImage(imgData, 'PNG', 15, startY, 180, 75);
                         startY += 85;
@@ -551,6 +661,7 @@ async function descargarPDF(tipo) {
                     doc.text(`Total acumulado: ${totalAcumulado}`, 14, startY);
                 }
             }
+<<<<<<< HEAD
         } else if (tipo === 'DetalleModificacion') {
             const infoText = document.querySelector('.well p')?.innerText || '';
             
@@ -666,6 +777,8 @@ async function descargarPDF(tipo) {
                     }
                 }
             }
+=======
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
         } else {
             let finalChartY = 53;
             if (config.hasChart && config.chartId) {
@@ -674,12 +787,20 @@ async function descargarPDF(tipo) {
                     try {
                         let imgData = null;
                         const canvasDirecto = chartElement.querySelector('canvas');
+<<<<<<< HEAD
+=======
+                        
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                         if (canvasDirecto) {
                             imgData = canvasDirecto.toDataURL('image/png', 1.0);
                         } else {
                             const canvasH2C = await html2canvas(chartElement, { scale: 2, backgroundColor: "#ffffff", useCORS: true, logging: false });
                             imgData = canvasH2C.toDataURL('image/png');
                         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                         if (imgData && imgData.startsWith('data:image/') && imgData.length > 50) {
                             doc.addImage(imgData, 'PNG', 15, 58, 180, 75);
                             finalChartY = 140;
@@ -720,7 +841,11 @@ async function descargarPDF(tipo) {
             startY = doc.lastAutoTable.finalY + 25;
         }
 
+<<<<<<< HEAD
         // --- CINTILLO INFERIOR Y SECCIÓN DE FIRMAS ---
+=======
+        // --- CINTILLO INFERIOR Y SECCIÓN DE FIRMAS (ÚNICO AL FINAL DEL DOCUMENTO) ---
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
         let finalY = startY + 10;
         if (finalY + 35 > pageHeight) {
             doc.addPage();

@@ -12,7 +12,10 @@ interface IAdministradorRepository {
     public function findByUsername(string $username): ?Administrador;
     public function findByEmail(string $email): ?Administrador;
     public function findByPersonaId(int $idPersona): ?Administrador;
+<<<<<<< HEAD
     public function findInactivos(?string $search = null): array;
+=======
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
     public function existsUsername(string $username, ?int $excludeId = null): bool;
     public function duplicatePersona(int $idPersona): bool;
     public function search(string $input): array;

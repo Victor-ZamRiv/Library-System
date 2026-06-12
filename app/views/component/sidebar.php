@@ -51,8 +51,27 @@
 	            <!-- Dashboard: Visible para todos -->
 	            <li><a href="<?= BASE_URL ?>/dashboard"><i class="fa-solid fa-gauge"></i> Dashboard</a></li>
 
+<<<<<<< HEAD
 	            <!-- Lectores: Bibliotecario, Jefe de Sala y Director -->
 	            <li style="<?= $styleVisitas ?>"><a href="<?= BASE_URL ?>/lectores"><i class="fa-solid fa-book-open-reader"></i> Lectores</a></li>
+=======
+    <!-- Configuración: SOLO DIRECTOR -->
+    <li style="<?= $styleAdminOnly ?>">
+        <a href="#!" class="btn-sideBar-SubMenu">
+            <i class="fa-solid fa-gears"></i> Configuración <i class="fa-solid fa-caret-down"></i>
+        </a>
+        <ul class="list-unstyled full-box">
+            <li><a href="<?= BASE_URL ?>/configuracion/indicator">Indicadores</a></li>
+            <li><a href="<?= BASE_URL ?>/configuracion/sala">Salas</a></li>
+            
+            <li><a href="<?= BASE_URL ?>/configuracion/prestamos"> Prestamos</a></li>
+            <li><a href="<?= BASE_URL ?>/historial"> Historial</a></li>
+        </ul>
+    </li>
+</ul>
+    </div>
+</section>
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
 
 	            <!-- Usuarios: SOLO DIRECTOR -->
 	            <li style="<?= $styleAdminOnly ?>">

@@ -3,6 +3,7 @@
 <head>
     <title>Lista de Lectores</title>
     <?php include VIEW_PATH . "/component/heat.php" ?>
+
 </head>
 <body>
     <?php include VIEW_PATH . "/component/sidebar.php" ?>
@@ -33,11 +34,18 @@
                             <div class="col-xs-12 col-md-6 text-right">
                                 <br>
                                 <button type="submit" class="btn btn-info btn-raised btn-sm"><i class="zmdi zmdi-search"></i> Buscar</button>
+<<<<<<< HEAD
                                 <button type="button" class="btn btn-warning btn-raised btn-sm" data-toggle="modal" data-target="#disabledReadersModal">
                                     <i class="fa-solid fa-ban"></i> Suspendidos <?= ($totalInactivos ?? 0) > 0 ? '(' . ($totalInactivos ?? 0) . ')' : '' ?>
                                 </button>
                                 <button type="button" onclick="descargarPDF('Lectores');" class="btn btn-success btn-raised btn-sm">
                                     <i class="fa-solid fa-file-pdf"></i> IMPRIMIR HABILITADOS
+=======
+                                <button type="button" class="btn btn-warning btn-raised btn-sm" data-toggle="modal" data-target="#disabledReadersModal"><i class="fa-solid fa-ban"></i> Suspendidos</button>
+
+                                <button type="button" onclick="descargarPDF('Lectores');" class="btn btn-success btn-raised btn-sm">
+                                    <i class="fa-solid fa-file-pdf"></i>IMPRIMIR HABILITADOS
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                                 </button>
                             </div>
                         </form>
@@ -58,6 +66,7 @@
                                 </tr>
                             </thead>
                             <tbody id="tabla-lectores-cuerpo">
+<<<<<<< HEAD
                                 <?php if (empty($lectores)): ?>
                                     <tr><td colspan="6" class="text-center">No hay lectores activos registrados.<?php else: ?>
                                     <?php foreach ($lectores as $lector): ?>
@@ -89,6 +98,36 @@
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
+=======
+                                <?php foreach ($lectores as $lector): ?>
+                                    <tr>
+                                        <td><?= $lector->getCarnet() ?></td>
+                                        <td><?= $lector->getPersona()->getCedula() ?></td>
+                                        <td><?= $lector->getPersona()->getNombre() . " " . $lector->getPersona()->getApellido() ?></td>
+                                        <td><?= $lector->getPersona()->getTelefono() ?></td>
+                                        <td><?= $lector->getProfesion() ?></td>
+                                        <td>
+                                            <a href="<?= BASE_URL ?>/lectores/edit?id=<?= $lector->getIdLector() ?>" class="btn btn-success btn-raised btn-xs" title="Editar">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </a>
+                                            <a href="<?= BASE_URL ?>/lectores/show?id=<?= $lector->getIdLector() ?>" class="btn btn-info btn-raised btn-xs" title="Ver Detalles">
+                                                <i class="fa-solid fa-info"></i>
+                                            </a>
+                                            <form action="<?= BASE_URL ?>/lectores/delete?id=<?= $lector->getIdLector() ?>" method="POST" style="display: inline-block;">
+                                                <button type="button"
+                                                    class="btn btn-danger btn-raised btn-xs"
+                                                    title="Eliminar"
+                                                    data-toggle="modal"
+                                                    data-target="#confirmDeleteModal"
+                                                    data-id="<?= $lector->getIdLector() ?>"
+                                                    data-nombre="<?= htmlspecialchars($lector->getPersona()->getNombre() . ' ' . $lector->getPersona()->getApellido()) ?>">
+                                                    <i class="fa-solid fa-ban"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                             </tbody>
                         </table>
                     </div>
@@ -135,8 +174,15 @@
                 var button = $(event.relatedTarget);
                 var idLector = button.data('id');
                 var nombre = button.data('nombre');
+<<<<<<< HEAD
                 var modal = $(this);
                 modal.find('#nombreLectorModal').text(nombre);
+=======
+
+                var modal = $(this);
+                modal.find('#nombreLectorModal').text(nombre);
+
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                 var urlEliminar = '<?= BASE_URL ?>/lectores/delete?id=' + idLector;
                 modal.find('#btnConfirmarEliminar').attr('href', urlEliminar);
             });

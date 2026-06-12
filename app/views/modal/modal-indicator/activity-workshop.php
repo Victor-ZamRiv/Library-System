@@ -85,7 +85,11 @@
                             </tr>
                         </thead>
                         <tbody id="tablaActividadesCuerpo">
+<<<<<<< HEAD
                             <?php if (isset($desgloseActividades) && !empty($desgloseActividades)): ?>
+=======
+                            <?php if (isset($desgloseActividades) && is_array($desgloseActividades)): ?>
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                                 <?php foreach ($desgloseActividades as $actividad): ?>
                                     <tr>
                                         <td><strong><?= htmlspecialchars($actividad['categoria']) ?></strong></td>

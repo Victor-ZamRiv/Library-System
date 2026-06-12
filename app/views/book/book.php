@@ -401,11 +401,34 @@
                             </div>
                         </fieldset>
 
-                        
 
-                        <p class="text-center " style="margin-top: 20px">
-                            <button type="submit" class="btn btn-success btn-raised btn-lg" id="btn-enviar-libro"> Guardar</button>
-                        </p>
+
+                        <div class="row" style="margin-top: 30px; margin-bottom: 20px;">
+                            <div class="col-xs-12 text-center" style="display: flex; justify-content: center; align-items: center; gap: 25px; flex-wrap: wrap;">
+
+                                <div class="form-group" style="margin: 0; padding: 0;">
+                                    <div class="checkbox">
+                                        <label class="text-warning" style="font-weight: 700; font-size: 16px; cursor: pointer;">
+                                            <input type="checkbox" name="marcar-reserva" id="reserva-reg">
+                                            <span class="checkbox-material"><span class="check"></span></span>
+                                            <i class="fa-solid fa-bookmark" style="margin-left: 5px;"></i> Marcar como reserva
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-success btn-raised btn-lg" id="btn-enviar-libro" style="margin: 0;">
+                                    <i class="fa-solid fa-floppy-disk"></i> Guardar
+                                </button>
+                            </div>
+
+                            <div class="col-xs-12 text-center" style="margin-top: 20px;">
+                                <div class="invalid-feedback" id="reserva-error" style="display: none; transition: all 0.3s ease;">
+                                    <span class="bg-danger text-danger" style="display: inline-block; padding: 8px 20px; font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                                        <i class="fas fa-exclamation-circle"></i> El siguiente libro será marcado como reserva. Esto evitará el préstamo del libro en el futuro.
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -424,24 +447,78 @@
 
     <script src=" <?= PUBLIC_PATH ?> /js/modal/confirmation-new-book.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("form-registro-libro");
     const btnConfirmarEnvio = document.getElementById("btn-confirmar-envio");
     const resumenContainer = document.getElementById("resumen-datos-libro");
+    
+    // Elementos para la automatización de ejemplares
+    const ejemplaresInput = document.getElementById("ejemplares-reg");
+    const checkboxReserva = document.getElementById("reserva-reg");
+    const dropdownSala = document.getElementById("dropdown-sala");
 
     if (!form) return;
 
+    // ============================================================================
+    // LÓGICA DE AUTOMATIZACIÓN EN TIEMPO REAL (Ejemplares = 1 si es Reserva)
+    // ============================================================================
+    function verificarYForzarEjemplares() {
+        const sala = document.getElementById("sala-display").value || "";
+        
+        // Es reserva si el checkbox existe y está marcado, O si la sala es de Referencia
+        const esReserva = (checkboxReserva && checkboxReserva.checked) || sala.toLowerCase().includes("referencia");
+
+        if (esReserva && ejemplaresInput) {
+            ejemplaresInput.value = "1";
+            // Ejecutar la validación semántica nativa si existe para limpiar estados de error previos
+            if (typeof validarEjemplares === "function") {
+                validarEjemplares(ejemplaresInput);
+            }
+        }
+    }
+
+    // 1. Escuchar cambios si usas un checkbox nativo para marcar la reserva
+    if (checkboxReserva) {
+        checkboxReserva.addEventListener("change", verificarYForzarEjemplares);
+    }
+
+    // 2. Escuchar clics en el dropdown de salas (por si cambia a Sala de Referencia)
+    if (dropdownSala) {
+        dropdownSala.querySelectorAll("a").forEach(opcion => {
+            opcion.addEventListener("click", () => {
+                // Le damos un pequeño delay (50ms) para permitir que el script original cargue el texto en #sala-display
+                setTimeout(verificarYForzarEjemplares, 50);
+            });
+        });
+    }
+
+    // 3. Si el usuario intenta cambiar manualmente el número de ejemplares siendo reserva, se fuerza a 1 de nuevo
+    if (ejemplaresInput) {
+        ejemplaresInput.addEventListener("input", () => {
+            const sala = document.getElementById("sala-display").value || "";
+            const esReserva = (checkboxReserva && checkboxReserva.checked) || sala.toLowerCase().includes("referencia");
+            if (esReserva) {
+                ejemplaresInput.value = "1";
+            }
+        });
+    }
+
+    // ============================================================================
+    // MANEJADOR DEL ENVÍO Y CONSTRUCCIÓN DEL MODAL
+    // ============================================================================
     form.addEventListener("submit", function (e) {
-        // 1. Validar que el formulario de HTML5 y tus validaciones personalizadas pasen
+        // Asegurar una última verificación antes de abrir el modal
+        verificarYForzarEjemplares();
+
+        // Validar que el formulario de HTML5 y tus validaciones personalizadas pasen
         if (!form.checkValidity()) {
-            // Si el formulario no es válido, dejamos que el navegador muestre sus errores nativos
             return; 
         }
 
-        // 2. Frenar el envío automático del formulario para poder mostrar el modal
+        // Frenar el envío automático del formulario para poder mostrar el modal
         e.preventDefault();
 
-        // 3. Capturar los valores ingresados en los campos
+        // Capturar los valores ingresados en los campos
         const sala = document.getElementById("sala-display").value || "No seleccionada";
         const areaInput = document.getElementById("areaSelect").value;
         const area = areaInput ? areaInput : "No aplica";
@@ -451,13 +528,21 @@
         const ciudad = document.getElementById("ciudad").value;
         const edicion = document.getElementById("edicion").value;
         const anio = document.getElementById("year-reg").value;
-        const ejemplares = document.getElementById("ejemplares-reg").value;
+        const ejemplares = ejemplaresInput ? ejemplaresInput.value : "1";
         const paginas = document.getElementById("paginas-reg").value;
         const editorial = document.getElementById("editorial-reg").value;
         const isbn = document.getElementById("isbn").value;
         const observaciones = document.getElementById("observaciones-reg").value || "Ninguna";
 
-        // 4. Construir la estructura visual (HTML) dentro del contenedor del modal
+        // Determinar el estado final de reserva para el diseño del modal
+        const esReservaFinal = (checkboxReserva && checkboxReserva.checked) || sala.toLowerCase().includes("referencia");
+
+        // Construcción de la fila de reserva en rojo si está marcado
+        const filaReserva = esReservaFinal 
+            ? `<tr><th>Estado de Reserva:</th><td><span style="color: #d9534f; font-weight: bold;"><i class="fas fa-lock"></i> SÍ (Marcado como Libro de Reserva - Solo Consulta en Sala)</span></td></tr>`
+            : `<tr><th>Estado de Reserva:</th><td>No (Circulante / Préstamo Exterior)</td></tr>`;
+
+        // Construir la estructura visual (HTML) dentro del contenedor del modal
         resumenContainer.innerHTML = `
             <table class="table table-striped table-bordered" style="margin-bottom: 0;">
                 <tbody>
@@ -469,33 +554,31 @@
                     <tr><th>Ciudad:</th><td>${ciudad}</td></tr>
                     <tr><th>Edición:</th><td>${edicion}ª ed.</td></tr>
                     <tr><th>Año:</th><td>${anio}</td></tr>
-                    <tr><th>Ejemplares:</th><td>${ejemplares}</td></tr>
+                    <tr><th>Ejemplares:</th><td><strong>${ejemplares}</strong></td></tr>
                     <tr><th>Páginas:</th><td>${paginas}</td></tr>
                     <tr><th>Editorial:</th><td>${editorial}</td></tr>
                     <tr><th>ISBN:</th><td>${isbn}</td></tr>
                     <tr><th>Observaciones:</th><td>${observaciones}</td></tr>
+                    ${filaReserva}
                 </tbody>
             </table>
         `;
 
-        // 5. Levantar el modal de Bootstrap de forma programática
+        // Levantar el modal de Bootstrap de forma programática
         $('#modalConfirmacion').modal('show');
     });
 
-    // 6. Escuchar el clic del botón "Confirmar Registro" dentro del modal
+    // Escuchar el clic del botón "Confirmar Registro" dentro del modal
     if (btnConfirmarEnvio) {
         btnConfirmarEnvio.addEventListener("click", function () {
-            // Deshabilitamos el botón para evitar doble envío accidental
             btnConfirmarEnvio.disabled = true;
             btnConfirmarEnvio.textContent = "Guardando...";
-            
-            // Enviamos el formulario de forma nativa
             form.submit();
         });
     }
 });
-    </script>
-    
+</script>
+
 
 
 </body>

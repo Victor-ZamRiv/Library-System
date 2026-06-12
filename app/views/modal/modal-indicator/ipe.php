@@ -29,6 +29,10 @@
             </div>
 
             <div class="modal-body" style="padding-top: 15px;">
+<<<<<<< HEAD
+=======
+                <!-- Barra de Estados -->
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                 <div class="row">
                     <div class="col-xs-12">
                         <div style="display: flex; width: 100%; border-radius: 6px; overflow: hidden; margin-bottom: 25px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; font-family: sans-serif;">
@@ -75,6 +79,7 @@
                 <h4>Resumen del Período (Mes Actual)</h4>
                 <div class="table-responsive">
                     <table class="table table-bordered">
+<<<<<<< HEAD
                         <tbody id="tablaIpeCuerpo">
                             <tr>
                                 <td><strong>Total de eventos realizados</strong></td>
@@ -82,6 +87,15 @@
                             </tr>
                             <tr>
                                 <td><strong>Total de asistentes a eventos</strong></td>
+=======
+                        <tbody>
+                            <tr>
+                                <th>Total de eventos realizados</th>
+                                <td class="text-center"><?= number_format($totalEventos) ?></td>
+                            </tr>
+                            <tr>
+                                <th>Total de asistentes a eventos</th>
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                                 <td class="text-center"><?= number_format($totalAsistentes) ?></td>
                             </tr>
                         </tbody>

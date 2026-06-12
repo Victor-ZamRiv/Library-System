@@ -299,3 +299,20 @@ document.addEventListener("DOMContentLoaded", function () {
         validarDescripcion(observacionesInput, observacionesError);
     }
 });
+
+// =========================================================================
+    // CONTROLADOR INTERACTIVO PARA EL CHECKBOX DE RESERVA (SEGURO)
+    // =========================================================================
+    const checkReserva = document.getElementById('reserva-reg');
+    const reservaError = document.getElementById('reserva-error');
+
+    if (checkReserva && reservaError) {
+        checkReserva.addEventListener('change', function () {
+            if (this.checked) {
+                reservaError.style.display = 'block';
+            } else {
+                reservaError.style.display = 'none';
+            }
+        });
+    }
+    // =========================================================================

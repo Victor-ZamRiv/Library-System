@@ -10,6 +10,7 @@
                 </h4>
             </div>
             <div class="modal-body">
+<<<<<<< HEAD
                 <p class="text-muted">
                     <?php if (!empty($search)): ?>
                         Resultados de búsqueda para "<strong><?= htmlspecialchars($search) ?></strong>" en lectores inactivos.
@@ -17,6 +18,9 @@
                         A continuación se muestran los lectores que actualmente tienen el servicio suspendido.
                     <?php endif; ?>
                 </p>
+=======
+                <p class="text-muted">A continuación se muestran los lectores que actualmente tienen el servicio suspendido.</p>
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                 
                 <div class="table-responsive">
                     <table class="table table-striped table-hover">
@@ -26,10 +30,15 @@
                                 <th>CÉDULA</th>
                                 <th>NOMBRE COMPLETO</th>
                                 <th>TELÉFONO</th>
+<<<<<<< HEAD
+=======
+                                <th>PROFESIÓN</th>
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                                 <th class="text-right">Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="tablaLectoresInhabilitados">
+<<<<<<< HEAD
                             <?php if (empty($inactivos)): ?>
                                 <tr>
                                     <td colspan="5" class="text-center">No hay lectores inactivos registrados.\(td>
@@ -56,15 +65,38 @@
                                     </tr>
                                 <?php endforeach; ?>
                             <?php endif; ?>
+=======
+                            <tr>
+                                <td><strong>87654321/24</strong></td>
+                                <td>25909345</td>
+                                <td>Juan Pérez Gómez</td>
+                                <td>04128973452</td>
+                                <td>Arquitecto</td>
+                                <td class="text-right">
+                                    <button class="btn btn-xs btn-success btn-raised btn-habilitar" data-id="1">
+                                        <i class="fa-solid fa-user-check"></i> Habilitar
+                                    </button>
+                                </td>
+                            </tr>
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                         </tbody>
                     </table>
                 </div>
             </div>
             <div class="modal-footer">
+<<<<<<< HEAD
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                 <button type="button" onclick="descargarPDF('LectoresInhabilitados');" class="btn btn-danger btn-raised btn-sm">
                     <i class="fa-solid fa-file-pdf"></i> Imprimir Suspendidos
                 </button>
+=======
+                <!-- Botón institucional añadido para PDF de suspendidos -->
+                 <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <button type="button" onclick="descargarPDF('LectoresInhabilitados');" class="btn btn-danger btn-raised btn-sm">
+                    <i class="fa-solid fa-file-pdf"></i> Imprimir Suspendidos
+                </button>
+                
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
             </div>
         </div>
     </div>

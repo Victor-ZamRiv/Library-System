@@ -57,8 +57,14 @@
                         <h4>Impacto en la Comunidad</h4>
                         <p class="text-justify">Mide el porcentaje de ciudadanos registrados en la biblioteca respecto al total de habitantes del área de influencia.</p>
                         <div class="well well-sm">
+<<<<<<< HEAD
                             <strong>Fórmula:</strong> <br>
                             (Usuarios registrados en préstamos circulante / Población objetivo) × 100
+=======
+                            <strong>Población Objetivo:</strong> <?= number_format($poblacionObjetivo ?? 50000, 0, ',', '.') ?> Hab.<br>
+                            <strong>Usuarios Registrados:</strong> <?= number_format($usuariosRegistrados ?? 7500, 0, ',', '.') ?><br>
+                            <i class="fa-solid fa-circle-info text-info"></i> La meta ideal para el presente año es alcanzar el 20%.
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                         </div>
                     </div>
                     

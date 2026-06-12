@@ -160,6 +160,7 @@ class IndicadorService
      * Porcentaje de usuarios registrados que participan en actividades
      * (Suma de asistentes a actividades / Total lectores activos) × 100
      */
+<<<<<<< HEAD
     public function getPorcentajeParticipacionActividades(): float
     {
         $primerDia = date('Y-m-01');
@@ -167,6 +168,10 @@ class IndicadorService
 
         $stmt = $this->pdo->prepare("SELECT SUM(Asistentes) FROM actividades WHERE Fecha BETWEEN :inicio AND :fin AND Activo = 1");
         $stmt->execute([':inicio' => $primerDia, ':fin' => $ultimoDia]);
+=======
+    public function getPorcentajeParticipacionActividades(): float {
+        $stmt = $this->pdo->query("SELECT SUM(Asistentes) FROM actividades WHERE Activo = 1");
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
         $totalAsistentes = (int) $stmt->fetchColumn();
 
         $stmt = $this->pdo->query("SELECT COUNT(*) FROM lectores WHERE Estado = 'Activo'");
@@ -499,6 +504,7 @@ class IndicadorService
         }, $rows);
     }
 
+<<<<<<< HEAD
     /**
      * Obtiene desglose de actividades por categoría para el mes actual.
      * @return array
@@ -542,6 +548,8 @@ class IndicadorService
         return $desglose;
     }
 
+=======
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
     // ================= SERIES PARA GRÁFICOS (ENDPOINTS AJAX) =================
 
     /**

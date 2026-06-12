@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <title>Configuración de Indicadores</title>
     <?php include VIEW_PATH . "/component/heat.php"; ?>
@@ -13,7 +12,6 @@
         }
     </style>
 </head>
-
 <body>
     <?php include VIEW_PATH . "/component/sidebar.php"; ?>
 
@@ -139,6 +137,7 @@
                                                 </td>
                                             </tr>
 
+<<<<<<< HEAD
                                             <tr>
                                                 <td>Intensidad de Uso (IIUR)</td>
                                                 <td><span class="text-muted small">Gestión</span></td>
@@ -173,6 +172,8 @@
                                                 </td>
                                             </tr>
 
+=======
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                                             <tr>
                                                 <td>Índice de Rotación</td>
                                                 <td><span class="text-muted small">Colección</span></td>
@@ -253,6 +254,7 @@
                                                     <div class="toggle">
                                                         <label>
                                                             <input type="checkbox" name="ind_actividades" <?= $config->getMostrarActividades() ? 'checked' : '' ?> data-indicador="Participación en Actividades y Talleres"> Habilitar
+<<<<<<< HEAD
                                                         </label>
                                                     </div>
                                                 </td>
@@ -270,6 +272,8 @@
                                                     <div class="toggle">
                                                         <label>
                                                             <input type="checkbox" name="ind_ipe" <?= $config->getMostrarIpe() ? 'checked' : '' ?> data-indicador="Productividad de Eventos (IPE)"> Habilitar
+=======
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                                                         </label>
                                                     </div>
                                                 </td>
@@ -375,5 +379,4 @@
         });
     </script>
 </body>
-
 </html>

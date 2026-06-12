@@ -47,7 +47,11 @@
         .password-container input {
             padding-right: 35px !important;
         }
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
         /* Asegura el estilo de puntero prohibido para campos de solo lectura */
         .form-group input[readonly],
         .form-group select[disabled] {
@@ -197,9 +201,15 @@
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
                                             <label class="control-label" for="dni-reg"><span class="text-danger">*</span> Cédula</label>
+<<<<<<< HEAD
                                             <?php
                                             $cedulaOriginal = $administrador->getPersona()->getCedula();
                                             $numeroCedulaLimpiada = str_replace(['V-', 'E-'], '', $cedulaOriginal);
+=======
+                                            <?php 
+                                                $cedulaOriginal = $administrador->getPersona()->getCedula(); 
+                                                $numeroCedulaLimpiada = str_replace(['V-', 'E-'], '', $cedulaOriginal);
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                                             ?>
                                             <div class="cedula-group" style="margin-top: 0px;">
                                                 <select class="form-control select-nacionalidad" id="prefijo-cedula" disabled>
@@ -217,7 +227,11 @@
                                                     value="<?= htmlspecialchars($numeroCedulaLimpiada) ?>"
                                                     onblur="if (!this.checkValidity()) { this.classList.add('is-invalid'); this.classList.remove('is-valid'); document.getElementById('dni-error').style.display = 'block'; } else { this.classList.remove('is-invalid'); this.classList.add('is-valid'); document.getElementById('dni-error').style.display = 'none'; }">
                                             </div>
+<<<<<<< HEAD
 
+=======
+                                            
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                                             <input type="hidden" name="cedula-up" id="cedula-final" value="<?= htmlspecialchars($cedulaOriginal) ?>">
 
                                             <div class="invalid-feedback bg-danger text-danger rounded-pill" id="dni-error" style="display: none; padding: 5px 15px; margin-top: 5px;">

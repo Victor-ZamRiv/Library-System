@@ -54,7 +54,10 @@ $areaText = !empty($areaCode) ? $areaCode : 'Seleccione un área infantil';
 
         <div class="container-fluid">
             <div class="page-header">
+<<<<<<< HEAD
 
+=======
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
                 <h1 class="text-titles"><i class="fa-solid fa-book"></i> Editar Libro</h1>
             </div>
         </div>
@@ -476,6 +479,7 @@ $areaText = !empty($areaCode) ? $areaCode : 'Seleccione un área infantil';
     <?php include VIEW_PATH . "/modal/confirmation_delete_copy.php"; ?>
     <?php include VIEW_PATH . "/modal/discontinued.php"; ?>
     <?php include VIEW_PATH . "/component/scripts.php"; ?>
+<<<<<<< HEAD
 
     <script src="<?php echo PUBLIC_PATH; ?>/js/validations/book/helpers-book.js"></script>
     <script src="<?php echo PUBLIC_PATH; ?>/js/validations/book/init-book-form.js"></script>
@@ -605,6 +609,10 @@ $areaText = !empty($areaCode) ? $areaCode : 'Seleccione un área infantil';
             }
         });
     </script>
+=======
+    <script src="<?php echo PUBLIC_PATH; ?>/js/validations/book/helper-book.js"></script>
+    <script src="<?php echo PUBLIC_PATH; ?>/js/validations/book/init-book-form.js"></script>
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
     <script src="<?php echo PUBLIC_PATH; ?>/js/modal/specimens.js"></script>
 </body>
 

@@ -1,5 +1,6 @@
 /**
  * --- VALIDACIONES ALGORÍTMICAS Y FORMATEO DE LIBROS ---
+ * Sistema de Gestión Bibliotecaria (SGB) - MVC Puro
  */
 
 // ============================================================================
@@ -22,11 +23,14 @@ function aplicarFiltrosSanitizacion(inputElement) {
             inputElement.value = valorOriginal.replace(/[^0-9]/g, '');
         } 
         else if (CAMPOS_ALFABETICOS.includes(id)) {
-            // Regla para títulos y autores (solo letras y espacios)
-            inputElement.value = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+            // Ajuste: El título permite números según tu patrón HTML, autor y editorial no.
+            if(id === 'titulo-reg') {
+                inputElement.value = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s]/g, '');
+            } else {
+                inputElement.value = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+            }
         }
         else if (CAMPOS_DIRECCION.includes(id)) {
-            // Regla para ciudad (letras, números, espacios y caracteres de puntuación/dirección)
             inputElement.value = valorOriginal.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s.,#\-]/g, '');
         }
     });
@@ -110,7 +114,7 @@ function actualizarEstadoInput(input, errorElement, mensaje) {
 }
 
 // ============================================================================
-// 6. VALIDACIONES INDIVIDUALES POR CAMPO
+// 6. VALIDACIONES INDIVIDUALES POR CAMPO (Llamadas desde el HTML)
 // ============================================================================
 function validarTitulo(input) {
     const error = document.getElementById('titulo-error');
@@ -125,7 +129,6 @@ function validarTitulo(input) {
 }
 
 function formatearAutor(input) {
-    // Aplicamos primero la capitalización nativa que tenías
     let palabras = input.value.toLowerCase().split(' ');
     input.value = palabras.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ').trim();
     
@@ -168,7 +171,7 @@ function validarAnio(input) {
     const error = document.getElementById('year-error');
     const valor = parseInt(input.value, 10);
     const actual = new Date().getFullYear();
-    const MIN = 1800;
+    const MIN = 1800; // Ajusta según el libro más antiguo de la biblioteca
     let msg = "";
 
     if (input.value.trim() === "") {
@@ -240,7 +243,9 @@ function validarIsbn(input) {
 
 function validarCota(input) {
     const error = document.getElementById('cota-error');
-    const cotaPattern = /^(?:[A-Za-z]{1,2}\s[A-Za-z0-9]{1,4}|\d{3}.*\s[A-Za-z0-9]{4})$/;
+    
+    // Patrón optimizado: Soporta letras o números iniciales (Dewey), seguidos de espacio/guion/punto y el código de autor flexible
+    const cotaPattern = /^(?:[A-Za-z]{1,4}[\s\-][A-Za-z0-9]{1,6}|\d{3}(?:\.\d+)?[\s\-][A-Za-z0-9]{1,6})$/;
     let msg = "";
 
     if (input.value.trim() === "") {
@@ -248,7 +253,7 @@ function validarCota(input) {
     } else if (input.value.length > 30) {
         msg = "Máximo 30 caracteres.";
     } else if (!cotaPattern.test(input.value.trim())) {
-        msg = "Formato de cota incorrecto (Ej: N H234).";
+        msg = "Formato de cota incorrecto (Ej: 900 B222, 400 R288 o NH-234).";
     } else {
         input.setCustomValidity("");
     }
@@ -271,23 +276,6 @@ function validarObservaciones(input) {
     actualizarEstadoInput(input, error, msg);
 }
 
-function validarPortada(input) {
-    const error = document.getElementById('portada-error');
-    const nameDisp = document.getElementById('file-name');
-    const file = input.files[0];
-    let msg = "";
-
-    if (nameDisp) nameDisp.textContent = file ? file.name : 'No seleccionado';
-
-    if (file) {
-        if (file.size > 5 * 1024 * 1024) msg = "Máximo 5MB.";
-        else if (!['image/jpeg', 'image/png'].includes(file.type)) msg = "Solo JPG o PNG.";
-    }
-
-    input.setCustomValidity(msg);
-    actualizarEstadoInput(input, error, msg);
-}
-
 /**
  * CONTROL DE ENTRADA POR TECLADO
  */
@@ -299,3 +287,17 @@ function isNumberKey(evt) {
 function formatearIsbn(input) {
     input.value = input.value.toUpperCase().replace(/[^0-9\s\-X]/g, '');
 }
+
+// ============================================================================
+// 7. INICIALIZADOR DE EVENTOS GLOBALES
+// ============================================================================
+document.addEventListener("DOMContentLoaded", function () {
+    const inputsFormulario = document.querySelectorAll('#form-registro-libro input, #form-registro-libro textarea');
+    
+    inputsFormulario.forEach(input => {
+        if (CAMPOS_NUMERICOS.includes(input.id) || CAMPOS_ALFABETICOS.includes(input.id) || CAMPOS_DIRECCION.includes(input.id)) {
+            aplicarFiltrosSanitizacion(input);
+            normalizarYFormatearCampos(input);
+        }
+    });
+});

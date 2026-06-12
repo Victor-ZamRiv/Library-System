@@ -47,7 +47,10 @@ class DashboardController extends BaseController {
         $asistenciaEstatalPorTipo = $this->indicadorService->getAsistenciaEstatalPorTipo();
         $necesidadesColeccion = $this->indicadorService->getNecesidadesColeccionPorSalas();
         $detalleLibrosAltaRotacion = $this->indicadorService->getDetalleLibrosAltaRotacion();
+<<<<<<< HEAD
         $desgloseActividades = $this->indicadorService->getDesgloseActividades();
+=======
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
 
 
         //configuración de qué indicadores mostrar u ocultar
@@ -79,7 +82,10 @@ class DashboardController extends BaseController {
             'idcar' => $idcar,
             'detalleLibrosAltaRotacion' => $detalleLibrosAltaRotacion,
             'ipe' => $ipe,
+<<<<<<< HEAD
             'desgloseActividades' => $desgloseActividades,
+=======
+>>>>>>> b092d1a81195f22f2d1e2473952b4cd4755b7908
             'dashboardConfig' => $dashboardConfig
         ]);
     }
